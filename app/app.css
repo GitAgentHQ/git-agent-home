@@ -88,6 +88,18 @@ body {
 	line-height: 1.6;
 }
 
+.github-link {
+	display: inline-flex;
+	align-items: center;
+	color: rgba(255, 255, 255, 0.3);
+	margin-top: 16px;
+	transition: color 0.15s;
+}
+
+.github-link:hover {
+	color: rgba(255, 255, 255, 0.75);
+}
+
 /* ---- Pricing compare ---- */
 .pricing-compare {
 	width: 100%;
