@@ -20,7 +20,7 @@ type View = "home" | "init" | "commit";
 const INIT_DATA = {
 	cmd: "git-agent init",
 	description: "Initialize your repository",
-	usage: "git-agent init [--scope] [--hook-type <type>] [--hook-script <path>] [--gitignore] [--install-hook] [--force] [--max-commits <n>]",
+	usage: "git-agent init [--scope] [--hook-type <type>] [--hook-script <path>] [--gitignore] [--force] [--max-commits <n>]",
 	overview:
 		"Set up git-agent in the current repository. With no flags, runs scope generation, installs an empty pre-commit hook, and generates a .gitignore — all in one step. Each behavior can be triggered individually via flags.",
 	flags: [
@@ -41,10 +41,6 @@ const INIT_DATA = {
 		{
 			name: "--gitignore",
 			description: "Generate a .gitignore based on project context",
-		},
-		{
-			name: "--install-hook",
-			description: "Install the commit-msg shim into .git/hooks/",
 		},
 		{
 			name: "--force",
@@ -93,7 +89,7 @@ const INIT_DATA = {
 		{
 			title: "Install git hook",
 			description:
-				'Writes the chosen hook to .git-agent/hooks/pre-commit (mode 0755). The "conventional" hook validates Conventional Commits format with a Go-native validator; "empty" always passes. Use --install-hook to also shim .git/hooks/commit-msg.',
+				'Writes the chosen hook to .git-agent/hooks/pre-commit (mode 0755). The "conventional" hook validates Conventional Commits format with a Go-native validator; "empty" always passes.',
 		},
 		{
 			title: "Generate .gitignore",
@@ -108,7 +104,7 @@ const COMMIT_DATA = {
 	description: "Generate AI-powered commits",
 	usage: "git-agent commit [--dry-run] [--intent <text>] [--amend] [--no-stage] [--co-author <name>] [--trailer <key:value>] [--no-attribution]",
 	overview:
-		"Stages all tracked changes, intelligently groups them into atomic commits, generates conventional commit messages using an LLM, validates against your pre-commit hook, and retries on failure.",
+		"Stages all tracked changes, intelligently groups them into atomic commits (up to 5 groups per run), generates conventional commit messages using an LLM, validates against your pre-commit hook, and retries on failure.",
 	flags: [
 		{
 			name: "--dry-run",
@@ -166,7 +162,7 @@ const COMMIT_DATA = {
 		{
 			title: "Resolve configuration",
 			description:
-				"Resolves settings with 4-level priority: CLI flags > git config --local > ~/.config/git-agent/config.yml > build-time defaults (Anthropic Claude 3.5 Haiku, claude-3-5-haiku-20241022).",
+				"Resolves settings with 4-level priority: CLI flags > git config --local > ~/.config/git-agent/config.yml > build-time defaults. If the active key matches the built-in credential, runs in FREE mode — no API key setup required.",
 		},
 		{
 			title: "Collect diffs",
@@ -176,7 +172,7 @@ const COMMIT_DATA = {
 		{
 			title: "Plan commits via LLM",
 			description:
-				"Groups changed files into logical atomic commits by concern (feat, fix, refactor, test, docs). The --intent flag acts as the primary directive for grouping decisions.",
+				"Groups changed files into logical atomic commits by concern (feat, fix, refactor, test, docs), capped at 5 groups. The --intent flag acts as the primary directive for grouping decisions.",
 		},
 		{
 			title: "Generate commit messages",
