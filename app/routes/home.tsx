@@ -10,7 +10,7 @@ export function meta({}: Route.MetaArgs) {
 		{
 			name: "description",
 			content:
-				"AI-powered Git CLI for automated conventional commits, scope generation, and hook validation.",
+				"AI-powered Git CLI that splits changes into atomic commits with conventional messages, powered by LLMs.",
 		},
 	];
 }
@@ -20,7 +20,7 @@ type View = "home" | "init" | "commit";
 const INIT_DATA = {
 	cmd: "git-agent init",
 	description: "Initialize your repository",
-	usage: "git-agent init [--scope] [--hook <type>] [--gitignore] [--install-hook] [--force] [--max-commits <n>]",
+	usage: "git-agent init [--scope] [--hook-type <type>] [--hook-script <path>] [--gitignore] [--install-hook] [--force] [--max-commits <n>]",
 	overview:
 		"Set up git-agent in the current repository. With no flags, runs scope generation, installs an empty pre-commit hook, and generates a .gitignore — all in one step. Each behavior can be triggered individually via flags.",
 	flags: [
@@ -30,10 +30,13 @@ const INIT_DATA = {
 				"Generate scopes via AI analysis of commit history and project structure",
 		},
 		{
-			name: "--hook <value>",
-			description:
-				'Hook to install: "conventional", "empty", or path to custom script',
+			name: "--hook-type <value>",
+			description: "Built-in hook template: conventional or empty",
 			default: "empty",
+		},
+		{
+			name: "--hook-script <path>",
+			description: "Path to custom hook script",
 		},
 		{
 			name: "--gitignore",
@@ -103,7 +106,7 @@ const INIT_DATA = {
 const COMMIT_DATA = {
 	cmd: "git-agent commit",
 	description: "Generate AI-powered commits",
-	usage: "git-agent commit [--dry-run] [--intent <text>] [--co-author <name>] [--trailer <key:value>] [--no-git-agent]",
+	usage: "git-agent commit [--dry-run] [--intent <text>] [--amend] [--no-stage] [--co-author <name>] [--trailer <key:value>] [--no-attribution]",
 	overview:
 		"Stages all tracked changes, intelligently groups them into atomic commits, generates conventional commit messages using an LLM, validates against your pre-commit hook, and retries on failure.",
 	flags: [
@@ -118,6 +121,14 @@ const COMMIT_DATA = {
 				"Describe the intent of the change — acts as the primary directive for the LLM's grouping and message decisions",
 		},
 		{
+			name: "--amend",
+			description: "Regenerate and amend the most recent commit message",
+		},
+		{
+			name: "--no-stage",
+			description: "Skip auto-staging; only commit already-staged changes",
+		},
+		{
 			name: "--co-author <name>",
 			description: 'Add a co-author trailer, e.g. "Name <email@domain>" (repeatable)',
 		},
@@ -126,7 +137,7 @@ const COMMIT_DATA = {
 			description: 'Add an arbitrary git trailer, format "Key: Value" (repeatable)',
 		},
 		{
-			name: "--no-git-agent",
+			name: "--no-attribution",
 			description: 'Omit the default "Git Agent <noreply@git-agent.dev>" co-author trailer',
 		},
 		{
@@ -155,12 +166,12 @@ const COMMIT_DATA = {
 		{
 			title: "Resolve configuration",
 			description:
-				"Loads API credentials from flags, ~/.config/git-agent/config.yml, or falls back to Anthropic Claude 3.5 Haiku (claude-3-5-haiku-20241022) via api.anthropic.com as the default.",
+				"Resolves settings with 4-level priority: CLI flags > git config --local > ~/.config/git-agent/config.yml > build-time defaults (Anthropic Claude 3.5 Haiku, claude-3-5-haiku-20241022).",
 		},
 		{
 			title: "Collect diffs",
 			description:
-				"Runs git add --all to stage all tracked changes, then reads both staged and unstaged diffs to understand the full scope of changes.",
+				"Unless --no-stage is set, runs git add --all to stage all tracked changes. Then reads both staged and unstaged diffs to understand the full scope of changes.",
 		},
 		{
 			title: "Plan commits via LLM",
