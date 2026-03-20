@@ -1,0 +1,5 @@
+scopes:
+    - app
+    - build
+    - public
+    - workers
