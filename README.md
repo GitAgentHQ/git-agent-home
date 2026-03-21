@@ -1,6 +1,6 @@
 # git-agent-home ![](https://img.shields.io/badge/React-19.0-blue) ![](https://img.shields.io/badge/Cloudflare-Workers-orange)
 
-[![CI](https://img.shields.io/github/actions/workflow/status/FradSer/git-agent/home.yml)](https://github.com/FradSer/git-agent/actions) [![License](https://img.shields.io/github/license/FradSer/git-agent)](https://github.com/FradSer/git-agent/blob/main/LICENSE)
+[![CI](https://img.shields.io/github/actions/workflow/status/FradSer/git-agent-home/deploy.yml)](https://github.com/FradSer/git-agent-home/actions) [![License](https://img.shields.io/github/license/FradSer/git-agent-home)](https://github.com/FradSer/git-agent-home/blob/main/LICENSE)
 
 **English** | [简体中文](README.zh-CN.md)
 
@@ -28,7 +28,7 @@ pnpm deploy
 ## Project Structure
 
 - `app/` — React Router 7 application
-  - `components/` — UI components (HomeView, CommandDetail)
+  - `components/` — UI components (HomeView, CommandDetail, TicketView, Barcode, Pattern)
   - `routes/` — Route definitions
 - `workers/` — Cloudflare Worker entry point
 - `public/skill.md` — Claude Code skill for git-agent CLI

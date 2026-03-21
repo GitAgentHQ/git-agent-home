@@ -1,6 +1,6 @@
 # git-agent-home ![](https://img.shields.io/badge/React-19.0-blue) ![](https://img.shields.io/badge/Cloudflare-Workers-orange)
 
-[![CI](https://img.shields.io/github/actions/workflow/status/FradSer/git-agent/home.yml)](https://github.com/FradSer/git-agent/actions) [![License](https://img.shields.io/github/license/FradSer/git-agent)](https://github.com/FradSer/git-agent/blob/main/LICENSE)
+[![CI](https://img.shields.io/github/actions/workflow/status/FradSer/git-agent-home/deploy.yml)](https://github.com/FradSer/git-agent-home/actions) [![License](https://img.shields.io/github/license/FradSer/git-agent-home)](https://github.com/FradSer/git-agent-home/blob/main/LICENSE)
 
 [English](README.md) | **简体中文**
 
@@ -28,7 +28,7 @@ pnpm deploy
 ## 项目结构
 
 - `app/` — React Router 7 应用
-  - `components/` — UI 组件（HomeView、CommandDetail）
+  - `components/` — UI 组件（HomeView、CommandDetail、TicketView、Barcode、Pattern）
   - `routes/` — 路由定义
 - `workers/` — Cloudflare Worker 入口
 - `public/skill.md` — git-agent CLI 的 Claude Code 技能
