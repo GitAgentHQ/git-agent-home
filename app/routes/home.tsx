@@ -7,11 +7,11 @@ import { useLanguage } from "../contexts/language-context";
 
 export function meta({}: Route.MetaArgs) {
 	return [
-		{ title: "git-agent | AI-first Git CLI" },
+		{ title: "git-agent | Conventional commits CLI" },
 		{
 			name: "description",
 			content:
-				"AI-powered Git CLI that splits changes into atomic commits with conventional messages, powered by LLMs.",
+				"Git CLI that drafts conventional commit messages and splits your work into atomic commits with LLM help.",
 		},
 	];
 }
