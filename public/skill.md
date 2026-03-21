@@ -78,6 +78,7 @@ git-agent commit [flags]
 | `--base-url string` | base URL for the AI provider |
 | `--co-author stringArray` | add a co-author trailer (repeatable) |
 | `--dry-run` | print commit message without committing |
+| `--free` | ignore git config and build-time defaults; use only CLI flags or config file |
 | `--intent string` | describe the intent of the change |
 | `--max-diff-lines int` | maximum diff lines to send to the model (default: 0, no limit) |
 | `--model string` | model to use for generation |
@@ -93,9 +94,11 @@ git-agent commit [flags]
 3. `~/.config/git-agent/config.yml` (supports `$ENV_VAR` expansion)
 4. Build-time defaults
 
+**With `--free` flag:** ignores git config and build-time defaults; still reads config file.
+
 #### `git-agent init`
 
-Initialize git-agent in the current repository. With no flags, runs scope generation, installs an empty hook, and generates a `.gitignore`.
+Initialize git-agent in the current repository. With no flags, runs scope generation, installs an empty hook (only if no existing hook_type found), and generates a `.gitignore`. If project.yml already has hook_type configured, it will be preserved unless `--force` is used.
 
 ```
 git-agent init [flags]
