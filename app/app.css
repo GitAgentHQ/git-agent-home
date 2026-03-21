@@ -321,10 +321,10 @@ body {
 	display: flex;
 	align-items: center;
 	gap: 16px;
-	padding: 18px 40px;
+	padding: 18px max(40px, calc(50% - 390px + 40px));
 	padding-top: max(18px, env(safe-area-inset-top));
-	padding-left: max(40px, env(safe-area-inset-left));
-	padding-right: max(40px, env(safe-area-inset-right));
+	padding-left: max(40px, calc(50% - 390px + 40px));
+	padding-right: max(40px, calc(50% - 390px + 40px));
 	border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 	position: sticky;
 	top: 0;
