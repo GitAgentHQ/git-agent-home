@@ -31,12 +31,12 @@ const INIT_DATA = {
 		},
 		{
 			name: "--hook-type <value>",
-			description: "Built-in hook template: conventional or empty",
+			description: "Built-in hook template: conventional or empty — records hook_type in .git-agent/project.yml, no file written",
 			default: "empty",
 		},
 		{
 			name: "--hook-script <path>",
-			description: "Path to custom hook script",
+			description: "Path to custom hook script — copied to .git-agent/hooks/pre-commit; absolute path recorded in project.yml",
 		},
 		{
 			name: "--gitignore",
@@ -89,7 +89,7 @@ const INIT_DATA = {
 		{
 			title: "Install git hook",
 			description:
-				'Writes the chosen hook to .git-agent/hooks/pre-commit (mode 0755). The "conventional" hook validates Conventional Commits format with a Go-native validator; "empty" always passes.',
+				'For built-in types (conventional, empty): records hook_type in .git-agent/project.yml only — no file written. The "conventional" type validates Conventional Commits format with a Go-native validator; "empty" always passes. For a custom script (--hook-script): copies the file to .git-agent/hooks/pre-commit and records the absolute path in project.yml.',
 		},
 		{
 			title: "Generate .gitignore",
