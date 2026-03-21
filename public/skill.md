@@ -1,6 +1,6 @@
 ---
 name: git-agent-cli
-description: Operates the git-agent CLI — prefers official binaries with built-in FREE mode (no provider flags), then user config at ~/.config/git-agent/config.yml when needed; use --api-key/--base-url/--model only on explicit request. Drafts Conventional Commits, atomic splits, init, and config. Use whenever the user mentions git-agent, init/commit, or provider setup.
+description: Operates the git-agent CLI — plain commands plus ~/.config/git-agent/config.yml or git config for providers; drafts Conventional Commits, atomic splits, init, and config. Provider CLI overrides belong in exception flows only (see skill). Use whenever the user mentions git-agent, init/commit, or provider setup.
 ---
 
 # Git Agent CLI
@@ -23,14 +23,13 @@ go install github.com/gitagenthq/git-agent@latest
 
 **Pre-built binaries:** download from the [releases page](https://github.com/GitAgentHQ/git-agent-cli/releases).
 
-**Provider setup (in order of preference)**
+**Provider setup (normal path)**
 
-1. **Official binary, no extra provider flags** — Prefer invoking `git-agent commit`, `git-agent init`, etc. **without** `--api-key`, `--base-url`, or `--model` so built-in FREE credentials apply when the release includes them.
+1. Run `git-agent commit`, `git-agent init`, and other subcommands with **no provider overrides on the command line** — use defaults (built-in credentials when the release provides them, otherwise resolved config).
 2. **Confirm** — `git-agent config show` prints `mode: FREE (using built-in credentials)` when the embedded key is active (no model/base-url lines).
-3. **On error** (e.g. missing API key / not in FREE mode): if **`~/.config/git-agent/config.yml` is absent** and there is no suitable per-repo `git config` for the provider, **suggest creating** that file (or `git config`) with `base_url`, `api_key`, and `model` — do **not** reach for CLI provider flags first.
-4. **Only on explicit need** — Use `--base-url`, `--model`, and `--api-key` for one-off overrides (CI, scripts, temporary endpoint), not as the default teaching path.
+3. **Custom provider** — Prefer **`~/.config/git-agent/config.yml`** or **per-repo `git config`** (`git-agent.base-url`, `git-agent.model`, etc.) instead of repeating anything on every invocation.
 
-**Persistent custom provider** (`git config` per-repo or global YAML — preferred over repeating flags):
+**Persistent custom provider** (`git config` per-repo or global YAML):
 
 ```bash
 # Per-repo (git config)
@@ -43,12 +42,18 @@ api_key: sk-...
 model: gpt-4o
 ```
 
-**Exceptional: flags on one invocation** (only when the user or task requires it):
+**On error** (e.g. missing API key / not in FREE mode): if **`~/.config/git-agent/config.yml` is absent** and there is no suitable per-repo `git config`, **suggest creating** that file (or `git config`) with `base_url`, `api_key`, and `model` before considering any CLI workarounds.
+
+### Exception flows (provider CLI overrides)
+
+Use **only** when defaults plus YAML/git config are not enough, or the user explicitly needs a one-off (CI, scripts, temporary endpoint). Flags: `--free`, `--base-url`, `--model`, `--api-key` (semantics and mutual exclusion summarized under each command below). Example:
 
 ```bash
 git-agent commit --base-url https://api.openai.com/v1 --model gpt-4o --api-key sk-...
 git-agent init --scope --base-url https://api.openai.com/v1 --model gpt-4o --api-key sk-...
 ```
+
+Do **not** treat these as the default teaching path or the first attempt.
 
 ### git-agent CLI Reference
 
@@ -78,30 +83,24 @@ git-agent commit [flags]
 | Flag | Description |
 |---|---|
 | `--amend` | regenerate and amend the most recent commit (no planning or hooks) |
-| `--api-key string` | API key for the AI provider |
-| `--base-url string` | base URL for the AI provider |
 | `--co-author stringArray` | add a co-author trailer (repeatable) |
 | `--dry-run` | print commit message without committing |
-| `--free` | use only build-time embedded provider credentials; ignores `git config`, `~/.config/git-agent/config.yml`, and build-time defaults; mutually exclusive with `--api-key`, `--model`, and `--base-url` |
 | `--intent string` | describe the intent of the change |
 | `--max-diff-lines int` | maximum diff lines to send to the model (default: 0, no limit) |
-| `--model string` | model to use for generation |
 | `--no-attribution` | omit the default Git Agent co-author trailer |
 | `--no-stage` | skip auto-staging; only commit already-staged changes |
 | `--trailer stringArray` | add an arbitrary git trailer, format "Key: Value" (repeatable) |
 
 `--amend` and `--no-stage` are mutually exclusive.
 
-**Config resolution order** (when several sources exist — highest wins; this is implementation order, not a recommendation to rely on flags):
+**Exception-only (provider overrides):** `--api-key`, `--base-url`, `--model`, `--free` — see [Exception flows (provider CLI overrides)](#exception-flows-provider-cli-overrides). `--free` uses only build-time embedded credentials and ignores `git config`, `~/.config/git-agent/config.yml`, and build-time defaults; it is mutually exclusive with `--api-key`, `--model`, and `--base-url`.
 
-1. CLI flags (`--api-key`, `--model`, `--base-url`)
+**Config resolution order** (when several sources exist — highest wins; implementation order, not an invitation to rely on CLI flags):
+
+1. CLI flags (exception overrides above)
 2. `git config --local git-agent.{model,base-url}`
 3. `~/.config/git-agent/config.yml` (supports `$ENV_VAR` expansion)
 4. Build-time defaults
-
-Teach users: default to **no provider flags** + official FREE when possible; then **YAML / git config** for custom providers; use CLI provider flags only when there is a **specific** reason.
-
-**With `--free`:** only build-time embedded credentials are used (same sources as FREE mode); git config, the YAML file, and per-flag overrides are not applied.
 
 #### `git-agent init`
 
@@ -119,9 +118,8 @@ git-agent init [flags]
 | `--hook-type string` | built-in hook template: `conventional` or `empty` (records `hook_type` in `project.yml`, no file written) |
 | `--max-commits int` | max commits to analyze for scope generation (default 200) |
 | `--scope` | generate scopes via AI |
-| `--api-key string` | API key for the AI provider |
-| `--base-url string` | base URL for the AI provider |
-| `--model string` | model to use for generation |
+
+**Exception-only (provider overrides):** `--api-key`, `--base-url`, `--model` — same section as for `commit`.
 
 #### `git-agent config`
 
@@ -230,11 +228,12 @@ Commit all changes in this repository using git-agent.
 3. Intent: one short sentence from the conversation (what the user wanted done). Use
    the diff only if the conversation gives no usable signal.
 
-4. Run `git-agent commit` with `--co-author "..."` and `--intent "..."`. Do **not** add
-   `--api-key` / `--base-url` / `--model` unless the user explicitly needs a one-off
-   provider override; rely on official FREE or existing `~/.config/git-agent/config.yml`
-   first. If commit fails for missing key and there is no config file, suggest creating
-   `~/.config/git-agent/config.yml` before using provider flags.
+4. Run `git-agent commit` with `--co-author "..."` and `--intent "..."` only — no
+   provider CLI overrides on the first attempt; rely on defaults and existing
+   `~/.config/git-agent/config.yml` / git config. If commit fails for missing key and
+   there is no config, suggest creating `~/.config/git-agent/config.yml`. Use the skill's
+   exception-flow section only when that path is insufficient or the user explicitly
+   needs a one-off override.
 
    Add when relevant: `--dry-run` (preview first), `--no-stage` (staged only),
    `--amend` (rewrite last commit only).
