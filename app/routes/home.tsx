@@ -24,7 +24,7 @@ export default function Home() {
 
 	return (
 		<div className="page">
-			<AnimatePresence mode="wait" initial={false}>
+			<AnimatePresence mode="wait" initial={true}>
 				{view === "home" && <HomeView key="home" onSelect={setView} />}
 				{view === "init" && (
 					<CommandDetail

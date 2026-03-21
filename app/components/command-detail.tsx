@@ -1,5 +1,7 @@
 import { motion } from "motion/react";
 import { useLanguage } from "../contexts/language-context";
+import { renderInlineDocText } from "../utils/inline-doc-text";
+import { motionDuration, motionEase, useAccessibleMotion } from "../utils/motion-prefs";
 
 interface Flag {
 	name: string;
@@ -32,20 +34,30 @@ export function CommandDetail({
 	onBack,
 }: CommandDetailProps) {
 	const { t } = useLanguage();
+	const reduced = useAccessibleMotion();
+	const tr = (duration: number, delay = 0) => ({
+		duration: reduced ? 0 : duration,
+		ease: motionEase,
+		delay: reduced ? 0 : delay,
+	});
 
 	return (
 		<motion.div
 			className="command-view"
-			initial={{ opacity: 0, y: 24 }}
-			animate={{ opacity: 1, y: 0, transition: { duration: 0.45, ease: [0.22, 1, 0.36, 1] } }}
-			exit={{ opacity: 0, y: 16, transition: { duration: 0.28, ease: [0.22, 1, 0.36, 1] } }}
+			initial={reduced ? false : { opacity: 0, y: 24 }}
+			animate={{ opacity: 1, y: 0, transition: tr(motionDuration(0.45)) }}
+			exit={{ opacity: 0, y: 16, transition: tr(motionDuration(0.28)) }}
 		>
 			<nav className="command-nav">
 				<motion.button
 					className="command-back"
 					onClick={onBack}
-					whileHover={{ borderColor: "rgba(255,255,255,0.55)", color: "#fff" }}
-					transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+					whileHover={
+						reduced
+							? undefined
+							: { borderColor: "rgba(255,255,255,0.55)", color: "#fff" }
+					}
+					transition={tr(motionDuration(0.28))}
 				>
 					{t.back}
 				</motion.button>
@@ -55,9 +67,9 @@ export function CommandDetail({
 			<div className="command-content">
 				<motion.header
 					className="command-hero"
-					initial={{ opacity: 0, y: 12 }}
+					initial={reduced ? false : { opacity: 0, y: 12 }}
 					animate={{ opacity: 1, y: 0 }}
-					transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: 0.12 }}
+					transition={tr(motionDuration(0.5), motionDuration(0.12))}
 				>
 					<code className="command-label">{cmd}</code>
 					<h1 className="command-heading">{description}</h1>
@@ -68,19 +80,19 @@ export function CommandDetail({
 
 				<motion.section
 					className="command-section"
-					initial={{ opacity: 0, y: 12 }}
+					initial={reduced ? false : { opacity: 0, y: 12 }}
 					animate={{ opacity: 1, y: 0 }}
-					transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: 0.25 }}
+					transition={tr(motionDuration(0.5), motionDuration(0.25))}
 				>
 					<h2 className="section-label">{t.overview}</h2>
-					<p className="section-body">{overview}</p>
+					<p className="section-body">{renderInlineDocText(overview)}</p>
 				</motion.section>
 
 				<motion.section
 					className="command-section"
-					initial={{ opacity: 0, y: 12 }}
+					initial={reduced ? false : { opacity: 0, y: 12 }}
 					animate={{ opacity: 1, y: 0 }}
-					transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: 0.35 }}
+					transition={tr(motionDuration(0.5), motionDuration(0.35))}
 				>
 					<h2 className="section-label">{t.flags}</h2>
 					<div className="flag-list">
@@ -88,13 +100,16 @@ export function CommandDetail({
 							<motion.div
 								key={i}
 								className="flag-row"
-								initial={{ opacity: 0 }}
+								initial={reduced ? false : { opacity: 0 }}
 								animate={{ opacity: 1 }}
-								transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1], delay: 0.38 + i * 0.06 }}
+								transition={tr(
+									motionDuration(0.38),
+									motionDuration(0.38) + i * motionDuration(0.06),
+								)}
 							>
 								<code className="flag-name">{flag.name}</code>
 								<div className="flag-info">
-									<span className="flag-desc">{flag.description}</span>
+									<span className="flag-desc">{renderInlineDocText(flag.description)}</span>
 									{flag.default && (
 										<span className="flag-default">{t.default}: {flag.default}</span>
 									)}
@@ -106,9 +121,9 @@ export function CommandDetail({
 
 				<motion.section
 					className="command-section"
-					initial={{ opacity: 0, y: 12 }}
+					initial={reduced ? false : { opacity: 0, y: 12 }}
 					animate={{ opacity: 1, y: 0 }}
-					transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: 0.45 }}
+					transition={tr(motionDuration(0.5), motionDuration(0.45))}
 				>
 					<h2 className="section-label">{t.workflow}</h2>
 					<div className="step-list">
@@ -116,14 +131,17 @@ export function CommandDetail({
 							<motion.div
 								key={i}
 								className="step"
-								initial={{ opacity: 0, x: -8 }}
+								initial={reduced ? false : { opacity: 0, x: -8 }}
 								animate={{ opacity: 1, x: 0 }}
-								transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1], delay: 0.5 + i * 0.09 }}
+								transition={tr(
+									motionDuration(0.45),
+									motionDuration(0.5) + i * motionDuration(0.09),
+								)}
 							>
 								<span className="step-num">{String(i + 1).padStart(2, "0")}</span>
 								<div className="step-content">
 									<strong className="step-title">{step.title}</strong>
-									<p className="step-desc">{step.description}</p>
+									<p className="step-desc">{renderInlineDocText(step.description)}</p>
 								</div>
 							</motion.div>
 						))}

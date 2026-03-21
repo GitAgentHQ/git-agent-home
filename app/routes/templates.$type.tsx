@@ -6,6 +6,7 @@ import { CrossLinksSection } from "../components/cross-links-section";
 import { PseoLayout } from "../components/pseo-layout";
 import { CodeBlock } from "../components/code-block";
 import { useLanguage } from "../contexts/language-context";
+import { renderInlineDocText } from "../utils/inline-doc-text";
 
 export async function loader({ params }: LoaderFunctionArgs) {
 	const entry = findTemplate(params.type ?? "");
@@ -43,7 +44,7 @@ export default function TemplatesType() {
 					<span className="command-heading-type">{entry.type[language]}</span>{" "}
 					{t.pseoCommitTemplateSuffix}
 				</h1>
-				<p className="section-body">{entry.description[language]}</p>
+				<p className="section-body">{renderInlineDocText(entry.description[language])}</p>
 			</header>
 
 			<section className="command-section">
@@ -62,8 +63,8 @@ export default function TemplatesType() {
 
 			<section className="command-section">
 				<h2 className="section-label">{t.pseoSectionWhenToUse}</h2>
-				<p className="section-body">{entry.whenToUse[language]}</p>
-				<p className="section-body" style={{ marginTop: 12 }}>{t.pseoSectionGitAgentInfers}</p>
+				<p className="section-body">{renderInlineDocText(entry.whenToUse[language])}</p>
+				<p className="section-body" style={{ marginTop: 12 }}>{renderInlineDocText(t.pseoSectionGitAgentInfers)}</p>
 				<code className="pseo-install-snippet" style={{ marginTop: 14 }}>
 					brew install gitagenthq/tap/git-agent
 				</code>
@@ -76,7 +77,7 @@ export default function TemplatesType() {
 						<div key={i} className="flag-row">
 							<code className="flag-name">{item.question[language]}</code>
 							<div className="flag-info">
-								<span className="flag-desc">{item.answer[language]}</span>
+								<span className="flag-desc">{renderInlineDocText(item.answer[language])}</span>
 							</div>
 						</div>
 					))}

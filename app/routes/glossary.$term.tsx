@@ -6,6 +6,7 @@ import { CrossLinksSection } from "../components/cross-links-section";
 import { PseoLayout } from "../components/pseo-layout";
 import { CodeBlock } from "../components/code-block";
 import { useLanguage } from "../contexts/language-context";
+import { renderInlineDocText } from "../utils/inline-doc-text";
 
 export async function loader({ params }: LoaderFunctionArgs) {
 	const entry = findGlossaryTerm(params.term ?? "");
@@ -40,12 +41,12 @@ export default function GlossaryTerm() {
 			<header className="command-hero">
 				<code className="command-label">glossary</code>
 				<h1 className="command-heading">{entry.term[language]}</h1>
-				<p className="section-body">{entry.definition[language]}</p>
+				<p className="section-body">{renderInlineDocText(entry.definition[language])}</p>
 			</header>
 
 			<section className="command-section">
 				<h2 className="section-label">{t.pseoSectionExplanation}</h2>
-				<p className="section-body">{entry.longDescription[language]}</p>
+				<p className="section-body">{renderInlineDocText(entry.longDescription[language])}</p>
 			</section>
 
 			<section className="command-section">
@@ -57,7 +58,7 @@ export default function GlossaryTerm() {
 
 			<section className="command-section">
 				<h2 className="section-label">{t.pseoSectionHowHelps}</h2>
-				<p className="section-body">{entry.howGitAgentHelps[language]}</p>
+				<p className="section-body">{renderInlineDocText(entry.howGitAgentHelps[language])}</p>
 				<code className="pseo-install-snippet" style={{ marginTop: 14 }}>
 					brew install gitagenthq/tap/git-agent
 				</code>
@@ -70,7 +71,7 @@ export default function GlossaryTerm() {
 						<div key={i} className="flag-row">
 							<code className="flag-name">{item.question[language]}</code>
 							<div className="flag-info">
-								<span className="flag-desc">{item.answer[language]}</span>
+								<span className="flag-desc">{renderInlineDocText(item.answer[language])}</span>
 							</div>
 						</div>
 					))}

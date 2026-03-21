@@ -1,6 +1,7 @@
 import { Link } from "react-router";
 import { motion } from "motion/react";
 import type { I18nText } from "../data/types";
+import { motionEase, useAccessibleMotion } from "../utils/motion-prefs";
 
 const MotionLink = motion(Link);
 
@@ -30,6 +31,8 @@ export function HubGrid({
 	descKey = "tagline",
 	currentLang,
 }: HubGridProps) {
+	const reduced = useAccessibleMotion();
+
 	return (
 		<div className="hub-grid">
 			{entries.map((entry) => {
@@ -44,11 +47,15 @@ export function HubGrid({
 						key={entry.slug}
 						to={`${basePath}/${entry.slug}`}
 						className="hub-card"
-						whileHover={{
-							y: -4,
-							boxShadow: "0 14px 44px rgba(0, 0, 0, 0.6)",
-							transition: { duration: 0.9, ease: [0.22, 1, 0.36, 1] },
-						}}
+						whileHover={
+							reduced
+								? undefined
+								: {
+										y: -4,
+										boxShadow: "0 14px 44px rgba(0, 0, 0, 0.6)",
+										transition: { duration: 0.28, ease: motionEase },
+									}
+						}
 					>
 						{label && <span className="hub-card-name">{label}</span>}
 						{desc && <span className="hub-card-desc">{desc}</span>}

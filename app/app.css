@@ -2,7 +2,7 @@
 
 @theme {
 	--font-sans:
-		"Inter", "Helvetica Neue", ui-sans-serif, system-ui, sans-serif;
+		"IBM Plex Sans", "Helvetica Neue", ui-sans-serif, system-ui, sans-serif;
 	--font-mono:
 		"IBM Plex Mono", ui-monospace, "SFMono-Regular", "Menlo", monospace;
 }
@@ -12,17 +12,17 @@
 	--ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
 	--ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
 	--ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
-	--fs-display: clamp(32px, 5vw, 52px);
-	--fs-heading: clamp(24px, 3.5vw, 40px);
-	--fs-body: 14px;
-	--fs-label: 12px;
-	--fs-micro: 10px;
+	--fs-display: clamp(2rem, 5vw, 3.25rem);
+	--fs-heading: clamp(1.5rem, 3.5vw, 2.5rem);
+	--fs-body: 1rem;
+	--fs-label: 0.8125rem;
+	--fs-micro: 0.6875rem;
 	/* IBM Plex Mono: one step under sans scale for a lighter rhythm */
-	--fs-mono-display: clamp(24px, 4.2vw, 44px);
-	--fs-mono-heading: clamp(19px, 3vw, 32px);
-	--fs-mono-body: 12px;
-	--fs-mono-label: 10px;
-	--fs-mono-micro: 8px;
+	--fs-mono-display: clamp(1.5rem, 4.2vw, 2.75rem);
+	--fs-mono-heading: clamp(1.1875rem, 3vw, 2rem);
+	--fs-mono-body: 0.8125rem;
+	--fs-mono-label: 0.6875rem;
+	--fs-mono-micro: 0.625rem;
 	--bg: #050505;
 	--card: #f0ede6;
 	--ink: #111111;
@@ -35,6 +35,10 @@
 }
 
 /* ---- Base ---- */
+html {
+	font-size: 100%;
+}
+
 html,
 body {
 	margin: 0;
@@ -43,6 +47,7 @@ body {
 	font-family: var(--font-sans);
 	color: var(--ink);
 	height: 100%;
+	line-height: 1.5;
 }
 
 /* ---- Page ---- */
@@ -141,8 +146,8 @@ body {
 	color: rgba(255, 255, 255, 0.60);
 	margin: 0;
 	letter-spacing: 0.01em;
-	max-width: 420px;
-	line-height: 1.6;
+	max-width: min(420px, 65ch);
+	line-height: 1.65;
 }
 
 /* ---- Language switch ---- */
@@ -214,9 +219,21 @@ body {
 }
 
 .pricing-compare-bar {
+	width: 100%;
 	height: 100%;
+	transform-origin: left center;
 	background: rgba(255, 255, 255, 0.18);
 	border-radius: 1px;
+}
+
+.entry-grid-cell {
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+}
+
+.entry-grid-cell .entry-card {
+	flex: 1;
 }
 
 .pricing-compare-cost {
@@ -312,8 +329,8 @@ body {
 .entry-card-title {
 	display: flex;
 	flex-direction: column;
-	font-size: clamp(20px, 2.85vw, 32px);
-	font-weight: 900;
+	font-size: clamp(1.25rem, 2.85vw, 2rem);
+	font-weight: 700;
 	letter-spacing: -0.03em;
 	line-height: 1.05;
 	color: var(--ink);
@@ -379,6 +396,12 @@ body {
 	display: flex;
 	justify-content: center;
 	margin: 20px 0;
+}
+
+/* Commit card: square dot pattern slightly under the init card circle (220px) */
+.entry-card-graphic .pattern-dots-square {
+	width: 190px;
+	height: 190px;
 }
 
 .entry-card-divider {
@@ -491,7 +514,7 @@ body {
 
 .command-heading {
 	font-size: var(--fs-heading);
-	font-weight: 800;
+	font-weight: 700;
 	letter-spacing: -0.025em;
 	line-height: 1.05;
 	color: #fff;
@@ -551,6 +574,27 @@ body {
 	line-height: 1.65;
 	color: var(--ink-2);
 	margin: 0;
+}
+
+/* Inline code: mono for distinction only; color/weight stay aligned with surrounding prose */
+.section-body .inline-code,
+.flag-desc .inline-code,
+.step-desc .inline-code {
+	font-family: var(--font-mono);
+	font-size: 0.94em;
+	font-weight: 400;
+	font-variant-ligatures: none;
+	letter-spacing: 0;
+	background: rgba(0, 0, 0, 0.04);
+	padding: 0.05em 0.28em;
+	border-radius: 2px;
+	color: inherit;
+	overflow-wrap: anywhere;
+	word-break: break-word;
+}
+
+.command-hero .section-body .inline-code {
+	background: rgba(255, 255, 255, 0.06);
 }
 
 .command-section .command-usage {
@@ -993,7 +1037,7 @@ body {
 	display: flex;
 	flex-direction: column;
 	font-size: var(--fs-heading);
-	font-weight: 800;
+	font-weight: 700;
 	letter-spacing: -0.025em;
 	line-height: 1.05;
 	color: var(--ink);

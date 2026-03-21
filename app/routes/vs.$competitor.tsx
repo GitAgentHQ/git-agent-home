@@ -7,6 +7,7 @@ import { PseoLayout } from "../components/pseo-layout";
 import { ComparisonTable } from "../components/comparison-table";
 import { CodeBlock } from "../components/code-block";
 import { useLanguage } from "../contexts/language-context";
+import { renderInlineDocText } from "../utils/inline-doc-text";
 
 export async function loader({ params }: LoaderFunctionArgs) {
 	const entry = findComparison(params.competitor ?? "");
@@ -42,7 +43,7 @@ export default function VsCompetitor() {
 			<header className="command-hero">
 				<code className="command-label">comparison</code>
 				<h1 className="command-heading">{entry.tagline[language]}</h1>
-				<p className="section-body">{entry.competitorDescription[language]}</p>
+				<p className="section-body">{renderInlineDocText(entry.competitorDescription[language])}</p>
 			</header>
 
 			<section className="command-section">
@@ -75,7 +76,7 @@ export default function VsCompetitor() {
 						<div key={i} className="flag-row">
 							<code className="flag-name">{item.question[language]}</code>
 							<div className="flag-info">
-								<span className="flag-desc">{item.answer[language]}</span>
+								<span className="flag-desc">{renderInlineDocText(item.answer[language])}</span>
 							</div>
 						</div>
 					))}

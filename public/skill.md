@@ -242,5 +242,4 @@ Commit all changes in this repository using git-agent.
    can be lost across re-plans — narrow `--intent` to a short phrase that caps the
    title, e.g. `--intent "update module path"`.
 
-5. Show outcome: `git log --oneline -5`
 ```

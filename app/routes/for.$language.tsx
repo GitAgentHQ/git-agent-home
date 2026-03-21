@@ -6,6 +6,7 @@ import { CrossLinksSection } from "../components/cross-links-section";
 import { PseoLayout } from "../components/pseo-layout";
 import { CodeBlock } from "../components/code-block";
 import { useLanguage } from "../contexts/language-context";
+import { renderInlineDocText } from "../utils/inline-doc-text";
 
 export async function loader({ params }: LoaderFunctionArgs) {
 	const entry = findPersona(params.language ?? "");
@@ -45,7 +46,7 @@ export default function ForLanguage() {
 			<header className="command-hero">
 				<code className="command-label">git-agent for {entry.language[language]}</code>
 				<h1 className="command-heading">{entry.tagline[language]}</h1>
-				<p className="section-body">{entry.description[language]}</p>
+				<p className="section-body">{renderInlineDocText(entry.description[language])}</p>
 			</header>
 
 			<section className="command-section">
@@ -82,7 +83,7 @@ export default function ForLanguage() {
 						<div key={i} className="flag-row">
 							<code className="flag-name">{item.question[language]}</code>
 							<div className="flag-info">
-								<span className="flag-desc">{item.answer[language]}</span>
+								<span className="flag-desc">{renderInlineDocText(item.answer[language])}</span>
 							</div>
 						</div>
 					))}
