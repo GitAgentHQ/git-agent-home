@@ -36,7 +36,7 @@ export function CommandDetail({
 			initial={{ opacity: 0, y: 24 }}
 			animate={{ opacity: 1, y: 0 }}
 			exit={{ opacity: 0, y: 16 }}
-			transition={{ type: "spring", damping: 22, stiffness: 120 }}
+			transition={{ type: "spring", damping: 32, stiffness: 50, duration: 1 }}
 		>
 			<nav className="command-nav">
 				<button className="command-back" onClick={onBack}>

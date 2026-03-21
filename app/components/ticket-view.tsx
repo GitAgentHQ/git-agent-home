@@ -127,7 +127,7 @@ export function TicketView() {
 			initial={{ opacity: 0 }}
 			animate={{ opacity: 1 }}
 			exit={{ opacity: 0, y: -16 }}
-			transition={{ duration: 0.25, ease: "easeInOut" }}
+			transition={{ duration: 1, ease: "easeInOut" }}
 		>
 			<nav className="ticket-nav">
 				<Link to="/" className="ticket-back">
@@ -163,7 +163,7 @@ function TicketCard({
 			initial={{ opacity: 0, y: 30 }}
 			animate={{ opacity: 1, y: 0 }}
 			exit={{ opacity: 0, y: -16 }}
-			transition={{ type: "spring", damping: 20, stiffness: 100, delay }}
+			transition={{ type: "spring", damping: 32, stiffness: 50, delay, duration: 1.2 }}
 		>
 			<div className="ticket-header">
 				<div className="ticket-title-block">

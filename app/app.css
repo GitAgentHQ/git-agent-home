@@ -93,7 +93,7 @@ body {
 	align-items: center;
 	color: rgba(255, 255, 255, 0.3);
 	margin-top: 16px;
-	transition: color 0.15s;
+	transition: color 0.7s;
 }
 
 .github-link:hover {
@@ -209,7 +209,7 @@ body {
 	min-height: 460px;
 	box-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
 	will-change: transform;
-	transition: box-shadow 0.2s ease;
+	transition: box-shadow 0.8s ease;
 }
 
 .entry-card:hover {
@@ -343,7 +343,7 @@ body {
 	min-height: 44px;
 	min-width: 44px;
 	cursor: pointer;
-	transition: border-color 0.15s, color 0.15s;
+	transition: border-color 0.7s, color 0.7s;
 	letter-spacing: 0.03em;
 	display: inline-flex;
 	align-items: center;
@@ -663,7 +663,7 @@ body {
 		var(--line) 7px
 	);
 	background-size: 100% 14px;
-	animation: patternLinesStripeDrift 9.5s linear infinite;
+	animation: patternLinesStripeDrift 36s linear infinite;
 }
 
 .pattern-lines-circle__surface::before {
@@ -681,7 +681,7 @@ body {
 	background-size: 100% 14px;
 	opacity: 0.55;
 	mix-blend-mode: multiply;
-	animation: patternLinesStripeDrift 9.5s linear infinite reverse;
+	animation: patternLinesStripeDrift 36s linear infinite reverse;
 }
 
 .pattern-lines-circle__surface::after {
@@ -700,12 +700,12 @@ body {
 
 .entry-card:hover .pattern-lines-circle__surface,
 .entry-card:focus-visible .pattern-lines-circle__surface {
-	animation-duration: 6.5s;
+	animation-duration: 24s;
 }
 
 .entry-card:hover .pattern-lines-circle__surface::before,
 .entry-card:focus-visible .pattern-lines-circle__surface::before {
-	animation-duration: 6.5s;
+	animation-duration: 24s;
 }
 
 /* Dots patterns: static at rest, animated on card hover */
@@ -713,7 +713,7 @@ body {
 /* Circle: dots spread apart and dissolve outward — wave radiating from centre */
 .entry-card:hover .pattern-dots-circle,
 .entry-card:focus-visible .pattern-dots-circle {
-	animation: patternCircleExpand 2.4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+	animation: patternCircleExpand 8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 	filter: url(#dots-displace-circle);
 }
 
@@ -724,20 +724,20 @@ body {
 .entry-card:focus-visible .pattern-dots-square-rounded,
 .entry-card:hover .pattern-dots-square-circle,
 .entry-card:focus-visible .pattern-dots-square-circle {
-	animation: patternSquarePulse 2.2s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+	animation: patternSquarePulse 7.6s cubic-bezier(0.22, 1, 0.36, 1) infinite;
 	filter: url(#dots-displace-square);
 }
 
 /* Circle: spacing expands + fade — dots appear to fly outward */
 @keyframes patternCircleExpand {
 	0%, 100% { background-size: 16px 16px; opacity: 1; }
-	55%       { background-size: 34px 34px; opacity: 0.18; }
+	55%       { background-size: 30px 30px; opacity: 0.28; }
 }
 
 /* Square: scale throb — entire dot field breathes with a heartbeat rhythm */
 @keyframes patternSquarePulse {
 	0%         { transform: scale(1);    opacity: 1; }
-	18%        { transform: scale(1.11); opacity: 0.72; }
+	30%        { transform: scale(1.08); opacity: 0.75; }
 	100%       { transform: scale(1);    opacity: 1; }
 }
 
@@ -847,7 +847,7 @@ body {
 	cursor: pointer;
 	text-decoration: none;
 	letter-spacing: 0.03em;
-	transition: border-color 0.15s, color 0.15s;
+	transition: border-color 0.7s, color 0.7s;
 	display: inline-flex;
 	align-items: center;
 }

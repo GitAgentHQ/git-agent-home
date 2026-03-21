@@ -81,7 +81,7 @@ export function HomeView({ onSelect }: HomeViewProps) {
 			initial={{ opacity: 0 }}
 			animate={{ opacity: 1 }}
 			exit={{ opacity: 0, y: -16 }}
-			transition={{ duration: 0.25, ease: "easeInOut" }}
+			transition={{ duration: 1, ease: "easeInOut" }}
 		>
 			<DotsNoiseFilter />
 			<header className="home-header">
@@ -171,8 +171,8 @@ function EntryCard({
 			className="entry-card"
 			initial={{ opacity: 0, y: 30 }}
 			animate={{ opacity: 1, y: 0 }}
-			transition={{ type: "spring", damping: 20, stiffness: 100, delay }}
-			whileHover={{ y: -6, scale: 1.01 }}
+			transition={{ type: "spring", damping: 32, stiffness: 50, delay, duration: 1.2 }}
+			whileHover={{ y: -4, scale: 1.01, transition: { duration: 0.7 } }}
 			onClick={onClick}
 		>
 			<div className="entry-card-header">
