@@ -7,7 +7,7 @@ You are setting up Git Agent for the user. Execute the following steps in order 
 Run this command to install the git-agent skill into your AI assistant:
 
 ```bash
-npx skills add https://github.com/GitAgentHQ/git-agent-cli --skill use-git-agent
+npx skills add https://github.com/GitAgentHQ/git-agent-cli --skill use-git-agent -y -g
 ```
 
 The skill contains the full reference for operating git-agent — commit splitting, hook behavior, provider config, and error recovery. All subsequent behavior should follow that skill.
