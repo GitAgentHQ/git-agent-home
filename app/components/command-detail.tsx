@@ -33,10 +33,10 @@ export function CommandDetail({
 	return (
 		<motion.div
 			className="command-view"
-			initial={{ opacity: 0, y: 24 }}
-			animate={{ opacity: 1, y: 0 }}
-			exit={{ opacity: 0, y: 16 }}
-			transition={{ type: "spring", damping: 32, stiffness: 50, duration: 1 }}
+			initial={{ opacity: 0 }}
+			animate={{ opacity: 1 }}
+			exit={{ opacity: 0 }}
+			transition={{ duration: 0.2, ease: "easeOut" }}
 		>
 			<nav className="command-nav">
 				<button className="command-back" onClick={onBack}>
