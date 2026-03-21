@@ -36,37 +36,62 @@ export function CommandDetail({
 	return (
 		<motion.div
 			className="command-view"
-			initial={{ opacity: 0 }}
-			animate={{ opacity: 1 }}
-			exit={{ opacity: 0 }}
-			transition={{ duration: 0.2, ease: "easeOut" }}
+			initial={{ opacity: 0, y: 24 }}
+			animate={{ opacity: 1, y: 0, transition: { duration: 0.35, ease: [0.22, 1, 0.36, 1] } }}
+			exit={{ opacity: 0, y: 16, transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] } }}
 		>
 			<nav className="command-nav">
-				<button className="command-back" onClick={onBack}>
+				<motion.button
+					className="command-back"
+					onClick={onBack}
+					whileHover={{ borderColor: "rgba(255,255,255,0.55)", color: "#fff" }}
+					transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+				>
 					{t.back}
-				</button>
+				</motion.button>
 				<code className="command-breadcrumb">{cmd}</code>
 			</nav>
 
 			<div className="command-content">
-				<header className="command-hero">
+				<motion.header
+					className="command-hero"
+					initial={{ opacity: 0, y: 12 }}
+					animate={{ opacity: 1, y: 0 }}
+					transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
+				>
 					<code className="command-label">{cmd}</code>
 					<h1 className="command-heading">{description}</h1>
 					<div className="command-usage">
 						<code>{usage}</code>
 					</div>
-				</header>
+				</motion.header>
 
-				<section className="command-section">
+				<motion.section
+					className="command-section"
+					initial={{ opacity: 0, y: 12 }}
+					animate={{ opacity: 1, y: 0 }}
+					transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
+				>
 					<h2 className="section-label">{t.overview}</h2>
 					<p className="section-body">{overview}</p>
-				</section>
+				</motion.section>
 
-				<section className="command-section">
+				<motion.section
+					className="command-section"
+					initial={{ opacity: 0, y: 12 }}
+					animate={{ opacity: 1, y: 0 }}
+					transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1], delay: 0.28 }}
+				>
 					<h2 className="section-label">{t.flags}</h2>
 					<div className="flag-list">
 						{flags.map((flag, i) => (
-							<div key={i} className="flag-row">
+							<motion.div
+								key={i}
+								className="flag-row"
+								initial={{ opacity: 0 }}
+								animate={{ opacity: 1 }}
+								transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1], delay: 0.32 + i * 0.05 }}
+							>
 								<code className="flag-name">{flag.name}</code>
 								<div className="flag-info">
 									<span className="flag-desc">{flag.description}</span>
@@ -74,25 +99,36 @@ export function CommandDetail({
 										<span className="flag-default">{t.default}: {flag.default}</span>
 									)}
 								</div>
-							</div>
+							</motion.div>
 						))}
 					</div>
-				</section>
+				</motion.section>
 
-				<section className="command-section">
+				<motion.section
+					className="command-section"
+					initial={{ opacity: 0, y: 12 }}
+					animate={{ opacity: 1, y: 0 }}
+					transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1], delay: 0.36 }}
+				>
 					<h2 className="section-label">{t.workflow}</h2>
 					<div className="step-list">
 						{steps.map((step, i) => (
-							<div key={i} className="step">
+							<motion.div
+								key={i}
+								className="step"
+								initial={{ opacity: 0, x: -8 }}
+								animate={{ opacity: 1, x: 0 }}
+								transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1], delay: 0.42 + i * 0.07 }}
+							>
 								<span className="step-num">{String(i + 1).padStart(2, "0")}</span>
 								<div className="step-content">
 									<strong className="step-title">{step.title}</strong>
 									<p className="step-desc">{step.description}</p>
 								</div>
-							</div>
+							</motion.div>
 						))}
 					</div>
-				</section>
+				</motion.section>
 			</div>
 		</motion.div>
 	);

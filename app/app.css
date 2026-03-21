@@ -9,6 +9,14 @@
 
 /* ---- Custom properties ---- */
 :root {
+	--ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+	--ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+	--ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+	--fs-display: clamp(32px, 5vw, 52px);
+	--fs-heading: clamp(24px, 3.5vw, 40px);
+	--fs-body: 14px;
+	--fs-label: 12px;
+	--fs-micro: 10px;
 	--bg: #050505;
 	--card: #f0ede6;
 	--ink: #111111;
@@ -80,14 +88,9 @@ body {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	color: rgba(255, 255, 255, 0.3);
-	transition: color 0.7s;
+	color: rgba(255, 255, 255, 0.45);
 	min-height: 44px;
 	min-width: 44px;
-}
-
-.home-nav-link:hover {
-	color: rgba(255, 255, 255, 0.75);
 }
 
 .home-header {
@@ -120,7 +123,7 @@ body {
 
 .home-title {
 	font-family: var(--font-mono);
-	font-size: clamp(32px, 5vw, 52px);
+	font-size: var(--fs-display);
 	font-weight: 700;
 	letter-spacing: -0.02em;
 	margin: 0 0 12px;
@@ -128,8 +131,8 @@ body {
 }
 
 .home-subtitle {
-	font-size: 14px;
-	color: rgba(255, 255, 255, 0.45);
+	font-size: var(--fs-body);
+	color: rgba(255, 255, 255, 0.60);
 	margin: 0;
 	letter-spacing: 0.01em;
 	max-width: 420px;
@@ -139,25 +142,19 @@ body {
 /* ---- Language switch ---- */
 .lang-switch {
 	background: none;
-	border: 1px solid rgba(255, 255, 255, 0.15);
+	border: 1px solid rgba(255, 255, 255, 0.22);
 	border-radius: 3px;
-	color: rgba(255, 255, 255, 0.55);
+	color: rgba(255, 255, 255, 0.68);
 	font-family: var(--font-mono);
-	font-size: 12px;
+	font-size: var(--fs-label);
 	padding: 5px 12px;
 	min-height: 44px;
 	width: 60px;
 	cursor: pointer;
-	transition: border-color 0.7s, color 0.7s;
 	letter-spacing: 0.03em;
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-}
-
-.lang-switch:hover {
-	border-color: rgba(255, 255, 255, 0.4);
-	color: #fff;
 }
 
 /* ---- Pricing compare ---- */
@@ -168,7 +165,7 @@ body {
 
 .pricing-compare-title {
 	font-family: var(--font-mono);
-	font-size: clamp(22px, 3vw, 32px);
+	font-size: var(--fs-heading);
 	font-weight: 700;
 	letter-spacing: -0.02em;
 	color: #fff;
@@ -177,10 +174,10 @@ body {
 
 .pricing-compare-header {
 	font-family: var(--font-mono);
-	font-size: 10px;
+	font-size: var(--fs-micro);
 	letter-spacing: 0.1em;
 	text-transform: uppercase;
-	color: rgba(255, 255, 255, 0.25);
+	color: rgba(255, 255, 255, 0.40);
 	margin-bottom: 10px;
 }
 
@@ -199,8 +196,8 @@ body {
 
 .pricing-compare-name {
 	font-family: var(--font-mono);
-	font-size: 11px;
-	color: rgba(255, 255, 255, 0.35);
+	font-size: var(--fs-label);
+	color: rgba(255, 255, 255, 0.55);
 	white-space: nowrap;
 }
 
@@ -218,8 +215,8 @@ body {
 
 .pricing-compare-cost {
 	font-family: var(--font-mono);
-	font-size: 11px;
-	color: rgba(255, 255, 255, 0.3);
+	font-size: var(--fs-label);
+	color: rgba(255, 255, 255, 0.50);
 	text-align: right;
 }
 
@@ -233,8 +230,8 @@ body {
 
 .pricing-compare-note {
 	font-family: var(--font-mono);
-	font-size: 9px;
-	color: rgba(255, 255, 255, 0.15);
+	font-size: var(--fs-micro);
+	color: rgba(255, 255, 255, 0.30);
 	margin: 10px 0 0;
 	letter-spacing: 0.03em;
 }
@@ -268,12 +265,14 @@ body {
 	flex-direction: column;
 	min-height: 460px;
 	box-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
-	will-change: transform;
-	transition: box-shadow 0.8s ease;
 }
 
-.entry-card:hover {
-	box-shadow: 0 14px 44px rgba(0, 0, 0, 0.6);
+/* Inner wrapper: receives the visual lift transform from motion variant propagation */
+.entry-card-lift {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	will-change: transform;
 }
 
 .entry-card-header {
@@ -285,7 +284,7 @@ body {
 
 .entry-card-cmd {
 	font-family: var(--font-mono);
-	font-size: 11px;
+	font-size: var(--fs-label);
 	font-weight: 600;
 	letter-spacing: 0.07em;
 	text-transform: uppercase;
@@ -294,7 +293,7 @@ body {
 
 .entry-card-serial {
 	font-family: var(--font-mono);
-	font-size: 10px;
+	font-size: var(--fs-micro);
 	color: var(--ink-3);
 	letter-spacing: 0.06em;
 }
@@ -302,7 +301,7 @@ body {
 .entry-card-title {
 	display: flex;
 	flex-direction: column;
-	font-size: clamp(28px, 3.5vw, 38px);
+	font-size: var(--fs-heading);
 	font-weight: 800;
 	letter-spacing: -0.025em;
 	line-height: 1.05;
@@ -311,7 +310,7 @@ body {
 }
 
 .entry-card-desc {
-	font-size: 13px;
+	font-size: var(--fs-body);
 	line-height: 1.6;
 	color: var(--ink-2);
 	margin: 0 0 18px;
@@ -324,7 +323,7 @@ body {
 }
 
 .entry-card-features li {
-	font-size: 12px;
+	font-size: var(--fs-label);
 	line-height: 1.75;
 	color: rgba(0, 0, 0, 0.65);
 	padding-left: 14px;
@@ -364,7 +363,7 @@ body {
 
 .entry-card-cta {
 	font-family: var(--font-mono);
-	font-size: 11px;
+	font-size: var(--fs-label);
 	letter-spacing: 0.05em;
 	color: var(--ink-2);
 }
@@ -394,30 +393,24 @@ body {
 
 .command-back {
 	background: none;
-	border: 1px solid rgba(255, 255, 255, 0.15);
+	border: 1px solid rgba(255, 255, 255, 0.22);
 	border-radius: 3px;
-	color: rgba(255, 255, 255, 0.55);
+	color: rgba(255, 255, 255, 0.68);
 	font-family: var(--font-mono);
-	font-size: 12px;
+	font-size: var(--fs-label);
 	padding: 5px 10px;
 	min-height: 44px;
 	min-width: 44px;
 	cursor: pointer;
-	transition: border-color 0.7s, color 0.7s;
 	letter-spacing: 0.03em;
 	display: inline-flex;
 	align-items: center;
 }
 
-.command-back:hover {
-	border-color: rgba(255, 255, 255, 0.4);
-	color: #fff;
-}
-
 .command-breadcrumb {
 	font-family: var(--font-mono);
-	font-size: 12px;
-	color: rgba(255, 255, 255, 0.3);
+	font-size: var(--fs-label);
+	color: rgba(255, 255, 255, 0.45);
 	letter-spacing: 0.04em;
 }
 
@@ -447,16 +440,16 @@ body {
 
 .command-label {
 	font-family: var(--font-mono);
-	font-size: 11px;
+	font-size: var(--fs-label);
 	letter-spacing: 0.1em;
 	text-transform: uppercase;
-	color: rgba(255, 255, 255, 0.3);
+	color: rgba(255, 255, 255, 0.45);
 	display: block;
 	margin-bottom: 12px;
 }
 
 .command-heading {
-	font-size: clamp(28px, 4vw, 44px);
+	font-size: var(--fs-heading);
 	font-weight: 800;
 	letter-spacing: -0.025em;
 	line-height: 1.05;
@@ -476,8 +469,8 @@ body {
 
 .command-usage code {
 	font-family: var(--font-mono);
-	font-size: 13px;
-	color: rgba(255, 255, 255, 0.65);
+	font-size: var(--fs-body);
+	color: rgba(255, 255, 255, 0.78);
 	letter-spacing: 0.02em;
 	white-space: pre;
 }
@@ -494,7 +487,7 @@ body {
 
 .section-label {
 	font-family: var(--font-mono);
-	font-size: 10px;
+	font-size: var(--fs-micro);
 	font-weight: 700;
 	letter-spacing: 0.12em;
 	text-transform: uppercase;
@@ -503,7 +496,7 @@ body {
 }
 
 .section-body {
-	font-size: 14px;
+	font-size: var(--fs-body);
 	line-height: 1.65;
 	color: var(--ink-2);
 	margin: 0;
@@ -549,7 +542,7 @@ body {
 
 .flag-name {
 	font-family: var(--font-mono);
-	font-size: 12px;
+	font-size: var(--fs-label);
 	color: var(--ink);
 	font-weight: 600;
 	background: rgba(0, 0, 0, 0.07);
@@ -567,14 +560,14 @@ body {
 }
 
 .flag-desc {
-	font-size: 13px;
+	font-size: var(--fs-body);
 	line-height: 1.5;
 	color: var(--ink-2);
 }
 
 .flag-default {
 	font-family: var(--font-mono);
-	font-size: 11px;
+	font-size: var(--fs-label);
 	color: var(--ink-3);
 }
 
@@ -594,7 +587,7 @@ body {
 
 .step-num {
 	font-family: var(--font-mono);
-	font-size: 11px;
+	font-size: var(--fs-label);
 	font-weight: 700;
 	color: var(--ink-3);
 	letter-spacing: 0.06em;
@@ -602,7 +595,7 @@ body {
 }
 
 .step-title {
-	font-size: 13px;
+	font-size: var(--fs-body);
 	font-weight: 700;
 	color: var(--ink);
 	display: block;
@@ -610,7 +603,7 @@ body {
 }
 
 .step-desc {
-	font-size: 13px;
+	font-size: var(--fs-body);
 	line-height: 1.55;
 	color: var(--ink-2);
 	margin: 0;
@@ -757,51 +750,6 @@ body {
 	pointer-events: none;
 }
 
-
-.entry-card:hover .pattern-lines-circle__surface,
-.entry-card:focus-visible .pattern-lines-circle__surface {
-	animation-duration: 24s;
-}
-
-.entry-card:hover .pattern-lines-circle__surface::before,
-.entry-card:focus-visible .pattern-lines-circle__surface::before {
-	animation-duration: 24s;
-}
-
-/* Dots patterns: static at rest, animated on card hover */
-
-/* Circle: dots spread apart and dissolve outward — wave radiating from centre */
-.entry-card:hover .pattern-dots-circle,
-.entry-card:focus-visible .pattern-dots-circle {
-	animation: patternCircleExpand 8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-	filter: url(#dots-displace-circle);
-}
-
-/* Square: whole grid throbs in/out — quick swell, slow exhale */
-.entry-card:hover .pattern-dots-square,
-.entry-card:focus-visible .pattern-dots-square,
-.entry-card:hover .pattern-dots-square-rounded,
-.entry-card:focus-visible .pattern-dots-square-rounded,
-.entry-card:hover .pattern-dots-square-circle,
-.entry-card:focus-visible .pattern-dots-square-circle {
-	animation: patternSquarePulse 7.6s cubic-bezier(0.22, 1, 0.36, 1) infinite;
-	filter: url(#dots-displace-square);
-}
-
-/* Circle: spacing expands + fade — dots appear to fly outward */
-@keyframes patternCircleExpand {
-	0%, 100% { background-size: 16px 16px; opacity: 1; }
-	55%       { background-size: 30px 30px; opacity: 0.28; }
-}
-
-/* Square: scale throb — entire dot field breathes with a heartbeat rhythm */
-@keyframes patternSquarePulse {
-	0%         { transform: scale(1);    opacity: 1; }
-	30%        { transform: scale(1.08); opacity: 0.75; }
-	100%       { transform: scale(1);    opacity: 1; }
-}
-
-
 @keyframes patternLinesStripeDrift {
 	from {
 		background-position: 0 0;
@@ -813,18 +761,8 @@ body {
 
 @media (prefers-reduced-motion: reduce) {
 	.pattern-lines-circle__surface,
-	.pattern-lines-circle__surface::before,
-	.entry-card:hover .pattern-dots-circle,
-	.entry-card:focus-visible .pattern-dots-circle,
-	.entry-card:hover .pattern-dots-square,
-	.entry-card:focus-visible .pattern-dots-square,
-	.entry-card:hover .pattern-dots-square-rounded,
-	.entry-card:focus-visible .pattern-dots-square-rounded,
-	.entry-card:hover .pattern-dots-square-circle,
-	.entry-card:focus-visible .pattern-dots-square-circle {
+	.pattern-lines-circle__surface::before {
 		animation: none !important;
-		filter: none !important;
-		transform: none !important;
 	}
 }
 
@@ -864,7 +802,7 @@ body {
 	right: 0;
 	top: -9px;
 	font-family: var(--font-mono);
-	font-size: 8px;
+	font-size: var(--fs-micro);
 	color: var(--ink-3);
 	letter-spacing: 0.06em;
 }
@@ -896,31 +834,25 @@ body {
 
 .ticket-back {
 	background: none;
-	border: 1px solid rgba(255, 255, 255, 0.15);
+	border: 1px solid rgba(255, 255, 255, 0.22);
 	border-radius: 3px;
-	color: rgba(255, 255, 255, 0.55);
+	color: rgba(255, 255, 255, 0.68);
 	font-family: var(--font-mono);
-	font-size: 12px;
+	font-size: var(--fs-label);
 	padding: 5px 10px;
 	min-height: 44px;
 	min-width: 44px;
 	cursor: pointer;
 	text-decoration: none;
 	letter-spacing: 0.03em;
-	transition: border-color 0.7s, color 0.7s;
 	display: inline-flex;
 	align-items: center;
 }
 
-.ticket-back:hover {
-	border-color: rgba(255, 255, 255, 0.4);
-	color: #fff;
-}
-
 .ticket-nav-title {
 	font-family: var(--font-mono);
-	font-size: 12px;
-	color: rgba(255, 255, 255, 0.3);
+	font-size: var(--fs-label);
+	color: rgba(255, 255, 255, 0.45);
 	letter-spacing: 0.04em;
 }
 
@@ -971,6 +903,14 @@ body {
 	box-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
 }
 
+/* Inner wrapper: receives the visual lift transform from motion variant propagation */
+.ticket-lift {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	will-change: transform;
+}
+
 .ticket-header {
 	display: flex;
 	justify-content: space-between;
@@ -982,7 +922,7 @@ body {
 .ticket-title-block {
 	display: flex;
 	flex-direction: column;
-	font-size: clamp(24px, 2.5vw, 32px);
+	font-size: var(--fs-heading);
 	font-weight: 800;
 	letter-spacing: -0.025em;
 	line-height: 1.05;
@@ -999,7 +939,7 @@ body {
 
 .ticket-meta-cmd {
 	font-family: var(--font-mono);
-	font-size: 10px;
+	font-size: var(--fs-micro);
 	font-weight: 600;
 	letter-spacing: 0.07em;
 	text-transform: uppercase;
@@ -1009,7 +949,7 @@ body {
 
 .ticket-meta-serial {
 	font-family: var(--font-mono);
-	font-size: 10px;
+	font-size: var(--fs-micro);
 	color: var(--ink-3);
 	letter-spacing: 0.06em;
 }
@@ -1022,7 +962,7 @@ body {
 }
 
 .ticket-desc {
-	font-size: 13px;
+	font-size: var(--fs-body);
 	line-height: 1.6;
 	color: var(--ink-2);
 	margin: 0;
@@ -1035,7 +975,7 @@ body {
 }
 
 .ticket-features li {
-	font-size: 12px;
+	font-size: var(--fs-label);
 	line-height: 1.75;
 	color: rgba(0, 0, 0, 0.65);
 	padding-left: 14px;
@@ -1058,7 +998,7 @@ body {
 
 .ticket-code code {
 	font-family: var(--font-mono);
-	font-size: 11px;
+	font-size: var(--fs-label);
 	color: var(--ink-2);
 	letter-spacing: 0.02em;
 }
@@ -1097,7 +1037,7 @@ body {
 
 .ticket-serial-numbers span {
 	font-family: var(--font-mono);
-	font-size: 10px;
+	font-size: var(--fs-micro);
 	color: var(--ink-3);
 	letter-spacing: 0.08em;
 }
@@ -1110,4 +1050,3 @@ body {
 	background-image: radial-gradient(circle, var(--dot) 3px, transparent 3px);
 	background-size: 16px 16px;
 }
-
