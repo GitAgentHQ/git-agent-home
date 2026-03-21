@@ -80,8 +80,8 @@ git-agent init [flags]
 |---|---|
 | `--force` | overwrite existing config/hook/.gitignore |
 | `--gitignore` | generate .gitignore via AI |
-| `--hook-script string` | path to custom hook script (writes to `.git-agent/hooks/pre-commit`) |
-| `--hook-type string` | built-in hook template: `conventional` or `empty` |
+| `--hook-script string` | path to custom hook script (copies to `.git-agent/hooks/pre-commit`; records absolute path in `project.yml`) |
+| `--hook-type string` | built-in hook template: `conventional` or `empty` (records `hook_type` in `project.yml`, no file written) |
 | `--max-commits int` | max commits to analyze for scope generation (default 200) |
 | `--scope` | generate scopes via AI |
 
