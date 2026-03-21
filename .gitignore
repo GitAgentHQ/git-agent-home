@@ -1,7 +1,7 @@
 ### git-agent auto-generated — DO NOT EDIT this block ###
-# Technologies: macos, node, typescript, react, vite, cloudflare, visualstudiocode
-# Created by https://www.toptal.com/developers/gitignore/api/macos,node,react,visualstudiocode
-# Edit at https://www.toptal.com/developers/gitignore?templates=macos,node,react,visualstudiocode
+# Technologies: macos, javascript, tsx, react, node, pnpm, visualstudiocode
+# Created by https://www.toptal.com/developers/gitignore/api/macos,react,node,visualstudiocode
+# Edit at https://www.toptal.com/developers/gitignore?templates=macos,react,node,visualstudiocode
 
 ### macOS ###
 # General
@@ -207,7 +207,7 @@ sketch
 .history
 .ionide
 
-# End of https://www.toptal.com/developers/gitignore/api/macos,node,react,visualstudiocode
+# End of https://www.toptal.com/developers/gitignore/api/macos,react,node,visualstudiocode
 ### end git-agent ###
 
 ### custom rules ###

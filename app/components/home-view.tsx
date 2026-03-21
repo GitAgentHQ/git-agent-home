@@ -38,14 +38,15 @@ const BARS_COMMIT: BarConfig[] = [
 	{ width: 1, height: 36 },
 ];
 
-// Cost for 1,000 commits at 3,118 input + 233 output tokens each.
-// Bar widths relative to Claude Opus 4.5 ($21.42 = 100%).
+// Cost for 1,000 commits at ~4,200 input + ~400 output tokens each.
+// Based on actual usage data (255 commits, 1.17M tokens, $0.33 with Gemini 3.1 Flash Lite).
+// Bar widths relative to Claude Opus 4.5 ($24.46 = 100%).
 const PRICING_ROWS = [
-	{ name: "Claude Opus 4.5",     cost: "$21.42", bar: 100 },
-	{ name: "Claude Sonnet 4.6",   cost: "$12.85", bar: 60  },
-	{ name: "GPT-5.4",             cost: "$11.29", bar: 53  },
-	{ name: "Gemini 3.1 Pro",      cost: "$9.03",  bar: 42  },
-	{ name: "Gemini 3.1 Flash Lite", cost: "$1.13", bar: 5   },
+	{ name: "Claude Opus 4.5",       cost: "$24.46", bar: 100 },
+	{ name: "Claude Sonnet 4.6",     cost: "$14.67", bar: 60  },
+	{ name: "GPT-5.4",               cost: "$12.89", bar: 53  },
+	{ name: "Gemini 3.1 Pro",        cost: "$10.31", bar: 42  },
+	{ name: "Gemini 3.1 Flash Lite", cost: "$1.29",  bar: 5   },
 ];
 
 function PricingCompare() {
@@ -69,7 +70,7 @@ function PricingCompare() {
 					<span className="pricing-compare-cost pricing-compare-cost--free">free</span>
 				</div>
 			</div>
-			<p className="pricing-compare-note">3,118 input + 233 output per commit. Source: official provider pricing pages, Mar 2026.</p>
+			<p className="pricing-compare-note">~4,200 input + ~400 output per commit. Based on actual usage data. Source: official provider pricing pages, Mar 2026.</p>
 		</div>
 	);
 }
