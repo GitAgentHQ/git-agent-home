@@ -1,4 +1,5 @@
 import { motion } from "motion/react";
+import { useLanguage } from "../contexts/language-context";
 
 interface Flag {
 	name: string;
@@ -30,6 +31,8 @@ export function CommandDetail({
 	steps,
 	onBack,
 }: CommandDetailProps) {
+	const { t } = useLanguage();
+
 	return (
 		<motion.div
 			className="command-view"
@@ -40,7 +43,7 @@ export function CommandDetail({
 		>
 			<nav className="command-nav">
 				<button className="command-back" onClick={onBack}>
-					← back
+					{t.back}
 				</button>
 				<code className="command-breadcrumb">{cmd}</code>
 			</nav>
@@ -55,12 +58,12 @@ export function CommandDetail({
 				</header>
 
 				<section className="command-section">
-					<h2 className="section-label">Overview</h2>
+					<h2 className="section-label">{t.overview}</h2>
 					<p className="section-body">{overview}</p>
 				</section>
 
 				<section className="command-section">
-					<h2 className="section-label">Flags</h2>
+					<h2 className="section-label">{t.flags}</h2>
 					<div className="flag-list">
 						{flags.map((flag, i) => (
 							<div key={i} className="flag-row">
@@ -68,7 +71,7 @@ export function CommandDetail({
 								<div className="flag-info">
 									<span className="flag-desc">{flag.description}</span>
 									{flag.default && (
-										<span className="flag-default">default: {flag.default}</span>
+										<span className="flag-default">{t.default}: {flag.default}</span>
 									)}
 								</div>
 							</div>
@@ -77,7 +80,7 @@ export function CommandDetail({
 				</section>
 
 				<section className="command-section">
-					<h2 className="section-label">Workflow</h2>
+					<h2 className="section-label">{t.workflow}</h2>
 					<div className="step-list">
 						{steps.map((step, i) => (
 							<div key={i} className="step">
