@@ -1,10 +1,10 @@
 # git-agent-home ![](https://img.shields.io/badge/React-19.0-blue) ![](https://img.shields.io/badge/Cloudflare-Workers-orange)
 
-[![CI](https://img.shields.io/github/actions/workflow/status/FradSer/git-agent-home/deploy.yml)](https://github.com/FradSer/git-agent-home/actions) [![License](https://img.shields.io/github/license/FradSer/git-agent-home)](https://github.com/FradSer/git-agent-home/blob/main/LICENSE)
+[![CI](https://img.shields.io/github/actions/workflow/status/GitAgentHQ/git-agent-home/deploy.yml)](https://github.com/GitAgentHQ/git-agent-home/actions) [![License](https://img.shields.io/github/license/GitAgentHQ/git-agent-home)](https://github.com/GitAgentHQ/git-agent-home/blob/main/LICENSE)
 
 [English](README.md) | **简体中文**
 
-[git-agent](https://github.com/FradSer/git-agent-cli) 的 Web 控制台——一款 AI 驱动的 Git CLI，可生成 Conventional Commits 格式的提交信息并将修改拆分为原子提交。基于 React Router 7 构建，部署于 Cloudflare Workers。
+[git-agent](https://github.com/GitAgentHQ/git-agent-cli) 的 Web 控制台——一款 AI 驱动的 Git CLI，可生成 Conventional Commits 格式的提交信息并将修改拆分为原子提交。基于 React Router 7 构建，部署于 Cloudflare Workers。
 
 ## 快速开始
 
@@ -41,8 +41,8 @@ pnpm deploy
 
 | 项目 | 描述 |
 |------|------|
-| [git-agent-cli](https://github.com/FradSer/git-agent-cli) | AI 驱动的 Git CLI |
-| [git-agent-proxy](https://github.com/FradSer/git-agent-proxy) | 具备认证和限流功能的 Cloudflare Worker 代理 |
+| [git-agent-cli](https://github.com/GitAgentHQ/git-agent-cli) | AI 驱动的 Git CLI |
+| [git-agent-proxy](https://github.com/GitAgentHQ/git-agent-proxy) | 具备认证和限流功能的 Cloudflare Worker 代理 |
 
 ## 许可证
 

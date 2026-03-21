@@ -138,14 +138,65 @@ export function DotsNoiseFilter() {
 }
 
 export function DotsCircle() {
-	return <div className="pattern-dots-circle" aria-hidden="true" />;
+	const reduced = useReducedMotion();
+	if (reduced) return <div className="pattern-dots-circle" aria-hidden="true" />;
+
+	return (
+		<motion.div
+			className="pattern-dots-circle"
+			aria-hidden="true"
+			transition={{
+				filter: { duration: 0 },
+				backgroundSize: { duration: 0.3, ease: [0.22, 1, 0.36, 1] },
+				opacity: { duration: 0.3, ease: [0.22, 1, 0.36, 1] },
+			}}
+			variants={{
+				hover: {
+					filter: "url(#dots-displace-circle)",
+					backgroundSize: ["16px 16px", "30px 30px", "16px 16px"],
+					opacity: [1, 0.28, 1],
+					transition: {
+						filter: { duration: 0 },
+						backgroundSize: { duration: 8, ease: [0.4, 0, 0.6, 1], repeat: Infinity, times: [0, 0.55, 1] },
+						opacity: { duration: 8, ease: [0.4, 0, 0.6, 1], repeat: Infinity, times: [0, 0.55, 1] },
+					},
+				},
+			}}
+		/>
+	);
 }
 
 export function DotsSquare({ rounded, circle }: DotsSquareProps) {
+	const reduced = useReducedMotion();
 	let className = "pattern-dots-square";
 	if (circle) className = "pattern-dots-square-circle";
 	else if (rounded) className = "pattern-dots-square-rounded";
-	return <div className={className} aria-hidden="true" />;
+
+	if (reduced) return <div className={className} aria-hidden="true" />;
+
+	return (
+		<motion.div
+			className={className}
+			aria-hidden="true"
+			transition={{
+				filter: { duration: 0 },
+				scale: { duration: 0.3, ease: [0.22, 1, 0.36, 1] },
+				opacity: { duration: 0.3, ease: [0.22, 1, 0.36, 1] },
+			}}
+			variants={{
+				hover: {
+					filter: "url(#dots-displace-square)",
+					scale: [1, 1.08, 1],
+					opacity: [1, 0.75, 1],
+					transition: {
+						filter: { duration: 0 },
+						scale: { duration: 7.6, ease: [0.22, 1, 0.36, 1], repeat: Infinity, times: [0, 0.3, 1] },
+						opacity: { duration: 7.6, ease: [0.22, 1, 0.36, 1], repeat: Infinity, times: [0, 0.3, 1] },
+					},
+				},
+			}}
+		/>
+	);
 }
 
 export function LinesCircle() {

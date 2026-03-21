@@ -5,6 +5,8 @@ import type { BarConfig } from "./barcode";
 import { TicketBarcode } from "./barcode";
 import { DotsCircle, DotsSquare } from "./pattern";
 
+const MotionLink = motion.create(Link);
+
 const BARS_INIT: BarConfig[] = [
 	{ width: 2, height: 30 },
 	{ width: 1, height: 22 },
@@ -124,15 +126,19 @@ export function TicketView() {
 	return (
 		<motion.div
 			className="ticket-view"
-			initial={{ opacity: 0 }}
-			animate={{ opacity: 1 }}
-			exit={{ opacity: 0, y: -16 }}
-			transition={{ duration: 1, ease: "easeInOut" }}
+			initial={{ opacity: 0, y: 20 }}
+			animate={{ opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] } }}
+			exit={{ opacity: 0, y: 16, transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] } }}
 		>
 			<nav className="ticket-nav">
-				<Link to="/" className="ticket-back">
+				<MotionLink
+					to="/"
+					className="ticket-back"
+					whileHover={{ borderColor: "rgba(255,255,255,0.55)", color: "#fff" }}
+					transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+				>
 					← back
-				</Link>
+				</MotionLink>
 				<span className="ticket-nav-title">git-agent</span>
 			</nav>
 
@@ -164,42 +170,60 @@ function TicketCard({
 			animate={{ opacity: 1, y: 0 }}
 			exit={{ opacity: 0, y: -16 }}
 			transition={{ type: "spring", damping: 32, stiffness: 50, delay, duration: 1.2 }}
+			whileHover="hover"
+			variants={{
+				hover: {
+					boxShadow: "0 14px 44px rgba(0,0,0,0.6)",
+					transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] },
+				},
+			}}
 		>
-			<div className="ticket-header">
-				<div className="ticket-title-block">
-					{title.map((line, i) => (
-						<span key={i}>{line}</span>
-					))}
+			<motion.div
+				className="ticket-lift"
+				variants={{
+					hover: {
+						y: -4,
+						transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] },
+					},
+				}}
+				transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+			>
+				<div className="ticket-header">
+					<div className="ticket-title-block">
+						{title.map((line, i) => (
+							<span key={i}>{line}</span>
+						))}
+					</div>
+					<div className="ticket-meta-block">
+						<span className="ticket-meta-cmd">{cmd}</span>
+						<span className="ticket-meta-serial">{serialLabel}</span>
+					</div>
 				</div>
-				<div className="ticket-meta-block">
-					<span className="ticket-meta-cmd">{cmd}</span>
-					<span className="ticket-meta-serial">{serialLabel}</span>
+
+				<div className="ticket-content">
+					<p className="ticket-desc">{description}</p>
+					<ul className="ticket-features">
+						{features.map((f, i) => (
+							<li key={i}>{f}</li>
+						))}
+					</ul>
+					<div className="ticket-code">
+						<code>$ {codeExample}</code>
+					</div>
 				</div>
-			</div>
 
-			<div className="ticket-content">
-				<p className="ticket-desc">{description}</p>
-				<ul className="ticket-features">
-					{features.map((f, i) => (
-						<li key={i}>{f}</li>
-					))}
-				</ul>
-				<div className="ticket-code">
-					<code>$ {codeExample}</code>
-				</div>
-			</div>
+				<div className="ticket-graphic">{pattern}</div>
 
-			<div className="ticket-graphic">{pattern}</div>
+				<div className="ticket-dotted-divider" aria-hidden="true" />
 
-			<div className="ticket-dotted-divider" aria-hidden="true" />
-
-			<footer className="ticket-footer-full">
-				<div className="ticket-serial-numbers">
-					<span>{serialNum}</span>
-					<span>{serialLabel.replace(" / ", "-")}</span>
-				</div>
-				<TicketBarcode bars={bars} />
-			</footer>
+				<footer className="ticket-footer-full">
+					<div className="ticket-serial-numbers">
+						<span>{serialNum}</span>
+						<span>{serialLabel.replace(" / ", "-")}</span>
+					</div>
+					<TicketBarcode bars={bars} />
+				</footer>
+			</motion.div>
 		</motion.article>
 	);
 }

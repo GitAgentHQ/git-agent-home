@@ -1,10 +1,10 @@
 # git-agent-home ![](https://img.shields.io/badge/React-19.0-blue) ![](https://img.shields.io/badge/Cloudflare-Workers-orange)
 
-[![CI](https://img.shields.io/github/actions/workflow/status/FradSer/git-agent-home/deploy.yml)](https://github.com/FradSer/git-agent-home/actions) [![License](https://img.shields.io/github/license/FradSer/git-agent-home)](https://github.com/FradSer/git-agent-home/blob/main/LICENSE)
+[![CI](https://img.shields.io/github/actions/workflow/status/GitAgentHQ/git-agent-home/deploy.yml)](https://github.com/GitAgentHQ/git-agent-home/actions) [![License](https://img.shields.io/github/license/GitAgentHQ/git-agent-home)](https://github.com/GitAgentHQ/git-agent-home/blob/main/LICENSE)
 
 **English** | [简体中文](README.zh-CN.md)
 
-Web dashboard for [git-agent](https://github.com/FradSer/git-agent-cli) — an AI-first Git CLI that generates conventional commit messages and splits changes into atomic commits. Built with React Router 7 and deployed to Cloudflare Workers.
+Web dashboard for [git-agent](https://github.com/GitAgentHQ/git-agent-cli) — an AI-first Git CLI that generates conventional commit messages and splits changes into atomic commits. Built with React Router 7 and deployed to Cloudflare Workers.
 
 ## Quick Start
 
@@ -41,8 +41,8 @@ The `public/skill.md` file is served as a static asset and registered as a skill
 
 | Project | Description |
 |---------|-------------|
-| [git-agent-cli](https://github.com/FradSer/git-agent-cli) | AI-powered Git CLI |
-| [git-agent-proxy](https://github.com/FradSer/git-agent-proxy) | Cloudflare Worker proxy with auth and rate limiting |
+| [git-agent-cli](https://github.com/GitAgentHQ/git-agent-cli) | AI-powered Git CLI |
+| [git-agent-proxy](https://github.com/GitAgentHQ/git-agent-proxy) | Cloudflare Worker proxy with auth and rate limiting |
 
 ## License
 

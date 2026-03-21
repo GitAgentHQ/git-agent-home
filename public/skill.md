@@ -12,16 +12,16 @@ description: Operates the git-agent CLI — an AI-first Git tool that generates 
 **Homebrew (macOS/Linux, recommended):**
 
 ```bash
-brew install FradSer/brew/git-agent
+brew install GitAgentHQ/brew/git-agent
 ```
 
 **Go install:**
 
 ```bash
-go install github.com/fradser/git-agent@latest
+go install github.com/gitagenthq/git-agent@latest
 ```
 
-**Pre-built binaries:** download from the [releases page](https://github.com/FradSer/git-agent-cli/releases).
+**Pre-built binaries:** download from the [releases page](https://github.com/GitAgentHQ/git-agent-cli/releases).
 
 git-agent ships with built-in credentials — no API key configuration needed to get started.
 Run `git-agent config show` to confirm: it will print `mode: FREE` when the built-in key is active.
@@ -210,8 +210,8 @@ Run git-agent to commit all changes in this repository.
 1. Check that git-agent is installed: run `command -v git-agent`
    Both `git-agent <cmd>` and `git agent <cmd>` are valid; prefer whichever the user wrote.
    - If not found, tell the user to install it:
-     - macOS/Linux via Homebrew: `brew install FradSer/brew/git-agent`
-     - Or download from: https://github.com/FradSer/git-agent-cli/releases
+     - macOS/Linux via Homebrew: `brew install GitAgentHQ/brew/git-agent`
+     - Or download from: https://github.com/GitAgentHQ/git-agent-cli/releases
    - Then stop and wait for the user to install before continuing
 2. Check staged/unstaged changes with `git status` and `git diff`
 3. If there are no changes, report "No changes to commit" and stop
@@ -231,5 +231,11 @@ Run git-agent to commit all changes in this repository.
    - Add `--dry-run` first if the user wants to preview messages before committing
    - Pass `--no-stage` if only staged changes should be committed
    - Pass `--amend` if the user wants to regenerate the last commit message
+   Hook retry loop — if the hook blocks repeatedly with the same validation error
+   (e.g. title exceeds 50 chars), the model loses the hook feedback between re-plans
+   and resets to the same mistake. Break the loop by tightening `--intent` to a
+   short phrase that constrains the title directly, e.g.
+   `--intent "update module path"` instead of a full sentence. This anchors the
+   generated title and keeps it under the 50-char limit.
 7. Report the resulting commit(s) with `git log --oneline -5`
 ```
