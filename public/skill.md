@@ -144,5 +144,5 @@ Run git-agent to commit all changes in this repository.
    - Add `--dry-run` first if the user wants to preview messages before committing
    - Pass `--no-stage` if only staged changes should be committed
    - Pass `--amend` if the user wants to regenerate the last commit message
-6. Report the resulting commit(s) with `git log --oneline -5`
+7. Report the resulting commit(s) with `git log --oneline -5`
 ```
