@@ -11,7 +11,7 @@ export function meta({}: Route.MetaArgs) {
 		{
 			name: "description",
 			content:
-				"Git CLI that drafts conventional commit messages and splits your work into atomic commits with LLM help.",
+				"AI-first Git CLI: conventional commits and atomic splits. Prefer official FREE (no provider flags), then ~/.config/git-agent/config.yml; use --api-key/--base-url/--model only for explicit overrides.",
 		},
 	];
 }

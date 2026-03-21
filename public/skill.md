@@ -1,6 +1,6 @@
 ---
 name: git-agent-cli
-description: Operates the git-agent CLI — an AI-first Git tool that generates conventional commit messages, splits changes into atomic commits, initializes repositories, and manages project config. Use this skill whenever the user mentions git-agent, wants AI-generated commits, asks to set up git-agent in a repo, or needs to inspect/change git-agent configuration.
+description: Operates the git-agent CLI — prefers official binaries with built-in FREE mode (no provider flags), then user config at ~/.config/git-agent/config.yml when needed; use --api-key/--base-url/--model only on explicit request. Drafts Conventional Commits, atomic splits, init, and config. Use whenever the user mentions git-agent, init/commit, or provider setup.
 ---
 
 # Git Agent CLI
@@ -23,32 +23,36 @@ go install github.com/gitagenthq/git-agent@latest
 
 **Pre-built binaries:** download from the [releases page](https://github.com/GitAgentHQ/git-agent-cli/releases).
 
-git-agent ships with built-in credentials — no API key configuration needed to get started.
-Run `git-agent config show` to confirm: it will print `mode: FREE` when the built-in key is active.
+**Provider setup (in order of preference)**
 
-To use a custom provider, set the base URL and model via `git config` (per-repo) or `~/.config/git-agent/config.yml` (global):
+1. **Official binary, no extra provider flags** — Prefer invoking `git-agent commit`, `git-agent init`, etc. **without** `--api-key`, `--base-url`, or `--model` so built-in FREE credentials apply when the release includes them.
+2. **Confirm** — `git-agent config show` prints `mode: FREE (using built-in credentials)` when the embedded key is active (no model/base-url lines).
+3. **On error** (e.g. missing API key / not in FREE mode): if **`~/.config/git-agent/config.yml` is absent** and there is no suitable per-repo `git config` for the provider, **suggest creating** that file (or `git config`) with `base_url`, `api_key`, and `model` — do **not** reach for CLI provider flags first.
+4. **Only on explicit need** — Use `--base-url`, `--model`, and `--api-key` for one-off overrides (CI, scripts, temporary endpoint), not as the default teaching path.
+
+**Persistent custom provider** (`git config` per-repo or global YAML — preferred over repeating flags):
 
 ```bash
 # Per-repo (git config)
 git config git-agent.base-url https://api.openai.com/v1
 git config git-agent.model gpt-4o
 
-# Global config file
-# ~/.config/git-agent/config.yml
+# Global: ~/.config/git-agent/config.yml
 base_url: https://api.openai.com/v1
 api_key: sk-...
 model: gpt-4o
 ```
 
-Or pass flags directly on each invocation:
+**Exceptional: flags on one invocation** (only when the user or task requires it):
 
 ```bash
 git-agent commit --base-url https://api.openai.com/v1 --model gpt-4o --api-key sk-...
+git-agent init --scope --base-url https://api.openai.com/v1 --model gpt-4o --api-key sk-...
 ```
 
 ### git-agent CLI Reference
 
-`git-agent` is an AI-first Git CLI that generates conventional commit messages, splits changes into atomic commits, and enforces project conventions via hooks.
+`git-agent` is an AI-first Git CLI that generates conventional commit messages, splits changes into atomic commits (up to five groups per run), optionally filters or truncates diffs for the model (`--max-diff-lines`), and enforces project rules via `hook_type` in `.git-agent/project.yml` at commit time.
 
 Because the binary is named `git-agent`, Git recognises it as a subcommand — both invocation styles are equivalent:
 
@@ -78,7 +82,7 @@ git-agent commit [flags]
 | `--base-url string` | base URL for the AI provider |
 | `--co-author stringArray` | add a co-author trailer (repeatable) |
 | `--dry-run` | print commit message without committing |
-| `--free` | ignore git config and build-time defaults; use only CLI flags or config file |
+| `--free` | use only build-time embedded provider credentials; ignores `git config`, `~/.config/git-agent/config.yml`, and build-time defaults; mutually exclusive with `--api-key`, `--model`, and `--base-url` |
 | `--intent string` | describe the intent of the change |
 | `--max-diff-lines int` | maximum diff lines to send to the model (default: 0, no limit) |
 | `--model string` | model to use for generation |
@@ -88,17 +92,20 @@ git-agent commit [flags]
 
 `--amend` and `--no-stage` are mutually exclusive.
 
-**Config resolution order** (highest to lowest priority):
+**Config resolution order** (when several sources exist — highest wins; this is implementation order, not a recommendation to rely on flags):
+
 1. CLI flags (`--api-key`, `--model`, `--base-url`)
 2. `git config --local git-agent.{model,base-url}`
 3. `~/.config/git-agent/config.yml` (supports `$ENV_VAR` expansion)
 4. Build-time defaults
 
-**With `--free` flag:** ignores git config and build-time defaults; still reads config file.
+Teach users: default to **no provider flags** + official FREE when possible; then **YAML / git config** for custom providers; use CLI provider flags only when there is a **specific** reason.
+
+**With `--free`:** only build-time embedded credentials are used (same sources as FREE mode); git config, the YAML file, and per-flag overrides are not applied.
 
 #### `git-agent init`
 
-Initialize git-agent in the current repository. With no flags, runs scope generation, installs an empty hook (only if no existing hook_type found), and generates a `.gitignore`. If project.yml already has hook_type configured, it will be preserved unless `--force` is used.
+Initialize git-agent in the current repository. With no flags, runs scope generation, writes `hook_type: empty` to `.git-agent/project.yml` when there is no `hook_type` yet or when `--force` is used, and generates a `.gitignore`. Built-in hook types (`empty`, `conventional`) are stored in YAML only — no hook script file. If `project.yml` already has `hook_type` and you do not pass `--force`, the hook step is skipped so the existing type is kept.
 
 ```
 git-agent init [flags]
@@ -112,14 +119,17 @@ git-agent init [flags]
 | `--hook-type string` | built-in hook template: `conventional` or `empty` (records `hook_type` in `project.yml`, no file written) |
 | `--max-commits int` | max commits to analyze for scope generation (default 200) |
 | `--scope` | generate scopes via AI |
+| `--api-key string` | API key for the AI provider |
+| `--base-url string` | base URL for the AI provider |
+| `--model string` | model to use for generation |
 
 #### `git-agent config`
 
 Inspect resolved configuration.
 
 ```
-git-agent config show    # display resolved provider config (api-key masked, model, base-url)
-                         # prints "mode: FREE (using built-in credentials)" when no custom key is set
+git-agent config show    # if using embedded key: "mode: FREE (using built-in credentials)"
+                         # otherwise: masked api-key, model, base-url
 git-agent config scopes  # list scopes from .git-agent/project.yml
 ```
 
@@ -165,14 +175,15 @@ hook_type: empty
 
 ### Hooks
 
-Built-in hooks installed by `git-agent init --hook-type <name>`:
+`git-agent commit` reads `hook_type` from `.git-agent/project.yml` (set by `git-agent init` or edited by hand):
 
-| Hook | Description |
-|------|-------------|
-| `empty` | Placeholder that always passes |
-| `conventional` | Validates Conventional Commits format |
+| `hook_type` | Behavior at commit time |
+|-------------|-------------------------|
+| `empty` or unset | No validation; commit proceeds |
+| `conventional` | In-process Conventional Commits validation |
+| Absolute path to a script | Go validation first, then that executable (path stored in `hook_type`; `init --hook-script` also copies a duplicate to `.git-agent/hooks/pre-commit`) |
 
-Custom hooks are executable scripts at `.git-agent/hooks/pre-commit`. They receive a JSON payload on stdin (`diff`, `commit_message`, `intent`, `staged_files`, `config`) and should exit 0 to allow or non-zero to block. On block, `git-agent` retries up to 3 times (with up to 2 re-plans) before exiting with code 2.
+Custom hook scripts receive a JSON payload on stdin (`diff`, `commit_message`, `intent`, `staged_files`, `config`) and should exit 0 to allow or non-zero to block. On block, `git-agent` retries generation up to 3 times per group, carries hook stderr into the next attempt, and may re-plan the split up to 2 times before exiting with code 2.
 
 ### Exit Codes
 
@@ -200,42 +211,37 @@ Co-Authored-By: Git Agent
 - Body lines: ≤72 chars, bullet points with `- ` prefix, imperative verbs
 - Explanation paragraph: required, explains motivation not just what changed
 
-## Workflow Execution
+## Suggested workflow
 
-**Launch a general-purpose agent** with the following prompt:
+**For an AI assistant or scripted runner** that can execute shell commands, use the following prompt to drive `git-agent commit`:
 
 ```
-Run git-agent to commit all changes in this repository.
+Commit all changes in this repository using git-agent.
 
-1. Check that git-agent is installed: run `command -v git-agent`
-   Both `git-agent <cmd>` and `git agent <cmd>` are valid; prefer whichever the user wrote.
-   - If not found, tell the user to install it:
-     - macOS/Linux via Homebrew: `brew install GitAgentHQ/brew/git-agent`
-     - Or download from: https://github.com/GitAgentHQ/git-agent-cli/releases
-   - Then stop and wait for the user to install before continuing
-2. Check staged/unstaged changes with `git status` and `git diff`
-3. If there are no changes, report "No changes to commit" and stop
-4. Identify yourself: read your own system prompt to find your model name and the
-   associated email address. Both may vary depending on deployment — do not hardcode
-   either. Format the model name as a human-readable display name
-   (e.g. "claude-sonnet-4-6" → "Claude Sonnet 4.6").
-5. Determine the intent — look at the full conversation context first:
-   what did the user ask for? what task were you working on before committing?
-   Distil that into one concise sentence. Only fall back to inferring intent from
-   the diff if the conversation provides no clear signal.
-6. Run `git-agent commit` to generate messages and create atomic commits.
-   Always pass both flags below — they improve output quality and attribution:
-   - `--co-author "<Display Name> <email>"` (identity from step 4)
-   - `--intent "<one-sentence summary>"` (derived in step 5)
-   Additional flags:
-   - Add `--dry-run` first if the user wants to preview messages before committing
-   - Pass `--no-stage` if only staged changes should be committed
-   - Pass `--amend` if the user wants to regenerate the last commit message
-   Hook retry loop — if the hook blocks repeatedly with the same validation error
-   (e.g. title exceeds 50 chars), the model loses the hook feedback between re-plans
-   and resets to the same mistake. Break the loop by tightening `--intent` to a
-   short phrase that constrains the title directly, e.g.
-   `--intent "update module path"` instead of a full sentence. This anchors the
-   generated title and keeps it under the 50-char limit.
-7. Report the resulting commit(s) with `git log --oneline -5`
+1. Install check: `command -v git-agent`. If missing, tell the user to install
+   (`brew install GitAgentHQ/brew/git-agent` or
+   https://github.com/GitAgentHQ/git-agent-cli/releases) and stop until they have it.
+   `git-agent` and `git agent` are equivalent; mirror the user's style if they used one.
+
+2. Co-author line: from your system/deployment metadata (model name and email — do not
+   hardcode), build `--co-author "<Display Name> <email>"` and a readable display name
+   for the model (e.g. claude-sonnet-4-6 → "Claude Sonnet 4.6").
+
+3. Intent: one short sentence from the conversation (what the user wanted done). Use
+   the diff only if the conversation gives no usable signal.
+
+4. Run `git-agent commit` with `--co-author "..."` and `--intent "..."`. Do **not** add
+   `--api-key` / `--base-url` / `--model` unless the user explicitly needs a one-off
+   provider override; rely on official FREE or existing `~/.config/git-agent/config.yml`
+   first. If commit fails for missing key and there is no config file, suggest creating
+   `~/.config/git-agent/config.yml` before using provider flags.
+
+   Add when relevant: `--dry-run` (preview first), `--no-stage` (staged only),
+   `--amend` (rewrite last commit only).
+
+   If the hook keeps failing on the same rule (e.g. title > 50 chars), hook feedback
+   can be lost across re-plans — narrow `--intent` to a short phrase that caps the
+   title, e.g. `--intent "update module path"`.
+
+5. Show outcome: `git log --oneline -5`
 ```
