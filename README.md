@@ -28,8 +28,8 @@ pnpm deploy
 ## Project Structure
 
 - `app/` — React Router 7 application
-  - `components/` — UI components (HomeView, CommandDetail, TicketView, Barcode, Pattern)
-  - `routes/` — Route definitions (including SEO playbooks: `/for/[language]`, `/vs/[competitor]`, `/glossary/[term]`, `/templates/[type]`)
+  - `components/` — UI components (HomeView, CommandDetail, TicketView, Barcode, Pattern, CodeBlock, ComparisonTable, HubGrid, LangSwitch, PseoLayout, PseoFooter, HomeFooter, CrossLinksSection)
+  - `routes/` — Route definitions: home, SEO playbooks (`/for/[language]`, `/vs/[competitor]`, `/glossary/[term]`, `/templates/[type]`), sitemap, robots.txt
 - `workers/` — Cloudflare Worker entry point
 - `public/skill.md` — Claude Code skill for git-agent CLI
 

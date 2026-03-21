@@ -28,8 +28,8 @@ pnpm deploy
 ## 项目结构
 
 - `app/` — React Router 7 应用
-  - `components/` — UI 组件（HomeView、CommandDetail、TicketView、Barcode、Pattern）
-  - `routes/` — 路由定义（包括 SEO 手册：`/for/[language]`、`/vs/[competitor]`、`/glossary/[term]`、`/templates/[type]`）
+  - `components/` — UI 组件（HomeView、CommandDetail、TicketView、Barcode、Pattern、CodeBlock、ComparisonTable、HubGrid、LangSwitch、PseoLayout、PseoFooter、HomeFooter、CrossLinksSection）
+  - `routes/` — 路由定义：首页、SEO 落地页（`/for/[language]`、`/vs/[competitor]`、`/glossary/[term]`、`/templates/[type]`）、sitemap、robots.txt
 - `workers/` — Cloudflare Worker 入口
 - `public/skill.md` — git-agent CLI 的 Claude Code 技能
 
