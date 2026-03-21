@@ -1,18 +1,6 @@
 {
-	"name": "react-router-starter-template",
-	"description": "Build a full-stack web application with React Router 7.",
-	"cloudflare": {
-		"label": "React Router Framework Starter",
-		"products": [
-			"Workers"
-		],
-		"categories": [
-			"storage"
-		],
-		"preview_icon_url": "https://imagedelivery.net/wSMYJvS3Xw-n339CbDyDIA/36a99c4a-8919-4e6e-ac9e-e55974407200/public",
-		"preview_image_url": "https://imagedelivery.net/wSMYJvS3Xw-n339CbDyDIA/65455e96-7992-425f-44e4-30f3e7d7f900/preview",
-		"publish": true
-	},
+	"name": "git-agent-home",
+	"description": "Web dashboard for git-agent, deployed to Cloudflare Workers.",
 	"dependencies": {
 		"isbot": "5.1.32",
 		"motion": "^12.38.0",
