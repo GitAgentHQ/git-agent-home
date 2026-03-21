@@ -29,7 +29,7 @@ pnpm deploy
 
 - `app/` — React Router 7 应用
   - `components/` — UI 组件（HomeView、CommandDetail、TicketView、Barcode、Pattern）
-  - `routes/` — 路由定义
+  - `routes/` — 路由定义（包括 SEO 手册：`/for/[language]`、`/vs/[competitor]`、`/glossary/[term]`、`/templates/[type]`）
 - `workers/` — Cloudflare Worker 入口
 - `public/skill.md` — git-agent CLI 的 Claude Code 技能
 
@@ -46,4 +46,4 @@ pnpm deploy
 
 ## 许可证
 
-MIT
+[MIT](LICENSE)

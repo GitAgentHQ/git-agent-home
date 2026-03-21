@@ -29,7 +29,7 @@ pnpm deploy
 
 - `app/` — React Router 7 application
   - `components/` — UI components (HomeView, CommandDetail, TicketView, Barcode, Pattern)
-  - `routes/` — Route definitions
+  - `routes/` — Route definitions (including SEO playbooks: `/for/[language]`, `/vs/[competitor]`, `/glossary/[term]`, `/templates/[type]`)
 - `workers/` — Cloudflare Worker entry point
 - `public/skill.md` — Claude Code skill for git-agent CLI
 
@@ -46,4 +46,4 @@ The `public/skill.md` file is served as a static asset and registered as a skill
 
 ## License
 
-MIT
+[MIT](LICENSE)
