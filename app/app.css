@@ -400,8 +400,8 @@ body {
 
 /* Commit card: square dot pattern slightly under the init card circle (220px) */
 .entry-card-graphic .pattern-dots-square {
-	width: 190px;
-	height: 190px;
+	width: 184px;
+	height: 184px;
 }
 
 .entry-card-divider {
@@ -729,30 +729,29 @@ body {
 	pointer-events: none;
 }
 
+.pattern-dots-svg {
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
 .pattern-dots-circle {
 	width: 220px;
 	height: 220px;
 	border-radius: 50%;
-	background-image: radial-gradient(circle, var(--dot) 3px, transparent 3px);
-	background-size: 16px 16px;
-	background-position: center;
+	overflow: hidden;
 }
 
 .pattern-dots-square {
 	width: 220px;
 	height: 220px;
-	background-image: radial-gradient(circle, var(--dot) 3px, transparent 3px);
-	background-size: 16px 16px;
-	background-position: center;
 }
 
 .pattern-dots-square-rounded {
 	width: 220px;
 	height: 220px;
 	border-radius: 14px;
-	background-image: radial-gradient(circle, var(--dot) 3px, transparent 3px);
-	background-size: 16px 16px;
-	background-position: center;
+	overflow: hidden;
 }
 
 .pattern-lines-circle {
@@ -1171,8 +1170,7 @@ body {
 	width: 220px;
 	height: 220px;
 	border-radius: 50%;
-	background-image: radial-gradient(circle, var(--dot) 3px, transparent 3px);
-	background-size: 16px 16px;
+	overflow: hidden;
 }
 
 /* ---- pSEO shared ---- */
