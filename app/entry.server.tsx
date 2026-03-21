@@ -36,6 +36,17 @@ export default async function handleRequest(
 	}
 
 	responseHeaders.set("Content-Type", "text/html");
+
+	const url = new URL(request.url);
+	if (
+		url.pathname.startsWith("/for/") ||
+		url.pathname.startsWith("/vs/") ||
+		url.pathname.startsWith("/glossary/") ||
+		url.pathname.startsWith("/templates/")
+	) {
+		responseHeaders.set("Cache-Control", "public, max-age=86400, s-maxage=604800");
+	}
+
 	return new Response(body, {
 		headers: responseHeaders,
 		status: responseStatusCode,

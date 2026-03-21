@@ -11,7 +11,7 @@ const LanguageContext = createContext<LanguageContextValue | null>(null);
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
 	const [language, setLanguage] = useState<Language>(() => {
-		// Try to detect from browser
+		if (typeof window === "undefined") return "en";
 		const browserLang = navigator.language.toLowerCase();
 		if (browserLang.startsWith("zh")) return "zh";
 		return "en";

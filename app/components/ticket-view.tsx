@@ -127,15 +127,15 @@ export function TicketView() {
 		<motion.div
 			className="ticket-view"
 			initial={{ opacity: 0, y: 20 }}
-			animate={{ opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] } }}
-			exit={{ opacity: 0, y: 16, transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] } }}
+			animate={{ opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } }}
+			exit={{ opacity: 0, y: 16, transition: { duration: 0.28, ease: [0.22, 1, 0.36, 1] } }}
 		>
 			<nav className="ticket-nav">
 				<MotionLink
 					to="/"
 					className="ticket-back"
 					whileHover={{ borderColor: "rgba(255,255,255,0.55)", color: "#fff" }}
-					transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+					transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
 				>
 					← back
 				</MotionLink>
@@ -169,12 +169,12 @@ function TicketCard({
 			initial={{ opacity: 0, y: 30 }}
 			animate={{ opacity: 1, y: 0 }}
 			exit={{ opacity: 0, y: -16 }}
-			transition={{ type: "spring", damping: 32, stiffness: 50, delay, duration: 1.2 }}
+			transition={{ type: "spring", damping: 34, stiffness: 40, delay, duration: 1.45 }}
 			whileHover="hover"
 			variants={{
 				hover: {
 					boxShadow: "0 14px 44px rgba(0,0,0,0.6)",
-					transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] },
+					transition: { duration: 1.0, ease: [0.22, 1, 0.36, 1] },
 				},
 			}}
 		>
@@ -183,10 +183,10 @@ function TicketCard({
 				variants={{
 					hover: {
 						y: -4,
-						transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] },
+						transition: { duration: 0.65, ease: [0.22, 1, 0.36, 1] },
 					},
 				}}
-				transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+				transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
 			>
 				<div className="ticket-header">
 					<div className="ticket-title-block">

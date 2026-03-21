@@ -37,15 +37,15 @@ export function CommandDetail({
 		<motion.div
 			className="command-view"
 			initial={{ opacity: 0, y: 24 }}
-			animate={{ opacity: 1, y: 0, transition: { duration: 0.35, ease: [0.22, 1, 0.36, 1] } }}
-			exit={{ opacity: 0, y: 16, transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] } }}
+			animate={{ opacity: 1, y: 0, transition: { duration: 0.45, ease: [0.22, 1, 0.36, 1] } }}
+			exit={{ opacity: 0, y: 16, transition: { duration: 0.28, ease: [0.22, 1, 0.36, 1] } }}
 		>
 			<nav className="command-nav">
 				<motion.button
 					className="command-back"
 					onClick={onBack}
 					whileHover={{ borderColor: "rgba(255,255,255,0.55)", color: "#fff" }}
-					transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+					transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
 				>
 					{t.back}
 				</motion.button>
@@ -57,7 +57,7 @@ export function CommandDetail({
 					className="command-hero"
 					initial={{ opacity: 0, y: 12 }}
 					animate={{ opacity: 1, y: 0 }}
-					transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
+					transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: 0.12 }}
 				>
 					<code className="command-label">{cmd}</code>
 					<h1 className="command-heading">{description}</h1>
@@ -70,7 +70,7 @@ export function CommandDetail({
 					className="command-section"
 					initial={{ opacity: 0, y: 12 }}
 					animate={{ opacity: 1, y: 0 }}
-					transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
+					transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: 0.25 }}
 				>
 					<h2 className="section-label">{t.overview}</h2>
 					<p className="section-body">{overview}</p>
@@ -80,7 +80,7 @@ export function CommandDetail({
 					className="command-section"
 					initial={{ opacity: 0, y: 12 }}
 					animate={{ opacity: 1, y: 0 }}
-					transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1], delay: 0.28 }}
+					transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: 0.35 }}
 				>
 					<h2 className="section-label">{t.flags}</h2>
 					<div className="flag-list">
@@ -90,7 +90,7 @@ export function CommandDetail({
 								className="flag-row"
 								initial={{ opacity: 0 }}
 								animate={{ opacity: 1 }}
-								transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1], delay: 0.32 + i * 0.05 }}
+								transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1], delay: 0.38 + i * 0.06 }}
 							>
 								<code className="flag-name">{flag.name}</code>
 								<div className="flag-info">
@@ -108,7 +108,7 @@ export function CommandDetail({
 					className="command-section"
 					initial={{ opacity: 0, y: 12 }}
 					animate={{ opacity: 1, y: 0 }}
-					transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1], delay: 0.36 }}
+					transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: 0.45 }}
 				>
 					<h2 className="section-label">{t.workflow}</h2>
 					<div className="step-list">
@@ -118,7 +118,7 @@ export function CommandDetail({
 								className="step"
 								initial={{ opacity: 0, x: -8 }}
 								animate={{ opacity: 1, x: 0 }}
-								transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1], delay: 0.42 + i * 0.07 }}
+								transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1], delay: 0.5 + i * 0.09 }}
 							>
 								<span className="step-num">{String(i + 1).padStart(2, "0")}</span>
 								<div className="step-content">

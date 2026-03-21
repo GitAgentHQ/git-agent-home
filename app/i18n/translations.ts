@@ -29,6 +29,59 @@ export interface Translations {
 	// Command pages
 	initData: CommandData;
 	commitData: CommandData;
+
+	// Home explore
+	exploreTitle: string;
+	exploreByLanguageName: string;
+	exploreByLanguageDesc: string;
+	exploreComparisonsName: string;
+	exploreComparisonsDesc: string;
+	exploreGlossaryName: string;
+	exploreGlossaryDesc: string;
+	exploreTemplatesName: string;
+	exploreTemplatesDesc: string;
+
+	// Home footer
+	homeFooterMadeByPrefix: string;
+	homeFooterMadeBySuffix: string;
+
+	// pSEO footer
+	pseoFooterCtaHeading: string;
+	pseoFooterNavLanguages: string;
+	pseoFooterNavComparisons: string;
+	pseoFooterNavGlossary: string;
+	pseoFooterNavTemplates: string;
+
+	// pSEO comparison table
+	pseoComparisonFeature: string;
+
+	// pSEO hub index pages
+	pseoForHubTitle: string;
+	pseoForHubSubtitle: string;
+	pseoVsHubTitle: string;
+	pseoVsHubSubtitle: string;
+	pseoGlossaryHubTitle: string;
+	pseoGlossaryHubSubtitle: string;
+	pseoTemplatesHubTitle: string;
+	pseoTemplatesHubSubtitle: string;
+
+	// pSEO shared section labels
+	pseoSectionDiffExample: string;
+	pseoSectionGitAgentOutput: string;
+	pseoWhyWorksFor: string;
+	pseoSectionInstall: string;
+	pseoSectionFeatureComparison: string;
+	pseoSectionOutputExample: string;
+	pseoSectionExplanation: string;
+	pseoSectionExamples: string;
+	pseoSectionHowHelps: string;
+	pseoSectionFormat: string;
+	pseoSectionRealExamples: string;
+	pseoSectionWhenToUse: string;
+	pseoSectionGitAgentInfers: string;
+	pseoRelated: string;
+	pseoFaq: string;
+	pseoCommitTemplateSuffix: string;
 }
 
 export interface Flag {
@@ -84,6 +137,59 @@ export const translations: Record<Language, Translations> = {
 		pricingSubtitle: "cost per 1,000 commits",
 		pricingNote:
 			"~4,200 input + ~400 output tokens per commit. From measured usage. Source: provider pricing pages, Mar 2026.",
+
+		// Home explore
+		exploreTitle: "explore",
+		exploreByLanguageName: "by language",
+		exploreByLanguageDesc: "Python, Go, Rust...",
+		exploreComparisonsName: "comparisons",
+		exploreComparisonsDesc: "vs other commit tools",
+		exploreGlossaryName: "glossary",
+		exploreGlossaryDesc: "Git workflow concepts",
+		exploreTemplatesName: "templates",
+		exploreTemplatesDesc: "feat, fix, refactor...",
+
+		homeFooterMadeByPrefix: "Made by ",
+		homeFooterMadeBySuffix: "",
+
+		// pSEO footer
+		pseoFooterCtaHeading: "Get started free",
+		pseoFooterNavLanguages: "Languages",
+		pseoFooterNavComparisons: "Comparisons",
+		pseoFooterNavGlossary: "Glossary",
+		pseoFooterNavTemplates: "Templates",
+
+		pseoComparisonFeature: "Feature",
+
+		pseoForHubTitle: "Browse by language or framework",
+		pseoForHubSubtitle:
+			"git-agent understands each language's project layout and generates accurate conventional commit messages automatically.",
+		pseoVsHubTitle: "Comparisons",
+		pseoVsHubSubtitle:
+			"See how git-agent compares to other AI commit tools across atomic splitting, free tier access, and hook integration.",
+		pseoGlossaryHubTitle: "Git workflow glossary",
+		pseoGlossaryHubSubtitle:
+			"Plain-language explanations of conventional commits, atomic commits, pre-commit hooks, and more Git workflow concepts.",
+		pseoTemplatesHubTitle: "Commit type templates",
+		pseoTemplatesHubSubtitle: "Format, examples, and best practices for every conventional commit type.",
+
+		pseoSectionDiffExample: "diff example",
+		pseoSectionGitAgentOutput: "git-agent output",
+		pseoWhyWorksFor: "Why it works for {lang}",
+		pseoSectionInstall: "install",
+		pseoSectionFeatureComparison: "feature comparison",
+		pseoSectionOutputExample: "output example",
+		pseoSectionExplanation: "explanation",
+		pseoSectionExamples: "examples",
+		pseoSectionHowHelps: "how git-agent helps",
+		pseoSectionFormat: "format",
+		pseoSectionRealExamples: "real examples",
+		pseoSectionWhenToUse: "when to use",
+		pseoSectionGitAgentInfers:
+			"git-agent automatically analyzes your changes and infers the correct commit type.",
+		pseoRelated: "related",
+		pseoFaq: "FAQ",
+		pseoCommitTemplateSuffix: "commit template",
 
 		// Command detail
 		back: "← back",
@@ -183,6 +289,58 @@ export const translations: Record<Language, Translations> = {
 		pricingSubtitle: "每 1000 次提交的费用",
 		pricingNote:
 			"每次提交约 4,200 输入 + 400 输出 token。来自实测用量。来源：各厂商定价页，2026 年 3 月。",
+
+		// Home explore
+		exploreTitle: "探索",
+		exploreByLanguageName: "按语言",
+		exploreByLanguageDesc: "Python、Go、Rust...",
+		exploreComparisonsName: "工具对比",
+		exploreComparisonsDesc: "与其他工具的对比",
+		exploreGlossaryName: "术语表",
+		exploreGlossaryDesc: "Git 工作流概念",
+		exploreTemplatesName: "提交模板",
+		exploreTemplatesDesc: "feat、fix、refactor...",
+
+		homeFooterMadeByPrefix: "由 ",
+		homeFooterMadeBySuffix: " 制作",
+
+		// pSEO footer
+		pseoFooterCtaHeading: "免费开始",
+		pseoFooterNavLanguages: "语言",
+		pseoFooterNavComparisons: "对比",
+		pseoFooterNavGlossary: "术语表",
+		pseoFooterNavTemplates: "模板",
+
+		pseoComparisonFeature: "功能",
+
+		pseoForHubTitle: "按语言或框架浏览",
+		pseoForHubSubtitle:
+			"git-agent 理解每种语言的项目结构，自动生成准确的规范化提交信息。",
+		pseoVsHubTitle: "与其他工具对比",
+		pseoVsHubSubtitle:
+			"了解 git-agent 与其他 AI 提交工具的区别——原子拆分、免费套餐、钩子集成。",
+		pseoGlossaryHubTitle: "Git 工作流术语",
+		pseoGlossaryHubSubtitle:
+			"规范化提交、原子提交、pre-commit 钩子及更多 Git 概念的解释。",
+		pseoTemplatesHubTitle: "提交类型模板",
+		pseoTemplatesHubSubtitle: "每种规范化提交类型的格式、示例及最佳实践。",
+
+		pseoSectionDiffExample: "差异示例",
+		pseoSectionGitAgentOutput: "git-agent 生成的提交",
+		pseoWhyWorksFor: "为何适合 {lang}",
+		pseoSectionInstall: "安装",
+		pseoSectionFeatureComparison: "功能对比",
+		pseoSectionOutputExample: "输出示例",
+		pseoSectionExplanation: "详细说明",
+		pseoSectionExamples: "示例",
+		pseoSectionHowHelps: "git-agent 如何帮助",
+		pseoSectionFormat: "格式",
+		pseoSectionRealExamples: "真实示例",
+		pseoSectionWhenToUse: "使用时机",
+		pseoSectionGitAgentInfers: "git-agent 会自动分析你的变更并推断正确的提交类型。",
+		pseoRelated: "相关",
+		pseoFaq: "常见问题",
+		pseoCommitTemplateSuffix: "提交模板",
 
 		// Command detail
 		back: "← 返回",
