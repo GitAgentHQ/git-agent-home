@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
 import { motion } from "motion/react";
 import type { ReactNode } from "react";
@@ -136,6 +137,48 @@ const exploreItem = {
 	},
 };
 
+function InstallCopyBlock() {
+	const { t } = useLanguage();
+	const [copied, setCopied] = useState(false);
+	const copiedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+	useEffect(() => {
+		return () => {
+			if (copiedTimerRef.current) clearTimeout(copiedTimerRef.current);
+		};
+	}, []);
+
+	const copyLine = async () => {
+		try {
+			await navigator.clipboard.writeText(t.homeInstallCopyLine);
+			setCopied(true);
+			if (copiedTimerRef.current) clearTimeout(copiedTimerRef.current);
+			copiedTimerRef.current = setTimeout(() => setCopied(false), 2000);
+		} catch {
+			/* clipboard may be unavailable */
+		}
+	};
+
+	return (
+		<div className="home-install">
+			<p className="home-install-hint">{t.homeInstallHint}</p>
+			<div className="home-install-row">
+				<div className="home-install-box command-usage">
+					<code>{t.homeInstallCopyLine}</code>
+				</div>
+				<button
+					type="button"
+					className="home-install-copy-btn"
+					onClick={copyLine}
+					aria-live="polite"
+				>
+					{copied ? t.homeCopied : t.homeCopy}
+				</button>
+			</div>
+		</div>
+	);
+}
+
 export function HomeView({ onSelect }: HomeViewProps) {
 	const { t } = useLanguage();
 	const reduced = useAccessibleMotion();
@@ -178,6 +221,7 @@ export function HomeView({ onSelect }: HomeViewProps) {
 			<header className="home-header">
 				<h1 className="home-title">{t.homeTitle}</h1>
 				<p className="home-subtitle">{t.homeSubtitle}</p>
+				<InstallCopyBlock />
 			</header>
 
 			<motion.div

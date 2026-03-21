@@ -4,6 +4,10 @@ export interface Translations {
 	// Home view
 	homeTitle: string;
 	homeSubtitle: string;
+	homeInstallHint: string;
+	homeInstallCopyLine: string;
+	homeCopy: string;
+	homeCopied: string;
 	viewDetails: string;
 
 	// Entry cards
@@ -110,6 +114,10 @@ export const translations: Record<Language, Translations> = {
 		homeTitle: "git-agent",
 		homeSubtitle:
 			"AI Git assistant that splits changes into atomic commits and writes conventional messages — free to use, no API key needed.",
+		homeInstallHint: "Copy the line below and paste it into any coding agent.",
+		homeInstallCopyLine: "Install git-agent — follow https://git-agent.dev/install.md",
+		homeCopy: "Copy",
+		homeCopied: "Copied",
 		viewDetails: "View details →",
 
 		// Entry cards
@@ -300,6 +308,10 @@ export const translations: Record<Language, Translations> = {
 		homeTitle: "git-agent",
 		homeSubtitle:
 			"AI Git 助手，自动将变更拆分为原子提交并生成规范提交消息 — 免费使用，无需配置 API 密钥。",
+		homeInstallHint: "复制下方整行，粘贴到任意编程助手即可。",
+		homeInstallCopyLine: "安装 git-agent — 请按 https://git-agent.dev/install.md 中的指引操作",
+		homeCopy: "复制",
+		homeCopied: "已复制",
 		viewDetails: "查看详情 →",
 
 		// Entry cards
