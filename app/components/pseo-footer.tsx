@@ -1,5 +1,6 @@
 import { Link } from "react-router";
 import { useLanguage } from "../contexts/language-context";
+import { INSTALL_COMMAND, GITHUB_URL } from "../lib/constants";
 
 export function PseoFooter() {
 	const { t } = useLanguage();
@@ -9,10 +10,10 @@ export function PseoFooter() {
 			<div className="pseo-footer-cta">
 				<p className="pseo-footer-cta-heading">{t.pseoFooterCtaHeading}</p>
 				<code className="pseo-footer-cta-install">
-					brew install gitagenthq/tap/git-agent
+					{INSTALL_COMMAND}
 				</code>
 				<a
-					href="https://github.com/GitAgentHQ/git-agent-cli"
+					href={GITHUB_URL}
 					target="_blank"
 					rel="noopener noreferrer"
 					className="pseo-footer-cta-link"

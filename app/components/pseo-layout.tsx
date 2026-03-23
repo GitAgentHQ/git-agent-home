@@ -5,7 +5,10 @@ import { PseoFooter } from "./pseo-footer";
 import { useLanguage } from "../contexts/language-context";
 import { motionDuration, motionEase, useAccessibleMotion } from "../utils/motion-prefs";
 
-const MotionBackLink = motion(Link);
+const MotionBackLink = motion.create(Link);
+
+const COLOR_WHITE_55 = "rgba(255, 255, 255, 0.55)";
+const COLOR_WHITE = "#fff";
 
 interface PseoLayoutProps {
 	breadcrumb: string;
@@ -34,7 +37,7 @@ export function PseoLayout({ breadcrumb, backHref, children }: PseoLayoutProps) 
 					whileHover={
 						reduced
 							? undefined
-							: { borderColor: "rgba(255, 255, 255, 0.55)", color: "#fff" }
+							: { borderColor: COLOR_WHITE_55, color: COLOR_WHITE }
 					}
 					transition={{ duration: reduced ? 0 : motionDuration(0.28), ease: motionEase }}
 				>

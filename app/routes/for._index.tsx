@@ -1,5 +1,6 @@
 import type { MetaFunction } from "react-router";
 import { buildMeta } from "../lib/meta";
+import { BASE_URL } from "../lib/constants";
 import { personaEntries } from "../data/personas";
 import { PseoLayout } from "../components/pseo-layout";
 import { HubGrid } from "../components/hub-grid";
@@ -10,7 +11,7 @@ export const meta: MetaFunction = () =>
 		title: "Git Commit Message Generator by Language | git-agent",
 		description:
 			"AI-powered conventional commit messages for every language and framework. Python, TypeScript, Go, Rust, Java, Swift, and more.",
-		canonicalUrl: "https://gitagent.dev/for",
+		canonicalUrl: `${BASE_URL}/for`,
 	});
 
 export default function ForIndex() {

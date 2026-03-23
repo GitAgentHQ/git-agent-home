@@ -1,3 +1,5 @@
+import { BASE_URL } from "./constants";
+
 export type BuildMetaInput = {
 	title: string;
 	description: string;
@@ -15,13 +17,17 @@ export function buildMeta({ title, description, canonicalUrl }: BuildMetaInput) 
 		{ property: "og:description", content: description },
 		{ property: "og:url", content: canonicalUrl },
 		{ property: "og:type", content: "website" },
+		{ property: "og:image", content: `${BASE_URL}/og-image.png` },
+		{ property: "og:image:width", content: "1200" },
+		{ property: "og:image:height", content: "630" },
 		{ name: "twitter:card", content: "summary_large_image" },
+		{ name: "twitter:image", content: `${BASE_URL}/og-image.png` },
 		{ tagName: "link", rel: "canonical", href: canonicalUrl },
 	];
 }
 
 const SITE_NAME = "git-agent";
-const SITE_URL = "https://gitagent.dev";
+const SITE_URL = BASE_URL;
 
 /**
  * JSON-LD for the git-agent CLI as a SoftwareApplication.

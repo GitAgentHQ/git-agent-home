@@ -3,7 +3,7 @@ import { motion } from "motion/react";
 import type { I18nText } from "../data/types";
 import { motionEase, useAccessibleMotion } from "../utils/motion-prefs";
 
-const MotionLink = motion(Link);
+const MotionLink = motion.create(Link);
 
 interface HubEntry {
 	slug: string;

@@ -1,7 +1,7 @@
 import { useLoaderData } from "react-router";
 import type { LoaderFunctionArgs, MetaFunction } from "react-router";
 import { buildMeta, softwareAppJsonLd, faqJsonLd } from "../lib/meta";
-import { findComparison } from "../data/comparisons";
+import { BASE_URL } from "../lib/constants";
 import { CrossLinksSection } from "../components/cross-links-section";
 import { PseoLayout } from "../components/pseo-layout";
 import { ComparisonTable } from "../components/comparison-table";
@@ -10,6 +10,7 @@ import { useLanguage } from "../contexts/language-context";
 import { renderInlineDocText } from "../utils/inline-doc-text";
 
 export async function loader({ params }: LoaderFunctionArgs) {
+	const { findComparison } = await import("../data/comparisons");
 	const entry = findComparison(params.competitor ?? "");
 	if (!entry) throw new Response("Not Found", { status: 404 });
 	return { entry };
@@ -22,7 +23,7 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
 		...buildMeta({
 			title: `git-agent vs ${entry.name} | Comparison`,
 			description: entry.description.en,
-			canonicalUrl: `https://gitagent.dev/vs/${entry.slug}`,
+			canonicalUrl: `${BASE_URL}/vs/${entry.slug}`,
 		}),
 		{ "script:ld+json": softwareAppJsonLd() },
 		{

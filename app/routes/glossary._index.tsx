@@ -1,5 +1,6 @@
 import type { MetaFunction } from "react-router";
 import { buildMeta } from "../lib/meta";
+import { BASE_URL } from "../lib/constants";
 import { glossaryEntries } from "../data/glossary";
 import { PseoLayout } from "../components/pseo-layout";
 import { HubGrid } from "../components/hub-grid";
@@ -10,7 +11,7 @@ export const meta: MetaFunction = () =>
 		title: "Git and Conventional Commits Glossary | git-agent",
 		description:
 			"Definitions for conventional commits, atomic commits, pre-commit hooks, semantic versioning, and other Git workflow concepts.",
-		canonicalUrl: "https://gitagent.dev/glossary",
+		canonicalUrl: `${BASE_URL}/glossary`,
 	});
 
 export default function GlossaryIndex() {

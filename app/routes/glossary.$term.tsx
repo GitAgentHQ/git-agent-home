@@ -1,7 +1,7 @@
 import { useLoaderData } from "react-router";
 import type { LoaderFunctionArgs, MetaFunction } from "react-router";
 import { buildMeta, faqJsonLd } from "../lib/meta";
-import { findGlossaryTerm } from "../data/glossary";
+import { BASE_URL, INSTALL_COMMAND } from "../lib/constants";
 import { CrossLinksSection } from "../components/cross-links-section";
 import { PseoLayout } from "../components/pseo-layout";
 import { CodeBlock } from "../components/code-block";
@@ -9,6 +9,7 @@ import { useLanguage } from "../contexts/language-context";
 import { renderInlineDocText } from "../utils/inline-doc-text";
 
 export async function loader({ params }: LoaderFunctionArgs) {
+	const { findGlossaryTerm } = await import("../data/glossary");
 	const entry = findGlossaryTerm(params.term ?? "");
 	if (!entry) throw new Response("Not Found", { status: 404 });
 	return { entry };
@@ -21,7 +22,7 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
 		...buildMeta({
 			title: `What is ${entry.term.en}? | git-agent Glossary`,
 			description: entry.definition.en,
-			canonicalUrl: `https://gitagent.dev/glossary/${entry.slug}`,
+			canonicalUrl: `${BASE_URL}/glossary/${entry.slug}`,
 		}),
 		{
 			"script:ld+json": faqJsonLd(entry.faq.map((f) => ({ question: f.question.en, answer: f.answer.en }))),
@@ -60,7 +61,7 @@ export default function GlossaryTerm() {
 				<h2 className="section-label">{t.pseoSectionHowHelps}</h2>
 				<p className="section-body">{renderInlineDocText(entry.howGitAgentHelps[language])}</p>
 				<code className="pseo-install-snippet" style={{ marginTop: 14 }}>
-					brew install gitagenthq/tap/git-agent
+					{INSTALL_COMMAND}
 				</code>
 			</section>
 

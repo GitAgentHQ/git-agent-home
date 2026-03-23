@@ -5,13 +5,19 @@ import type { ReactNode } from "react";
 
 import { motionDuration, motionEase, useAccessibleMotion } from "../utils/motion-prefs";
 
-const MotionLink = motion(Link);
+const MotionLink = motion.create(Link);
 import { Barcode } from "./barcode";
 import type { BarConfig } from "./barcode";
 import { DotsCircle, DotsNoiseFilter, DotsSquare } from "./pattern";
 import { HomeFooter } from "./home-footer";
 import { LangSwitch } from "./lang-switch";
 import { useLanguage } from "../contexts/language-context";
+import { GITHUB_URL } from "../lib/constants";
+
+const COLOR_WHITE_75 = "rgba(255, 255, 255, 0.75)";
+const COLOR_WHITE_18 = "rgba(255, 255, 255, 0.18)";
+const COLOR_WHITE_07 = "rgba(255, 255, 255, 0.07)";
+const SHADOW_CARD_HOVER = "0 14px 44px rgba(0, 0, 0, 0.6)";
 
 interface HomeViewProps {
 	onSelect: (cmd: "init" | "commit") => void;
@@ -203,12 +209,12 @@ export function HomeView({ onSelect }: HomeViewProps) {
 				<div className="home-nav-spacer" />
 				<div className="home-nav-actions">
 					<motion.a
-						href="https://github.com/GitAgentHQ/git-agent-cli"
+						href={GITHUB_URL}
 						target="_blank"
 						rel="noopener noreferrer"
 						className="home-nav-link"
 						aria-label="View on GitHub"
-						whileHover={reduced ? undefined : { color: "rgba(255,255,255,0.75)" }}
+						whileHover={reduced ? undefined : { color: COLOR_WHITE_75 }}
 						transition={{ duration: 0.28, ease: motionEase }}
 					>
 						<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -308,8 +314,8 @@ function ExploreSection() {
 				reduced
 					? undefined
 					: {
-							borderColor: "rgba(255, 255, 255, 0.18)",
-							background: "rgba(255, 255, 255, 0.07)",
+							borderColor: COLOR_WHITE_18,
+							background: COLOR_WHITE_07,
 							transition: { duration: 0.28, ease: motionEase },
 						}
 			}
@@ -371,7 +377,7 @@ function EntryCard({
 			whileHover={reducedMotion ? undefined : "hover"}
 			variants={{
 				hover: {
-					boxShadow: "0 14px 44px rgba(0,0,0,0.6)",
+					boxShadow: SHADOW_CARD_HOVER,
 					transition: { duration: 0.28, ease: motionEase },
 				},
 			}}

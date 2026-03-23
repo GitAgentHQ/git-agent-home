@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { type Language, translations, type Translations } from "../i18n/translations";
 
 interface LanguageContextValue {
@@ -10,12 +10,14 @@ interface LanguageContextValue {
 const LanguageContext = createContext<LanguageContextValue | null>(null);
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-	const [language, setLanguage] = useState<Language>(() => {
-		if (typeof window === "undefined") return "en";
+	const [language, setLanguage] = useState<Language>("en");
+
+	useEffect(() => {
 		const browserLang = navigator.language.toLowerCase();
-		if (browserLang.startsWith("zh")) return "zh";
-		return "en";
-	});
+		if (browserLang.startsWith("zh")) {
+			setLanguage("zh");
+		}
+	}, []);
 
 	const t = translations[language];
 

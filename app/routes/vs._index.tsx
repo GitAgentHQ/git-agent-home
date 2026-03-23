@@ -1,5 +1,6 @@
 import type { MetaFunction } from "react-router";
 import { buildMeta } from "../lib/meta";
+import { BASE_URL } from "../lib/constants";
 import { comparisonEntries } from "../data/comparisons";
 import { PseoLayout } from "../components/pseo-layout";
 import { HubGrid } from "../components/hub-grid";
@@ -10,7 +11,7 @@ export const meta: MetaFunction = () =>
 		title: "git-agent vs Other AI Commit Tools | Comparisons",
 		description:
 			"Compare git-agent against aicommit2, Commitizen, czg, gitmoji-cli, and more. See how atomic commit splitting and a free tier set git-agent apart.",
-		canonicalUrl: "https://gitagent.dev/vs",
+		canonicalUrl: `${BASE_URL}/vs`,
 	});
 
 export default function VsIndex() {

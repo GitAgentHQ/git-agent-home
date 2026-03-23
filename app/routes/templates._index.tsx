@@ -1,5 +1,6 @@
 import type { MetaFunction } from "react-router";
 import { buildMeta } from "../lib/meta";
+import { BASE_URL } from "../lib/constants";
 import { templateEntries } from "../data/templates";
 import { PseoLayout } from "../components/pseo-layout";
 import { HubGrid } from "../components/hub-grid";
@@ -10,7 +11,7 @@ export const meta: MetaFunction = () =>
 		title: "Conventional Commit Message Templates | git-agent",
 		description:
 			"Templates and examples for every conventional commit type: feat, fix, refactor, docs, test, chore, perf, style, ci, and breaking changes.",
-		canonicalUrl: "https://gitagent.dev/templates",
+		canonicalUrl: `${BASE_URL}/templates`,
 	});
 
 export default function TemplatesIndex() {

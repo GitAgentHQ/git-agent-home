@@ -1,7 +1,7 @@
 import { useLoaderData } from "react-router";
 import type { LoaderFunctionArgs, MetaFunction } from "react-router";
 import { buildMeta, softwareAppJsonLd, faqJsonLd } from "../lib/meta";
-import { findPersona } from "../data/personas";
+import { BASE_URL } from "../lib/constants";
 import { CrossLinksSection } from "../components/cross-links-section";
 import { PseoLayout } from "../components/pseo-layout";
 import { CodeBlock } from "../components/code-block";
@@ -9,6 +9,7 @@ import { useLanguage } from "../contexts/language-context";
 import { renderInlineDocText } from "../utils/inline-doc-text";
 
 export async function loader({ params }: LoaderFunctionArgs) {
+	const { findPersona } = await import("../data/personas");
 	const entry = findPersona(params.language ?? "");
 	if (!entry) throw new Response("Not Found", { status: 404 });
 	return { entry };
@@ -21,7 +22,7 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
 		...buildMeta({
 			title: `Git Commit Message Generator for ${entry.language.en} | git-agent`,
 			description: entry.description.en,
-			canonicalUrl: `https://gitagent.dev/for/${entry.slug}`,
+			canonicalUrl: `${BASE_URL}/for/${entry.slug}`,
 		}),
 		{
 			"script:ld+json": softwareAppJsonLd(),

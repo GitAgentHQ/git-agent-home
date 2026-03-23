@@ -2,6 +2,9 @@ import { motion } from "motion/react";
 import { useLanguage } from "../contexts/language-context";
 import { motionEase, useAccessibleMotion } from "../utils/motion-prefs";
 
+const COLOR_WHITE_55 = "rgba(255, 255, 255, 0.55)";
+const COLOR_WHITE = "#fff";
+
 export function LangSwitch() {
 	const { language, setLanguage } = useLanguage();
 	const reduced = useAccessibleMotion();
@@ -18,7 +21,7 @@ export function LangSwitch() {
 			whileHover={
 				reduced
 					? undefined
-					: { borderColor: "rgba(255,255,255,0.55)", color: "#fff" }
+					: { borderColor: COLOR_WHITE_55, color: COLOR_WHITE }
 			}
 			transition={{ duration: reduced ? 0 : 0.28, ease: motionEase }}
 		>

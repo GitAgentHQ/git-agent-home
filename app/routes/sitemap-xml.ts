@@ -2,8 +2,7 @@ import { personaEntries } from "../data/personas";
 import { comparisonEntries } from "../data/comparisons";
 import { glossaryEntries } from "../data/glossary";
 import { templateEntries } from "../data/templates";
-
-const BASE_URL = "https://gitagent.dev";
+import { BASE_URL } from "../lib/constants";
 const TODAY = new Date().toISOString().split("T")[0];
 
 function urlEntry(loc: string, changefreq: string, priority: string) {
