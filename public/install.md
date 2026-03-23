@@ -68,7 +68,7 @@ Ask: "Do you want to keep the `Co-Authored-By: Git Agent` trailer in your commit
   no_git_agent_co_author: true
   ```
 
-  To disable only for a specific repository instead, add to `.git-agent/project.yml` in that repo:
+  To disable only for a specific repository instead, add to `.git-agent/config.yml` (or `.git-agent/config.local.yml` for a personal override not checked into git) in that repo:
 
   ```yaml
   no_git_agent_co_author: true
@@ -87,7 +87,7 @@ Ask: "Do you want to include the AI model's `Co-Authored-By` trailer (e.g. from 
   no_model_co_author: true
   ```
 
-  Or, to restrict it to one repository, add to `.git-agent/project.yml`:
+  Or, to restrict it to one repository, add to `.git-agent/config.yml` (or `.git-agent/config.local.yml` for a personal override not checked into git):
 
   ```yaml
   no_model_co_author: true
@@ -97,11 +97,24 @@ Ask: "Do you want to include the AI model's `Co-Authored-By` trailer (e.g. from 
 
 Ask: "Do you want to initialize git-agent in your current repository now? This generates scopes from your git history and optionally installs a commit-message hook. (yes / no)"
 
-- **yes** — run `git-agent init --scope` and show the user the generated `.git-agent/project.yml`.
+- **yes** — run `git-agent init --scope` and show the user the generated `.git-agent/config.yml`.
 - **no** — skip; the user can run `git-agent init` manually later.
 
 ---
 
-## Step 5: Confirm and hand off
+## Step 5: Shell completion (optional)
+
+Ask: "Do you want to set up shell completion for git-agent? (yes / no)"
+
+- **yes** — detect the user's shell and run the appropriate command:
+  - **bash**: `git-agent completion bash > $(brew --prefix)/etc/bash_completion.d/git-agent` (macOS) or `git-agent completion bash > /etc/bash_completion.d/git-agent` (Linux)
+  - **zsh**: `git-agent completion zsh > "${fpath[1]}/_git-agent"`
+  - **fish**: `git-agent completion fish > ~/.config/fish/completions/git-agent.fish`
+  - **powershell**: `git-agent completion powershell >> $PROFILE`
+- **no** — skip; the user can run `git-agent completion --help` later.
+
+---
+
+## Step 6: Confirm and hand off
 
 Tell the user that git-agent is ready. From this point on, follow the installed skill (`use-git-agent`) for all git-agent operations.
