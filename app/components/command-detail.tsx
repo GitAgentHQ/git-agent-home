@@ -1,4 +1,5 @@
 import { motion } from "motion/react";
+import { CodeBlock } from "./code-block";
 import { useLanguage } from "../contexts/language-context";
 import { renderInlineDocText } from "../utils/inline-doc-text";
 import { motionDuration, motionEase, useAccessibleMotion } from "../utils/motion-prefs";
@@ -73,9 +74,7 @@ export function CommandDetail({
 				>
 					<code className="command-label">{cmd}</code>
 					<h1 className="command-heading">{description}</h1>
-					<div className="command-usage">
-						<code>{usage}</code>
-					</div>
+					<CodeBlock code={usage} />
 				</motion.header>
 
 				<motion.section

@@ -60,9 +60,9 @@ export default function GlossaryTerm() {
 			<section className="command-section">
 				<h2 className="section-label">{t.pseoSectionHowHelps}</h2>
 				<p className="section-body">{renderInlineDocText(entry.howGitAgentHelps[language])}</p>
-				<code className="pseo-install-snippet" style={{ marginTop: 14 }}>
-					{INSTALL_COMMAND}
-				</code>
+				<div style={{ marginTop: 14 }}>
+					<CodeBlock code={INSTALL_COMMAND} />
+				</div>
 			</section>
 
 			<section className="command-section">

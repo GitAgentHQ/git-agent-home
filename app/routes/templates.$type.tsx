@@ -66,9 +66,9 @@ export default function TemplatesType() {
 				<h2 className="section-label">{t.pseoSectionWhenToUse}</h2>
 				<p className="section-body">{renderInlineDocText(entry.whenToUse[language])}</p>
 				<p className="section-body" style={{ marginTop: 12 }}>{renderInlineDocText(t.pseoSectionGitAgentInfers)}</p>
-				<code className="pseo-install-snippet" style={{ marginTop: 14 }}>
-					{INSTALL_COMMAND}
-				</code>
+				<div style={{ marginTop: 14 }}>
+					<CodeBlock code={INSTALL_COMMAND} />
+				</div>
 			</section>
 
 			<section className="command-section">

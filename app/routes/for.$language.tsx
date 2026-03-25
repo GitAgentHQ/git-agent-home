@@ -74,7 +74,7 @@ export default function ForLanguage() {
 
 			<section className="command-section">
 				<h2 className="section-label">{t.pseoSectionInstall}</h2>
-				<code className="pseo-install-snippet">{entry.installSnippet}</code>
+				<CodeBlock code={entry.installSnippet} />
 			</section>
 
 			<section className="command-section">

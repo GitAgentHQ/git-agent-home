@@ -1,4 +1,5 @@
 import { Link } from "react-router";
+import { CodeBlock } from "./code-block";
 import { useLanguage } from "../contexts/language-context";
 import { INSTALL_COMMAND, GITHUB_URL } from "../lib/constants";
 
@@ -9,9 +10,7 @@ export function PseoFooter() {
 		<div className="pseo-footer">
 			<div className="pseo-footer-cta">
 				<p className="pseo-footer-cta-heading">{t.pseoFooterCtaHeading}</p>
-				<code className="pseo-footer-cta-install">
-					{INSTALL_COMMAND}
-				</code>
+				<CodeBlock code={INSTALL_COMMAND} />
 				<a
 					href={GITHUB_URL}
 					target="_blank"

@@ -171,74 +171,15 @@ body {
 	text-align: center;
 }
 
-.home-install-row {
-	display: flex;
-	align-items: stretch;
-	gap: 10px;
-	width: fit-content;
-	max-width: 100%;
-	min-width: 0;
-	box-sizing: border-box;
-}
-
-.home-install-box {
-	flex: 0 1 auto;
-	min-width: 0;
-	margin: 0;
-	text-align: left;
-	/* .command-usage sets overflow-x: auto — avoid a visible horizontal scrollbar */
-	overflow-x: hidden;
-	overflow-y: visible;
-}
-
-.home-install-box code {
-	display: block;
+.home-install .code-block-code {
+	white-space: nowrap;
 	overflow-wrap: anywhere;
 	word-break: break-word;
-	/* One line when it fits — box width tracks text; narrow viewports wrap instead of stretching */
-	white-space: nowrap;
 }
 
 @media (max-width: 640px) {
-	.home-install-box code {
+	.home-install .code-block-code {
 		white-space: pre-wrap;
-	}
-}
-
-.home-install-copy-btn {
-	flex-shrink: 0;
-	align-self: stretch;
-	display: inline-flex;
-	justify-content: center;
-	align-items: center;
-	/* Wider than "Copy" / "Copied" and "复制" / "已复制" so label swap does not resize */
-	min-width: 5.75rem;
-	background: rgba(255, 255, 255, 0.06);
-	border: 1px solid rgba(255, 255, 255, 0.18);
-	border-radius: 4px;
-	color: rgba(255, 255, 255, 0.72);
-	font-family: var(--font-mono);
-	font-size: var(--fs-mono-label);
-	font-weight: 500;
-	padding: 0 14px;
-	min-height: 44px;
-	cursor: pointer;
-	letter-spacing: 0.04em;
-}
-
-.home-install-copy-btn:hover {
-	background: rgba(255, 255, 255, 0.1);
-	border-color: rgba(255, 255, 255, 0.26);
-	color: rgba(255, 255, 255, 0.88);
-}
-
-@media (max-width: 480px) {
-	.home-install-row {
-		flex-direction: column;
-	}
-
-	.home-install-copy-btn {
-		width: 100%;
 	}
 }
 
@@ -623,23 +564,6 @@ body {
 	color: rgba(255, 255, 255, 0.55);
 }
 
-.command-usage {
-	background: rgba(255, 255, 255, 0.04);
-	border: 1px solid rgba(255, 255, 255, 0.08);
-	border-radius: 4px;
-	padding: 11px 16px;
-	display: block;
-	overflow-x: auto;
-	max-width: 100%;
-}
-
-.command-usage code {
-	font-family: var(--font-mono);
-	font-size: var(--fs-mono-body);
-	color: rgba(255, 255, 255, 0.78);
-	letter-spacing: 0.02em;
-	white-space: pre;
-}
 
 /* ---- Sections ---- */
 .command-section {
@@ -687,18 +611,6 @@ body {
 
 .command-hero .section-body .inline-code {
 	background: rgba(255, 255, 255, 0.06);
-}
-
-.command-section .command-usage {
-	background: rgba(0, 0, 0, 0.06);
-	border: 1px solid rgba(0, 0, 0, 0.1);
-	min-width: 0;
-	overflow-x: auto;
-	-webkit-overflow-scrolling: touch;
-}
-
-.command-section .command-usage code {
-	color: var(--ink-2);
 }
 
 /* ---- Flags ---- */
@@ -1265,13 +1177,16 @@ body {
 	overflow: hidden;
 }
 
-/* ---- pSEO shared ---- */
+/* ---- Code block (unified) ---- */
 .code-block {
 	display: flex;
 	flex-direction: column;
 	gap: 6px;
-	margin-bottom: 14px;
 	min-width: 0;
+}
+
+.code-block + .code-block {
+	margin-top: 10px;
 }
 
 .code-block-label {
@@ -1280,7 +1195,58 @@ body {
 	font-weight: 700;
 	letter-spacing: 0.12em;
 	text-transform: uppercase;
+	color: rgba(255, 255, 255, 0.40);
+}
+
+.command-section .code-block-label {
 	color: var(--ink-3);
+}
+
+.code-block-body {
+	background: #0d0d0d;
+	border: 1px solid rgba(255, 255, 255, 0.08);
+	border-radius: 4px;
+	padding: 11px 16px;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	overflow-x: auto;
+	-webkit-overflow-scrolling: touch;
+	max-width: 100%;
+}
+
+.code-block-code {
+	font-family: var(--font-mono);
+	font-size: var(--fs-mono-body);
+	color: rgba(255, 255, 255, 0.78);
+	letter-spacing: 0.02em;
+	white-space: pre;
+	flex: 1;
+	min-width: 0;
+}
+
+.code-block-copy {
+	flex-shrink: 0;
+	display: inline-flex;
+	justify-content: center;
+	align-items: center;
+	min-width: 5.75rem;
+	background: rgba(255, 255, 255, 0.06);
+	border: 1px solid rgba(255, 255, 255, 0.18);
+	border-radius: 4px;
+	color: rgba(255, 255, 255, 0.72);
+	font-family: var(--font-mono);
+	font-size: var(--fs-mono-label);
+	font-weight: 500;
+	padding: 4px 14px;
+	cursor: pointer;
+	letter-spacing: 0.04em;
+}
+
+.code-block-copy:hover {
+	background: rgba(255, 255, 255, 0.1);
+	border-color: rgba(255, 255, 255, 0.26);
+	color: rgba(255, 255, 255, 0.88);
 }
 
 /* ---- Comparison table ---- */
@@ -1478,20 +1444,6 @@ body {
 	margin: 0;
 }
 
-.pseo-footer-cta-install {
-	background: rgba(255, 255, 255, 0.06);
-	border: 1px solid rgba(255, 255, 255, 0.1);
-	border-radius: 4px;
-	padding: 9px 14px;
-	font-family: var(--font-mono);
-	font-size: var(--fs-mono-body);
-	color: rgba(255, 255, 255, 0.78);
-	display: block;
-	overflow-x: auto;
-	white-space: pre;
-	letter-spacing: 0.02em;
-}
-
 .pseo-footer-cta-link {
 	font-family: var(--font-mono);
 	font-size: var(--fs-mono-label);
@@ -1559,23 +1511,6 @@ body {
 	.pseo-two-col {
 		grid-template-columns: minmax(0, 1fr);
 	}
-}
-
-.pseo-install-snippet {
-	font-family: var(--font-mono);
-	font-size: var(--fs-mono-body);
-	color: var(--ink-2);
-	background: rgba(0, 0, 0, 0.06);
-	border: 1px solid rgba(0, 0, 0, 0.1);
-	border-radius: 4px;
-	padding: 11px 16px;
-	display: block;
-	max-width: 100%;
-	overflow-x: auto;
-	-webkit-overflow-scrolling: touch;
-	white-space: pre;
-	letter-spacing: 0.02em;
-	margin-bottom: 14px;
 }
 
 /* ---- Explore section on home ---- */
