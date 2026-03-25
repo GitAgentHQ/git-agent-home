@@ -125,8 +125,8 @@ export const translations: Record<Language, Translations> = {
 		initDescription:
 			"Generate scopes from commit history, configure hook validation, and create .gitignore — one command, ready to commit.",
 		initFeatures: [
-			"Scopes from history and tree",
-			"Built-in empty or conventional (project.yml only)",
+			"Scopes with descriptions from history and tree",
+			"Built-in empty or conventional (config.yml only)",
 			".gitignore generation",
 			"Merge-safe config updates",
 		],
@@ -139,6 +139,7 @@ export const translations: Record<Language, Translations> = {
 			"Hook validation + auto-retry",
 			"Dry-run preview",
 			"Amend last commit",
+			"Co-author and trailer support",
 		],
 
 		// Pricing
@@ -212,15 +213,15 @@ export const translations: Record<Language, Translations> = {
 			cmd: "git-agent init",
 			description: "Initialize your repository",
 			usage:
-				"git-agent init [--scope] [--hook-type <type>] [--hook-script <path>] [--gitignore] [--force] [--max-commits <n>] [--api-key <key>] [--model <name>] [--base-url <url>]",
+				"git-agent init [--scope] [--hook <value>] [--gitignore] [--force] [--local] [--max-commits <n>] [--api-key <key>] [--model <name>] [--base-url <url>]",
 			overview:
-				"Set up `git-agent` in the current repo. With no flags: scope generation, `hook_type` `empty` in `project.yml` when none exists yet (built-in types do not install a `shell` script), and a new `.gitignore` in one pass. Each step can also run alone via flags. Existing `hook_type` in `project.yml` stays put unless you pass `--force`. Prefer `FREE` or `~/.config/git-agent/config.yml` over `init` provider flags.",
+				"Set up `git-agent` in the current repo. With no flags, runs the full setup wizard: ensures a git repo exists (runs `git init` if needed), generates `.gitignore` via AI, generates commit scopes with descriptions from git history via AI, and writes `.git-agent/config.yml` with scopes and `hook: [conventional]`. Each step can also run alone via flags. Existing `.git-agent/config.yml` stays put unless you pass `--force`. Use `git-agent config set hook <value>` to reconfigure hooks. Prefer `FREE` or `~/.config/git-agent/config.yml` over `init` provider flags.",
 			flags: [
-				{ name: "--scope", description: "Derive scopes from commit history and project layout (`LLM`)" },
-				{ name: "--hook-type <value>", description: "Built-in template: `conventional` or `empty`. Stores `hook_type` in `.git-agent/project.yml` only; no hook file.", default: "empty" },
-				{ name: "--hook-script <path>", description: "Custom hook path. Copied to `.git-agent/hooks/pre-commit`; absolute path stored in `project.yml`." },
+				{ name: "--scope", description: "Derive scopes with descriptions from commit history and project layout (`LLM`)" },
+				{ name: "--hook <value>", description: "Hook to configure: `conventional`, `empty`, or a file path (repeatable). Stores in `.git-agent/config.yml`." },
 				{ name: "--gitignore", description: "Generate a `.gitignore` based on project context" },
 				{ name: "--force", description: "Overwrite existing config, hook, and `.gitignore` without merging" },
+				{ name: "--local", description: "Write config to `.git-agent/config.local.yml` instead of `config.yml`" },
 				{ name: "--max-commits <n>", description: "Maximum number of commits to analyze for scope generation", default: "200" },
 				{
 					name: "--api-key <key>",
@@ -243,13 +244,12 @@ export const translations: Record<Language, Translations> = {
 				{
 					title: "Validate environment",
 					description:
-						"Checks Git repo and provider key resolution: prefer official `FREE` (no flags); else `~/.config/git-agent/config.yml` or `git config`; use `init` provider flags only for explicit one-off needs.",
+						"Ensures a git repo exists (runs `git init` if needed) and resolves provider key: prefer official `FREE` (no flags); else `~/.config/git-agent/config.yml` or `git config`; use `init` provider flags only for explicit one-off needs.",
 				},
-				{ title: "Analyze commit history", description: "Reads up to `--max-commits` recent commit subjects, the project's top-level directories, and tracked file list (capped at 300 entries)." },
-				{ title: "Generate scopes via LLM", description: "Calls the configured `LLM` to derive scopes from real directory names only, not from filenames or commit types alone." },
-				{ title: "Write project config", description: "Saves generated scopes to `.git-agent/project.yml`. Merges with existing scopes unless `--force` is set." },
-				{ title: "Install git hook", description: "Built-in `conventional` or `empty`: only `hook_type` in `.git-agent/project.yml` (no hook file). `conventional` runs a Go validator on the message; `empty` always passes. Custom `--hook-script`: copy to `.git-agent/hooks/pre-commit` and store the absolute path in `project.yml`." },
 				{ title: "Generate .gitignore", description: "`LLM` writes a `.gitignore` for the detected layout. Skips if one exists unless `--force`." },
+				{ title: "Analyze commit history", description: "Reads up to `--max-commits` recent commit subjects, the project's top-level directories, and tracked file list (capped at 300 entries)." },
+				{ title: "Generate scopes via LLM", description: "Calls the configured `LLM` to derive scopes with descriptions from real directory names. Each scope includes a short description to help AI understand its purpose during commit message generation." },
+				{ title: "Write project config", description: "Saves generated scopes and `hook: [conventional]` to `.git-agent/config.yml`. Merges with existing scopes unless `--force` is set." },
 			],
 		},
 		commitData: {
@@ -257,7 +257,7 @@ export const translations: Record<Language, Translations> = {
 			description: "Generate commits with LLM assistance",
 			usage: "git-agent commit [--dry-run] [--intent <text>] [--amend] [--no-stage] [--co-author <name>] [--trailer <key:value>] [--no-attribution] [--free]",
 			overview:
-				"Stages tracked changes, groups them into up to five atomic commits per run, drafts conventional messages with an `LLM`, validates via `hook_type` from `project.yml` (`empty`, `conventional`, or custom script), and retries or re-plans when validation fails. Prefer running without provider flags (`FREE` or `~/.config/git-agent/config.yml`).",
+				"Stages tracked changes, groups them into up to five atomic commits per run, drafts conventional messages with an `LLM`, validates via `hook` from `config.yml` (`empty`, `conventional`, or custom script), and retries or re-plans when validation fails. Prefer running without provider flags (`FREE` or `~/.config/git-agent/config.yml`).",
 			flags: [
 				{ name: "--dry-run", description: "Print planned commit messages without creating commits" },
 				{ name: "--intent <text>", description: "Free-text hint for how to group changes and phrase messages" },
@@ -293,12 +293,12 @@ export const translations: Record<Language, Translations> = {
 				{
 					title: "Resolve configuration",
 					description:
-						"Teach users: prefer no provider flags (official `FREE` when available); if missing key and no `~/.config/git-agent/config.yml`, add that file or `git config` before suggesting `--api-key`/`--model`/`--base-url`. When several sources exist, precedence is: CLI flags > `git config --local` > `~/.config/git-agent/config.yml` > build defaults. `--free` uses embedded credentials only.",
+						"Prefer no provider flags (official `FREE` when available); if missing key and no `~/.config/git-agent/config.yml`, add that file or `git config` before using `--api-key`/`--model`/`--base-url`. When several sources exist, precedence is: CLI flags > `git config --local` > `~/.config/git-agent/config.yml` > build defaults. `--free` uses embedded credentials only.",
 				},
 				{ title: "Collect diffs", description: "Unless `--no-stage` is set, runs `git add --all` to stage all tracked changes. Then reads both staged and unstaged diffs to understand the full scope of changes." },
 				{ title: "Plan commits via LLM", description: "Groups files into up to five atomic commits by concern (`feat`, `fix`, `refactor`, `test`, `docs`). `--intent` steers grouping when set." },
 				{ title: "Generate commit messages", description: "Each group gets a Conventional Commits title (≤50 chars), a body with bullets and a short explanation, and an outline." },
-				{ title: "Validate with hook", description: "Uses `hook_type` from `project.yml`: `empty` skips checks; `conventional` runs in-process validation; a script path runs validation then that executable. Failures feed `stderr` back to the `LLM`, up to 3 tries per group." },
+				{ title: "Validate with hook", description: "Uses `hook` from `config.yml`: `empty` skips checks; `conventional` runs in-process validation; a script path runs validation then that executable. Failures feed `stderr` back to the `LLM`, up to 3 tries per group." },
 				{ title: "Commit or re-plan", description: "Creates commits when the hook passes. After repeated hook failures, runs up to two full re-plans, then exits with code 2." },
 			],
 		},
@@ -319,8 +319,8 @@ export const translations: Record<Language, Translations> = {
 		initDescription:
 			"从提交历史生成作用域，配置 hook 验证，创建 .gitignore — 一条命令，即刻开始提交。",
 		initFeatures: [
-			"从历史与目录推导作用域",
-			"内置 empty 或 conventional（仅写 project.yml）",
+			"从历史与目录推导带描述的作用域",
+			"内置 empty 或 conventional（仅写 config.yml）",
 			".gitignore 生成",
 			"合并时安全的配置更新",
 		],
@@ -333,6 +333,7 @@ export const translations: Record<Language, Translations> = {
 			"Hook 验证 + 自动重试",
 			"预览模式",
 			"修改上次提交",
+			"合著者与 trailer 支持",
 		],
 
 		// Pricing
@@ -405,15 +406,15 @@ export const translations: Record<Language, Translations> = {
 			cmd: "git-agent init",
 			description: "初始化你的仓库",
 			usage:
-				"git-agent init [--scope] [--hook-type <类型>] [--hook-script <路径>] [--gitignore] [--force] [--max-commits <n>] [--api-key <密钥>] [--model <名称>] [--base-url <地址>]",
+				"git-agent init [--scope] [--hook <值>] [--gitignore] [--force] [--local] [--max-commits <n>] [--api-key <密钥>] [--model <名称>] [--base-url <地址>]",
 			overview:
-				"在当前仓库启用 `git-agent`。无参数时：生成作用域、在尚未配置 `hook_type` 时将 `hook_type` 记为 `empty`（内置类型不安装 `shell` 脚本）、并生成 `.gitignore`，一次跑完。各步也可单独用参数触发。`project.yml` 里已有 `hook_type` 会保留，除非加 `--force`。优先 `FREE` 或 `~/.config/git-agent/config.yml`，再考虑 `init` 的 `provider` 参数。",
+				"在当前仓库启用 `git-agent`。无参数时运行完整向导：确保 git 仓库存在（必要时运行 `git init`）、通过 AI 生成 `.gitignore`、从 git 历史通过 AI 生成带描述的提交作用域，并将作用域和 `hook: [conventional]` 写入 `.git-agent/config.yml`。各步也可单独用参数触发。已有 `.git-agent/config.yml` 会保留，除非加 `--force`。用 `git-agent config set hook <值>` 重新配置 hook。优先 `FREE` 或 `~/.config/git-agent/config.yml`，再考虑 `init` 的 `provider` 参数。",
 			flags: [
-				{ name: "--scope", description: "根据提交历史与项目布局推导作用域（`LLM`）" },
-				{ name: "--hook-type <值>", description: "内置模板：`conventional` 或 `empty`。只把 `hook_type` 写入 `.git-agent/project.yml`，不生成 hook 文件。", default: "empty" },
-				{ name: "--hook-script <路径>", description: "自定义 hook 路径。复制到 `.git-agent/hooks/pre-commit`，并把绝对路径记入 `project.yml`。" },
+				{ name: "--scope", description: "根据提交历史与项目布局推导带描述的作用域（`LLM`）" },
+				{ name: "--hook <值>", description: "要配置的 hook：`conventional`、`empty` 或文件路径（可重复）。存入 `.git-agent/config.yml`。" },
 				{ name: "--gitignore", description: "根据项目上下文生成 `.gitignore`" },
 				{ name: "--force", description: "覆盖现有配置、hook 和 `.gitignore`，不进行合并" },
+				{ name: "--local", description: "将配置写入 `.git-agent/config.local.yml` 而非 `config.yml`" },
 				{ name: "--max-commits <n>", description: "用于作用域生成的最大提交数", default: "200" },
 				{
 					name: "--api-key <密钥>",
@@ -436,13 +437,12 @@ export const translations: Record<Language, Translations> = {
 				{
 					title: "验证环境",
 					description:
-						"检查 Git 仓库与密钥来源：优先官方 `FREE`（无额外参数）；否则 `~/.config/git-agent/config.yml` 或 `git config`；仅在明确需要时使用 `init` 的 `provider` 参数。",
+						"确保 git 仓库存在（必要时运行 `git init`），解析密钥来源：优先官方 `FREE`（无额外参数）；否则 `~/.config/git-agent/config.yml` 或 `git config`；仅在明确需要时使用 `init` 的 `provider` 参数。",
 				},
-				{ title: "分析提交历史", description: "读取最近 `--max-commits` 条提交主题、项目顶层目录和跟踪文件列表（最多 300 条）。" },
-				{ title: "通过 LLM 生成作用域", description: "用已配置的 `LLM`，仅从真实目录名推导作用域，不单靠文件名或提交类型。" },
-				{ title: "写入项目配置", description: "将生成的作用域保存到 `.git-agent/project.yml`。除非设置 `--force`，否则与现有作用域合并。" },
-				{ title: "安装 git hook", description: "内置 `conventional` 或 `empty`：只写 `hook_type` 到 `.git-agent/project.yml`，不落地 hook 文件。`conventional` 用 Go 校验提交说明；`empty` 始终通过。自定义 `--hook-script`：复制到 `.git-agent/hooks/pre-commit`，并在 `project.yml` 存绝对路径。" },
 				{ title: "生成 .gitignore", description: "由 `LLM` 按当前目录结构写 `.gitignore`。已存在则跳过，除非加 `--force`。" },
+				{ title: "分析提交历史", description: "读取最近 `--max-commits` 条提交主题、项目顶层目录和跟踪文件列表（最多 300 条）。" },
+				{ title: "通过 LLM 生成作用域", description: "用已配置的 `LLM`，从真实目录名推导带描述的作用域。每个作用域包含简短描述，帮助 AI 在生成提交信息时理解其用途。" },
+				{ title: "写入项目配置", description: "将生成的作用域和 `hook: [conventional]` 保存到 `.git-agent/config.yml`。除非设置 `--force`，否则与现有作用域合并。" },
 			],
 		},
 		commitData: {
@@ -450,7 +450,7 @@ export const translations: Record<Language, Translations> = {
 			description: "用 LLM 辅助生成提交",
 			usage: "git-agent commit [--dry-run] [--intent <文本>] [--amend] [--no-stage] [--co-author <名称>] [--trailer <键:值>] [--no-attribution] [--free]",
 			overview:
-				"暂存已跟踪的改动，每次运行最多分成五组原子提交，用 `LLM` 起草规范说明，按 `project.yml` 的 `hook_type` 校验（`empty`、`conventional` 或自定义脚本），失败则重试或重规划。默认优先不带 `provider` 参数（`FREE` 或 `~/.config/git-agent/config.yml`）。",
+				"暂存已跟踪的改动，每次运行最多分成五组原子提交，用 `LLM` 起草规范说明，按 `config.yml` 的 `hook` 校验（`empty`、`conventional` 或自定义脚本），失败则重试或重规划。默认优先不带 `provider` 参数（`FREE` 或 `~/.config/git-agent/config.yml`）。",
 			flags: [
 				{ name: "--dry-run", description: "只打印拟定的提交说明，不创建提交" },
 				{ name: "--intent <文本>", description: "自由文本，提示如何分组改动和写说明" },
@@ -491,7 +491,7 @@ export const translations: Record<Language, Translations> = {
 				{ title: "收集 diffs", description: "除非设置 `--no-stage`，否则运行 `git add --all` 暂存所有跟踪的更改。然后读取已暂存和未暂存的 diff，以了解更改的全部范围。" },
 				{ title: "通过 LLM 规划提交", description: "按关注点（`feat`、`fix`、`refactor`、`test`、`docs`）把文件分成最多五组原子提交。有 `--intent` 时优先按其提示分组。" },
 				{ title: "生成提交消息", description: "每组一条 Conventional Commits 标题（≤50 字）、带项目符号与短说明的正文，以及一段概要。" },
-				{ title: "使用 hook 验证", description: "按 `project.yml` 的 `hook_type`：`empty` 跳过；`conventional` 进程内校验；脚本路径先校验再执行该文件。失败将 `stderr` 回给 `LLM`，每组最多 3 次。" },
+				{ title: "使用 hook 验证", description: "按 `config.yml` 的 `hook`：`empty` 跳过；`conventional` 进程内校验；脚本路径先校验再执行该文件。失败将 `stderr` 回给 `LLM`，每组最多 3 次。" },
 				{ title: "提交或重新规划", description: "hook 通过则创建提交。若多次仍被 hook 拦住，最多做两轮完整重规划，然后以退出码 2 结束。" },
 			],
 		},
