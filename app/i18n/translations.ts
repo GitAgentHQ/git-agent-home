@@ -213,7 +213,7 @@ export const translations: Record<Language, Translations> = {
 			cmd: "git-agent init",
 			description: "Initialize your repository",
 			usage:
-				"git-agent init [--scope] [--hook <value>] [--gitignore] [--force] [--local] [--max-commits <n>] [--api-key <key>] [--model <name>] [--base-url <url>]",
+				"git-agent init [--scope] [--hook <value>] [--gitignore] [--force] [--local] [--user] [--max-commits <n>] [--api-key <key>] [--model <name>] [--base-url <url>]",
 			overview:
 				"Set up `git-agent` in the current repo. With no flags, runs the full setup wizard: ensures a git repo exists (runs `git init` if needed), generates `.gitignore` via AI, generates commit scopes with descriptions from git history via AI, and writes `.git-agent/config.yml` with scopes and `hook: [conventional]`. Each step can also run alone via flags. Existing `.git-agent/config.yml` stays put unless you pass `--force`. Use `git-agent config set hook <value>` to reconfigure hooks. Prefer `FREE` or `~/.config/git-agent/config.yml` over `init` provider flags.",
 			flags: [
@@ -222,6 +222,7 @@ export const translations: Record<Language, Translations> = {
 				{ name: "--gitignore", description: "Generate a `.gitignore` based on project context" },
 				{ name: "--force", description: "Overwrite existing config, hook, and `.gitignore` without merging" },
 				{ name: "--local", description: "Write config to `.git-agent/config.local.yml` instead of `config.yml`" },
+				{ name: "--user", description: "Write hook config to `~/.config/git-agent/config.yml` (requires `--hook`; cannot be combined with `--scope` or `--gitignore`)" },
 				{ name: "--max-commits <n>", description: "Maximum number of commits to analyze for scope generation", default: "200" },
 				{
 					name: "--api-key <key>",
@@ -406,7 +407,7 @@ export const translations: Record<Language, Translations> = {
 			cmd: "git-agent init",
 			description: "初始化你的仓库",
 			usage:
-				"git-agent init [--scope] [--hook <值>] [--gitignore] [--force] [--local] [--max-commits <n>] [--api-key <密钥>] [--model <名称>] [--base-url <地址>]",
+				"git-agent init [--scope] [--hook <值>] [--gitignore] [--force] [--local] [--user] [--max-commits <n>] [--api-key <密钥>] [--model <名称>] [--base-url <地址>]",
 			overview:
 				"在当前仓库启用 `git-agent`。无参数时运行完整向导：确保 git 仓库存在（必要时运行 `git init`）、通过 AI 生成 `.gitignore`、从 git 历史通过 AI 生成带描述的提交作用域，并将作用域和 `hook: [conventional]` 写入 `.git-agent/config.yml`。各步也可单独用参数触发。已有 `.git-agent/config.yml` 会保留，除非加 `--force`。用 `git-agent config set hook <值>` 重新配置 hook。优先 `FREE` 或 `~/.config/git-agent/config.yml`，再考虑 `init` 的 `provider` 参数。",
 			flags: [
@@ -415,6 +416,7 @@ export const translations: Record<Language, Translations> = {
 				{ name: "--gitignore", description: "根据项目上下文生成 `.gitignore`" },
 				{ name: "--force", description: "覆盖现有配置、hook 和 `.gitignore`，不进行合并" },
 				{ name: "--local", description: "将配置写入 `.git-agent/config.local.yml` 而非 `config.yml`" },
+				{ name: "--user", description: "将 hook 配置写入 `~/.config/git-agent/config.yml`（需配合 `--hook` 使用；不可与 `--scope` 或 `--gitignore` 同时使用）" },
 				{ name: "--max-commits <n>", description: "用于作用域生成的最大提交数", default: "200" },
 				{
 					name: "--api-key <密钥>",
