@@ -93,6 +93,27 @@ Ask: "Do you want to include the AI model's `Co-Authored-By` trailer (e.g. from 
   no_model_co_author: true
   ```
 
+### Require AI model co-author trailer
+
+For teams that want every commit to be explicitly attributed to the AI model behind it, git-agent can refuse commits that lack a `Co-Authored-By` from a known AI provider domain (`anthropic.com`, `openai.com`, `google.com`). This is **disabled by default**.
+
+Ask: "Do you want to require every commit to carry an AI model `Co-Authored-By` trailer? Commits without one will be rejected before the model is even called. (yes / no)"
+
+- **no** — no action needed, this is the default.
+- **yes** — add `require_model_co_author: true` to `~/.config/git-agent/config.yml`:
+
+  ```yaml
+  require_model_co_author: true
+  ```
+
+  Or, to enforce only in one repository, add to `.git-agent/config.yml` (or `.git-agent/config.local.yml` for a personal override not checked into git):
+
+  ```yaml
+  require_model_co_author: true
+  ```
+
+  When enabled, every `git-agent commit` invocation must include `--co-author "Model Name <email@allowed-domain>"` (e.g. `--co-author "Claude Opus 4.7 <noreply@anthropic.com>"`). git-agent validates this at the CLI layer and exits with a hint before calling the LLM if it is missing. To allow additional provider domains beyond the three defaults, add `model_co_author_domains: [acme.ai, ...]` to the same file. This setting is mutually exclusive with `no_model_co_author: true`.
+
 ### Per-repo initialization
 
 Ask: "Do you want to initialize git-agent in your current repository now? This generates scopes from your git history and optionally installs a commit-message hook. (yes / no)"
