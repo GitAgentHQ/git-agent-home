@@ -20,7 +20,7 @@ const COLOR_WHITE_07 = "rgba(255, 255, 255, 0.07)";
 const SHADOW_CARD_HOVER = "0 14px 44px rgba(0, 0, 0, 0.6)";
 
 interface HomeViewProps {
-	onSelect: (cmd: "init" | "commit") => void;
+	onSelect: (cmd: "init" | "commit" | "impact" | "timeline") => void;
 }
 
 /* 12 bars + 11×1px gap ≈ 44px; heights 22–30px for a lighter silhouette */
@@ -52,6 +52,36 @@ const BARS_COMMIT: BarConfig[] = [
 	{ width: 3, height: 22 },
 	{ width: 3, height: 26 },
 	{ width: 2, height: 28 },
+];
+
+const BARS_IMPACT: BarConfig[] = [
+	{ width: 3, height: 24 },
+	{ width: 2, height: 30 },
+	{ width: 3, height: 22 },
+	{ width: 3, height: 28 },
+	{ width: 2, height: 26 },
+	{ width: 3, height: 30 },
+	{ width: 3, height: 22 },
+	{ width: 2, height: 28 },
+	{ width: 3, height: 24 },
+	{ width: 3, height: 26 },
+	{ width: 2, height: 30 },
+	{ width: 3, height: 24 },
+];
+
+const BARS_TIMELINE: BarConfig[] = [
+	{ width: 2, height: 28 },
+	{ width: 3, height: 24 },
+	{ width: 3, height: 30 },
+	{ width: 2, height: 22 },
+	{ width: 3, height: 26 },
+	{ width: 3, height: 28 },
+	{ width: 2, height: 24 },
+	{ width: 3, height: 30 },
+	{ width: 3, height: 22 },
+	{ width: 2, height: 26 },
+	{ width: 3, height: 28 },
+	{ width: 3, height: 24 },
 ];
 
 // Cost for 1,000 commits at ~4,200 input + ~400 output tokens each.
@@ -234,6 +264,38 @@ export function HomeView({ onSelect }: HomeViewProps) {
 						bars={BARS_COMMIT}
 						serial="GA-002"
 						onClick={() => onSelect("commit")}
+						reducedMotion={reduced}
+					/>
+				</motion.div>
+				<motion.div
+					className="entry-grid-cell"
+					variants={reduced ? undefined : entryGridItem}
+				>
+					<EntryCard
+						cmd="git-agent impact"
+						title={t.impactTitle}
+						description={t.impactDescription}
+						features={t.impactFeatures}
+						pattern={<DotsSquare rounded />}
+						bars={BARS_IMPACT}
+						serial="GA-003"
+						onClick={() => onSelect("impact")}
+						reducedMotion={reduced}
+					/>
+				</motion.div>
+				<motion.div
+					className="entry-grid-cell"
+					variants={reduced ? undefined : entryGridItem}
+				>
+					<EntryCard
+						cmd="git-agent timeline"
+						title={t.timelineTitle}
+						description={t.timelineDescription}
+						features={t.timelineFeatures}
+						pattern={<DotsSquare circle />}
+						bars={BARS_TIMELINE}
+						serial="GA-004"
+						onClick={() => onSelect("timeline")}
 						reducedMotion={reduced}
 					/>
 				</motion.div>

@@ -17,6 +17,12 @@ export interface Translations {
 	commitTitle: [string, string];
 	commitDescription: string;
 	commitFeatures: string[];
+	impactTitle: [string, string];
+	impactDescription: string;
+	impactFeatures: string[];
+	timelineTitle: [string, string];
+	timelineDescription: string;
+	timelineFeatures: string[];
 
 	// Pricing
 	pricingTitle: string;
@@ -33,6 +39,8 @@ export interface Translations {
 	// Command pages
 	initData: CommandData;
 	commitData: CommandData;
+	impactData: CommandData;
+	timelineData: CommandData;
 
 	// Home explore
 	exploreTitle: string;
@@ -140,6 +148,26 @@ export const translations: Record<Language, Translations> = {
 			"Dry-run preview",
 			"Amend last commit",
 			"Co-author and trailer support",
+		],
+		impactTitle: ["Find related", "code and files"],
+		impactDescription:
+			"Surface the files and symbols that move with your changes — from co-change history and AST structure. Offline, no API key.",
+		impactFeatures: [
+			"Co-change impact from git history",
+			"Structural impact via AST symbols",
+			"Combined mode unions both signals",
+			"Offline — no LLM or API key",
+			"JSON or text output",
+		],
+		timelineTitle: ["Review agent", "action history"],
+		timelineDescription:
+			"See recent agent and human actions grouped into sessions — captured automatically as a Claude Code hook, stored offline.",
+		timelineFeatures: [
+			"Session-grouped action history",
+			"Per-action tool and files",
+			"Filter by file, source, or time",
+			"Auto-captured via PostToolUse hook",
+			"Offline — no LLM or API key",
 		],
 
 		// Pricing
@@ -303,6 +331,51 @@ export const translations: Record<Language, Translations> = {
 				{ title: "Commit or re-plan", description: "Creates commits when the hook passes. After repeated hook failures, runs up to two full re-plans, then exits with code 2." },
 			],
 		},
+		impactData: {
+			cmd: "git-agent impact",
+			description: "Find files and symbols related to your changes",
+			usage:
+				"git-agent impact [path...] [--symbol <name>] [--mode <mode>] [--depth <n>] [--top <n>] [--min-count <n>] [--reindex] [--json|--text]",
+			overview:
+				"Find the files or symbols related to a set of seeds. Three modes: `cochange` (default) returns files that historically change together; `structural` (with `--symbol`) returns AST symbols that call, are called by, or reference the seed; `combined` unions both. With no arguments, the seeds are your current working-tree changes — \"given what I've edited, what else usually moves?\". The first run auto-indexes git history; every query runs offline with no `LLM` and no API key. Tooling directories (`.git-agent/`, `.claude/`) are never used as seeds.",
+			flags: [
+				{ name: "--symbol <name>", description: "Query structural impact by symbol name (auto-selects `structural` mode)" },
+				{ name: "--mode <mode>", description: "Impact mode: `cochange`, `structural`, or `combined`", default: "cochange (or structural with --symbol)" },
+				{ name: "--depth <n>", description: "Transitive co-change depth; entries beyond depth 1 are marked `[indirect, depth N]`", default: "1" },
+				{ name: "--top <n>", description: "Maximum number of results", default: "20" },
+				{ name: "--min-count <n>", description: "Minimum co-change count to include (index floor is 2)", default: "3" },
+				{ name: "--reindex", description: "Force a full re-index of git history before querying" },
+				{ name: "--json / --text", description: "Force output format (default: JSON when piped, text on a TTY)" },
+			],
+			steps: [
+				{ title: "Resolve seeds", description: "Takes seed files/directories from the arguments, or — with no arguments — your current working-tree changes. Directories expand to tracked files; tooling paths are excluded." },
+				{ title: "Index git history", description: "On the first run (or with `--reindex`), builds a local SQLite graph of co-change and AST data. Subsequent runs reuse it incrementally." },
+				{ title: "Query the graph", description: "Co-change mode walks file-coupling history; structural mode walks AST call/reference edges from the seed symbol; combined mode runs both." },
+				{ title: "Rank and aggregate", description: "Neighbours are aggregated across seeds, so a file coupled to several seeds ranks above one coupled to a single seed." },
+				{ title: "Output results", description: "Prints ranked paths or symbols as text or JSON. No commit is created — `impact` is read-only and offline." },
+			],
+		},
+		timelineData: {
+			cmd: "git-agent timeline",
+			description: "Review recent agent and human action history",
+			usage:
+				"git-agent timeline [--file <path>] [--source <src>] [--since <2h|7d|RFC3339>] [--top <n>] [--json|--text]",
+			overview:
+				"Show recent agent and human action history grouped into sessions, with the tool and files for each action. The history is populated by `git-agent capture` — a hidden, fast (<200ms) command that records the working-tree delta since the last capture. `init --agent-hook` installs it as a Claude Code `PostToolUse` hook, so actions are recorded automatically with no `LLM` and without ever blocking the agent. Tooling directories are excluded, and every query runs offline.",
+			flags: [
+				{ name: "--file <path>", description: "Only show sessions and actions that touched this file" },
+				{ name: "--source <src>", description: "Filter by action source (e.g. `claude-code`, `cursor`, `human`)" },
+				{ name: "--since <window>", description: "Only show actions newer than a relative window (`2h`, `7d`) or an RFC3339 timestamp" },
+				{ name: "--top <n>", description: "Maximum number of sessions to show", default: "50" },
+				{ name: "--json / --text", description: "Force output format (default: JSON when piped, text on a TTY)" },
+			],
+			steps: [
+				{ title: "Capture records deltas", description: "`git-agent capture` (installed by `init --agent-hook` as a `PostToolUse` hook) records each action's working-tree delta — the tool, files, and diff — into the local graph." },
+				{ title: "Group into sessions", description: "Actions are grouped into sessions by source and instance, so a run of edits reads as one coherent session." },
+				{ title: "Filter", description: "Applies `--file`, `--source`, and `--since` to narrow the history to what you care about." },
+				{ title: "Display", description: "Prints sessions newest-first with each action's tool and files, as text or JSON. Read-only and offline." },
+			],
+		},
 	},
 	zh: {
 		// Home view
@@ -335,6 +408,26 @@ export const translations: Record<Language, Translations> = {
 			"预览模式",
 			"修改上次提交",
 			"合著者与 trailer 支持",
+		],
+		impactTitle: ["查找相关", "代码与文件"],
+		impactDescription:
+			"根据共变历史与 AST 结构，找出会随你的改动一起变化的文件与符号。离线运行，无需 API 密钥。",
+		impactFeatures: [
+			"基于 git 历史的共变影响",
+			"基于 AST 符号的结构影响",
+			"combined 模式融合两种信号",
+			"离线运行 — 无需 LLM 或 API 密钥",
+			"JSON 或文本输出",
+		],
+		timelineTitle: ["回顾智能体", "操作历史"],
+		timelineDescription:
+			"按会话分组查看近期智能体与人工的操作 — 作为 Claude Code hook 自动捕获，离线存储。",
+		timelineFeatures: [
+			"按会话分组的操作历史",
+			"每个操作的工具与文件",
+			"按文件、来源或时间筛选",
+			"通过 PostToolUse hook 自动捕获",
+			"离线运行 — 无需 LLM 或 API 密钥",
 		],
 
 		// Pricing
@@ -495,6 +588,51 @@ export const translations: Record<Language, Translations> = {
 				{ title: "生成提交消息", description: "每组一条 Conventional Commits 标题（≤50 字）、带项目符号与短说明的正文，以及一段概要。" },
 				{ title: "使用 hook 验证", description: "按 `config.yml` 的 `hook`：`empty` 跳过；`conventional` 进程内校验；脚本路径先校验再执行该文件。失败将 `stderr` 回给 `LLM`，每组最多 3 次。" },
 				{ title: "提交或重新规划", description: "hook 通过则创建提交。若多次仍被 hook 拦住，最多做两轮完整重规划，然后以退出码 2 结束。" },
+			],
+		},
+		impactData: {
+			cmd: "git-agent impact",
+			description: "查找与你的改动相关的文件与符号",
+			usage:
+				"git-agent impact [path...] [--symbol <名称>] [--mode <模式>] [--depth <n>] [--top <n>] [--min-count <n>] [--reindex] [--json|--text]",
+			overview:
+				"找出与一组种子相关的文件或符号。三种模式：`cochange`（默认）返回历史上一起变化的文件；`structural`（配合 `--symbol`）返回调用、被调用或引用该符号的 AST 符号；`combined` 融合两者。不带参数时，种子即为当前工作区的改动 —— “我改了这些，通常还有什么会跟着动？”。首次运行会自动索引 git 历史；之后每次查询都离线运行，无需 `LLM`，无需 API 密钥。工具目录（`.git-agent/`、`.claude/`）永远不作为种子。",
+			flags: [
+				{ name: "--symbol <名称>", description: "按符号名查询结构影响（自动选择 `structural` 模式）" },
+				{ name: "--mode <模式>", description: "影响模式：`cochange`、`structural` 或 `combined`", default: "cochange（带 --symbol 时为 structural）" },
+				{ name: "--depth <n>", description: "共变传递深度；深度大于 1 的条目标记为 `[indirect, depth N]`", default: "1" },
+				{ name: "--top <n>", description: "最大结果数量", default: "20" },
+				{ name: "--min-count <n>", description: "纳入结果的最小共变次数（索引下限为 2）", default: "3" },
+				{ name: "--reindex", description: "查询前强制重新索引整个 git 历史" },
+				{ name: "--json / --text", description: "强制输出格式（默认：管道时 JSON，TTY 上为文本）" },
+			],
+			steps: [
+				{ title: "解析种子", description: "从参数取种子文件/目录；不带参数时取当前工作区改动。目录展开为跟踪的文件，工具路径被排除。" },
+				{ title: "索引 git 历史", description: "首次运行（或带 `--reindex`）时构建本地 SQLite 图，包含共变与 AST 数据；之后增量复用。" },
+				{ title: "查询图", description: "cochange 模式遍历文件耦合历史；structural 模式从种子符号遍历 AST 调用/引用边；combined 模式两者都跑。" },
+				{ title: "排序与聚合", description: "邻居跨种子聚合，因此与多个种子耦合的文件排在仅与单个种子耦合的文件之前。" },
+				{ title: "输出结果", description: "以文本或 JSON 打印排序后的路径或符号。不创建提交 —— `impact` 只读且离线。" },
+			],
+		},
+		timelineData: {
+			cmd: "git-agent timeline",
+			description: "回顾近期智能体与人工的操作历史",
+			usage:
+				"git-agent timeline [--file <路径>] [--source <来源>] [--since <2h|7d|RFC3339>] [--top <n>] [--json|--text]",
+			overview:
+				"按会话分组展示近期智能体与人工的操作历史，包含每个操作的工具与文件。历史由 `git-agent capture` 写入 —— 一个隐藏、极快（<200ms）的命令，记录自上次捕获以来的工作区增量。`init --agent-hook` 将其安装为 Claude Code 的 `PostToolUse` hook，因此操作会自动记录，无需 `LLM`，也绝不阻塞智能体。工具目录被排除，每次查询都离线运行。",
+			flags: [
+				{ name: "--file <路径>", description: "仅显示触及该文件的会话与操作" },
+				{ name: "--source <来源>", description: "按操作来源筛选（如 `claude-code`、`cursor`、`human`）" },
+				{ name: "--since <时间窗>", description: "仅显示晚于相对时间窗（`2h`、`7d`）或 RFC3339 时间戳的操作" },
+				{ name: "--top <n>", description: "最多显示的会话数量", default: "50" },
+				{ name: "--json / --text", description: "强制输出格式（默认：管道时 JSON，TTY 上为文本）" },
+			],
+			steps: [
+				{ title: "capture 记录增量", description: "`git-agent capture`（由 `init --agent-hook` 安装为 `PostToolUse` hook）将每个操作的工作区增量 —— 工具、文件与 diff —— 记入本地图。" },
+				{ title: "分组为会话", description: "操作按来源与实例分组为会话，一连串编辑因此读起来是一个连贯会话。" },
+				{ title: "筛选", description: "应用 `--file`、`--source` 与 `--since`，把历史收窄到你关心的范围。" },
+				{ title: "展示", description: "按时间从新到旧打印会话，附每个操作的工具与文件，支持文本或 JSON。只读且离线。" },
 			],
 		},
 	},
