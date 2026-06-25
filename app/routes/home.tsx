@@ -16,7 +16,7 @@ export function meta({}: Route.MetaArgs) {
 	];
 }
 
-type View = "home" | "init" | "commit" | "impact" | "timeline";
+type View = "home" | "init" | "commit" | "impact" | "timeline" | "diagnose" | "provenance";
 
 export default function Home() {
 	const [view, setView] = useState<View>("home");
@@ -51,6 +51,20 @@ export default function Home() {
 					<CommandDetail
 						key="timeline"
 						{...t.timelineData}
+						onBack={() => setView("home")}
+					/>
+				)}
+				{view === "diagnose" && (
+					<CommandDetail
+						key="diagnose"
+						{...t.diagnoseData}
+						onBack={() => setView("home")}
+					/>
+				)}
+				{view === "provenance" && (
+					<CommandDetail
+						key="provenance"
+						{...t.provenanceData}
 						onBack={() => setView("home")}
 					/>
 				)}

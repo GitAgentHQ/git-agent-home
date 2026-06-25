@@ -20,7 +20,7 @@ const COLOR_WHITE_07 = "rgba(255, 255, 255, 0.07)";
 const SHADOW_CARD_HOVER = "0 14px 44px rgba(0, 0, 0, 0.6)";
 
 interface HomeViewProps {
-	onSelect: (cmd: "init" | "commit" | "impact" | "timeline") => void;
+	onSelect: (cmd: "init" | "commit" | "impact" | "timeline" | "diagnose" | "provenance") => void;
 }
 
 /* 12 bars + 11×1px gap ≈ 44px; heights 22–30px for a lighter silhouette */
@@ -81,6 +81,36 @@ const BARS_TIMELINE: BarConfig[] = [
 	{ width: 3, height: 22 },
 	{ width: 2, height: 26 },
 	{ width: 3, height: 28 },
+	{ width: 3, height: 24 },
+];
+
+const BARS_DIAGNOSE: BarConfig[] = [
+	{ width: 3, height: 30 },
+	{ width: 2, height: 22 },
+	{ width: 3, height: 26 },
+	{ width: 3, height: 24 },
+	{ width: 2, height: 28 },
+	{ width: 3, height: 22 },
+	{ width: 3, height: 30 },
+	{ width: 2, height: 26 },
+	{ width: 3, height: 24 },
+	{ width: 3, height: 28 },
+	{ width: 2, height: 22 },
+	{ width: 3, height: 30 },
+];
+
+const BARS_PROVENANCE: BarConfig[] = [
+	{ width: 3, height: 24 },
+	{ width: 3, height: 28 },
+	{ width: 2, height: 30 },
+	{ width: 3, height: 22 },
+	{ width: 2, height: 26 },
+	{ width: 3, height: 24 },
+	{ width: 3, height: 30 },
+	{ width: 2, height: 28 },
+	{ width: 3, height: 22 },
+	{ width: 2, height: 26 },
+	{ width: 3, height: 30 },
 	{ width: 3, height: 24 },
 ];
 
@@ -272,7 +302,7 @@ export function HomeView({ onSelect }: HomeViewProps) {
 					variants={reduced ? undefined : entryGridItem}
 				>
 					<EntryCard
-						cmd="git-agent impact"
+						cmd="git-agent graph impact"
 						title={t.impactTitle}
 						description={t.impactDescription}
 						features={t.impactFeatures}
@@ -288,7 +318,7 @@ export function HomeView({ onSelect }: HomeViewProps) {
 					variants={reduced ? undefined : entryGridItem}
 				>
 					<EntryCard
-						cmd="git-agent timeline"
+						cmd="git-agent graph timeline"
 						title={t.timelineTitle}
 						description={t.timelineDescription}
 						features={t.timelineFeatures}
@@ -296,6 +326,38 @@ export function HomeView({ onSelect }: HomeViewProps) {
 						bars={BARS_TIMELINE}
 						serial="GA-004"
 						onClick={() => onSelect("timeline")}
+						reducedMotion={reduced}
+					/>
+				</motion.div>
+				<motion.div
+					className="entry-grid-cell"
+					variants={reduced ? undefined : entryGridItem}
+				>
+					<EntryCard
+						cmd="git-agent graph diagnose"
+						title={t.diagnoseTitle}
+						description={t.diagnoseDescription}
+						features={t.diagnoseFeatures}
+						pattern={<DotsCircle />}
+						bars={BARS_DIAGNOSE}
+						serial="GA-005"
+						onClick={() => onSelect("diagnose")}
+						reducedMotion={reduced}
+					/>
+				</motion.div>
+				<motion.div
+					className="entry-grid-cell"
+					variants={reduced ? undefined : entryGridItem}
+				>
+					<EntryCard
+						cmd="git-agent graph provenance"
+						title={t.provenanceTitle}
+						description={t.provenanceDescription}
+						features={t.provenanceFeatures}
+						pattern={<DotsSquare rounded />}
+						bars={BARS_PROVENANCE}
+						serial="GA-006"
+						onClick={() => onSelect("provenance")}
 						reducedMotion={reduced}
 					/>
 				</motion.div>
