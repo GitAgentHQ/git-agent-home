@@ -10,7 +10,7 @@ Run this command to install the git-agent skill into your AI assistant:
 npx skills add https://github.com/GitAgentHQ/git-agent-cli --skill use-git-agent -y -g
 ```
 
-The skill contains the full reference for operating git-agent — commit splitting, hook behavior, provider config, and error recovery. All subsequent behavior should follow that skill.
+The skill contains the full reference for operating git-agent — commit splitting, hook behavior, provider config, error recovery, and the code graph (`graph impact`, `callers`/`callees`, `timeline`, `diagnose`, `provenance`). All subsequent behavior should follow that skill.
 
 ---
 
@@ -121,6 +121,17 @@ Ask: "Do you want to initialize git-agent in your current repository now? This g
 - **yes** — run `git-agent init --scope` and show the user the generated `.git-agent/config.yml`.
 - **no** — skip; the user can run `git-agent init` manually later.
 
+### Action capture (the code graph)
+
+git-agent builds a queryable code graph — call graph, co-change history, and a tamper-evident log of every agent and human action — that powers `graph impact` (files that move with your change), `graph diagnose` (trace a regression to the action that introduced it), `graph timeline`, and `graph provenance`. All graph queries are read-only and offline (no LLM, no API key).
+
+The graph is fed by `git-agent capture`, a hidden command the Claude Code `PostToolUse` hook calls automatically. Ask: "Do you want to install the capture hook so agent edits are recorded into the graph automatically? (yes / no)"
+
+- **yes** — run `git-agent init --agent-hook`. This writes a `PostToolUse` hook (matcher `Edit|Write|Bash`) to `.claude/settings.json` that runs `git-agent capture --source claude-code` on each agent action. Capture is fast (<200ms), never blocks the agent, and redacts secrets before storage.
+- **no** — skip; the graph can still be built from git history via `git-agent graph index`, but agent actions won't be in the event log, so `timeline`/`diagnose`/`provenance` will only reflect commits, not live edits.
+
+After capture runs, build the projections before querying: `git-agent graph index` (full) or `git-agent graph sync` (incremental).
+
 ---
 
 ## Step 5: Shell completion (optional)
@@ -138,4 +149,4 @@ Ask: "Do you want to set up shell completion for git-agent? (yes / no)"
 
 ## Step 6: Confirm and hand off
 
-Tell the user that git-agent is ready. From this point on, follow the installed skill (`use-git-agent`) for all git-agent operations.
+Tell the user that git-agent is ready. From this point on, follow the installed skill (`use-git-agent`) for all git-agent operations — committing, and querying the code graph before edits (`graph impact`), after regressions (`graph diagnose`), or when reviewing history (`graph timeline`, `graph provenance`).
