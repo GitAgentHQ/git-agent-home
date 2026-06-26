@@ -9,6 +9,8 @@ export interface Translations {
 	copy: string;
 	copied: string;
 	viewDetails: string;
+	graphPitchTitle: string;
+	graphPitchBody: string;
 
 	// Entry cards
 	initTitle: [string, string];
@@ -17,18 +19,9 @@ export interface Translations {
 	commitTitle: [string, string];
 	commitDescription: string;
 	commitFeatures: string[];
-	impactTitle: [string, string];
-	impactDescription: string;
-	impactFeatures: string[];
-	timelineTitle: [string, string];
-	timelineDescription: string;
-	timelineFeatures: string[];
-	diagnoseTitle: [string, string];
-	diagnoseDescription: string;
-	diagnoseFeatures: string[];
-	provenanceTitle: [string, string];
-	provenanceDescription: string;
-	provenanceFeatures: string[];
+	graphTitle: [string, string];
+	graphDescription: string;
+	graphFeatures: string[];
 
 	// Pricing
 	pricingTitle: string;
@@ -45,10 +38,7 @@ export interface Translations {
 	// Command pages
 	initData: CommandData;
 	commitData: CommandData;
-	impactData: CommandData;
-	timelineData: CommandData;
-	diagnoseData: CommandData;
-	provenanceData: CommandData;
+	graphData: CommandData;
 
 	// Home explore
 	exploreTitle: string;
@@ -129,12 +119,15 @@ export const translations: Record<Language, Translations> = {
 		// Home view
 		homeTitle: "git-agent",
 		homeSubtitle:
-			"AI Git assistant that splits changes into atomic commits and writes conventional messages — free to use, no API key needed.",
+			"AI Git assistant: atomic commits, conventional messages, and a queryable code graph — so agents edit with context, not blind. Free, no API key.",
 		homeInstallHint: "Copy the line below and paste it into any coding agent.",
 		homeInstallCopyLine: "Install git-agent — follow https://git-agent.dev/install.md",
 		copy: "Copy",
 		copied: "Copied",
 		viewDetails: "View details →",
+		graphPitchTitle: "An agent that knows your code",
+		graphPitchBody:
+			"git-agent builds a queryable graph of your code as it works: the AST call graph, co-change history, and a tamper-evident log of every agent and human action. Before an edit, see what else changes with it (`graph impact`); after a regression, trace the exact action that introduced it (`graph diagnose`). The graph gives the agent structural context — callers, callees, dependents — so it edits with understanding, not blind. All offline, no API key.",
 
 		// Entry cards
 		initTitle: ["Initialize", "your repo"],
@@ -157,44 +150,15 @@ export const translations: Record<Language, Translations> = {
 			"Amend last commit",
 			"Co-author and trailer support",
 		],
-		impactTitle: ["Find related", "code and files"],
-		impactDescription:
-			"Surface the files and symbols that move with your changes — from co-change history and AST structure. Offline, no API key.",
-		impactFeatures: [
-			"Co-change impact from git history",
-			"Structural impact via AST symbols",
-			"Combined mode unions both signals",
-			"Offline — no LLM or API key",
-			"JSON or text output",
-		],
-		timelineTitle: ["Review agent", "action history"],
-		timelineDescription:
-			"See recent agent and human actions grouped into sessions — observed automatically as a Claude Code hook and appended to a tamper-evident, offline event log.",
-		timelineFeatures: [
-			"Session-grouped action history",
-			"Tamper-evident hash-chained log",
-			"Secrets redacted before storage",
-			"Auto-captured via PostToolUse hook",
-			"Offline — no LLM or API key",
-		],
-		diagnoseTitle: ["Trace a regression", "to its cause"],
-		diagnoseDescription:
-			"Point at a failing test and get the ranked agent actions that most likely introduced it — deterministic, offline, with the before/after diff for each suspect.",
-		diagnoseFeatures: [
-			"Suspect window from test outcomes",
-			"Ranked by co-change and churn",
-			"Before/after diff per suspect",
-			"Optional LLM re-rank of the top-N",
-			"Refuses a tampered log (exit 4)",
-		],
-		provenanceTitle: ["Audit every change", "to a file"],
-		provenanceDescription:
-			"Reconstruct a file's full, rename-aware history from the event log — every agent edit and out-of-band change, attributed and ordered. Offline, read-only.",
-		provenanceFeatures: [
-			"Rename-aware change history",
-			"Out-of-band edits flagged",
-			"Per-change before/after blobs",
-			"Backed by a verifiable hash chain",
+		graphTitle: ["Query and audit", "the agent graph"],
+		graphDescription:
+			"Every agent and human action, captured automatically into a tamper-evident Event Log, then projected into a code graph: co-change history, AST call graph, action timeline, regression tracing, and file provenance — all offline.",
+		graphFeatures: [
+			"Co-change + AST structural impact",
+			"Callers, callees, node, and FTS5 symbol search",
+			"Timeline, provenance, and regression diagnose",
+			"Hash-chained, tamper-evident Event Log",
+			"Incremental sync, no full rebuild needed",
 			"Offline — no LLM or API key",
 		],
 
@@ -359,88 +323,23 @@ export const translations: Record<Language, Translations> = {
 				{ title: "Commit or re-plan", description: "Creates commits when the hook passes. After repeated hook failures, runs up to two full re-plans, then exits with code 2." },
 			],
 		},
-		impactData: {
-			cmd: "git-agent graph impact",
-			description: "Find files and symbols related to your changes",
+		graphData: {
+			cmd: "git-agent graph",
+			description: "Query and audit the agent Event Log and code graph",
 			usage:
-				"git-agent graph impact [path...] [--symbol <name>] [--mode <mode>] [--depth <n>] [--top <n>] [--min-count <n>] [--reindex] [--json|--text]",
+				"git-agent graph <status|verify|index|sync|impact|timeline|diagnose|provenance|callers|callees|node|query|affected>",
 			overview:
-				"Find the files or symbols related to a set of seeds. Three modes: `cochange` (default) returns files that historically change together; `structural` (with `--symbol`) returns AST symbols that call, are called by, or reference the seed; `combined` unions both. With no arguments, the seeds are your current working-tree changes — \"given what I've edited, what else usually moves?\". The first run auto-indexes git history; every query runs offline with no `LLM` and no API key. Tooling directories (`.git-agent/`, `.claude/`) are never used as seeds.",
+				"Every captured agent and human action appends to a tamper-evident, hash-chained Event Log. `graph` is the parent for every command that reads or audits it: build and sync the derived indexes (`index`, `sync`), check health and integrity (`status`, `verify`), query co-change and AST impact (`impact`, `callers`, `callees`, `node`, `query`, `affected`), and trace history and regressions (`timeline`, `provenance`, `diagnose`). All read-only commands auto-detect JSON (piped) vs text (TTY); everything runs offline with no `LLM` or API key.",
 			flags: [
-				{ name: "--symbol <name>", description: "Query structural impact by symbol name (auto-selects `structural` mode)" },
-				{ name: "--mode <mode>", description: "Impact mode: `cochange`, `structural`, or `combined`", default: "cochange (or structural with --symbol)" },
-				{ name: "--depth <n>", description: "Transitive co-change depth; entries beyond depth 1 are marked `[indirect, depth N]`", default: "1" },
-				{ name: "--top <n>", description: "Maximum number of results", default: "20" },
-				{ name: "--min-count <n>", description: "Minimum co-change count to include (index floor is 2)", default: "3" },
-				{ name: "--reindex", description: "Force a full re-index of git history before querying" },
-				{ name: "--json / --text", description: "Force output format (default: JSON when piped, text on a TTY)" },
+				{ name: "--json / --text", description: "Force output format (default: JSON when piped, text on a TTY) — every query subcommand" },
+				{ name: "--reindex", description: "Force a full AST re-index (impact/callers/callees/node/query/affected)" },
+				{ name: "--depth <n>", description: "Transitive traversal depth (impact/callers/callees/affected)" },
 			],
 			steps: [
-				{ title: "Resolve seeds", description: "Takes seed files/directories from the arguments, or — with no arguments — your current working-tree changes. Directories expand to tracked files; tooling paths are excluded." },
-				{ title: "Index git history", description: "On the first run (or with `--reindex`), builds a local SQLite graph of co-change and AST data. Subsequent runs reuse it incrementally." },
-				{ title: "Query the graph", description: "Co-change mode walks file-coupling history; structural mode walks AST call/reference edges from the seed symbol; combined mode runs both." },
-				{ title: "Rank and aggregate", description: "Neighbours are aggregated across seeds, so a file coupled to several seeds ranks above one coupled to a single seed." },
-				{ title: "Output results", description: "Prints ranked paths or symbols as text or JSON. No commit is created — `impact` is read-only and offline." },
-			],
-		},
-		timelineData: {
-			cmd: "git-agent graph timeline",
-			description: "Review recent agent and human action history",
-			usage:
-				"git-agent graph timeline [--file <path>] [--source <src>] [--since <2h|7d|RFC3339>] [--top <n>] [--json|--text]",
-			overview:
-				"Show recent agent and human action history grouped into sessions, with the tool and files for each action. The history is populated by `git-agent capture` — a hidden, fast (<200ms) command that observes each action's payload (the tool, files, and command) from the PostToolUse hook, redacts secrets, and appends it to a tamper-evident, append-only event log. `init --agent-hook` installs it as a Claude Code `PostToolUse` hook, so actions are recorded automatically with no `LLM` and without ever blocking the agent. Tooling directories are excluded, and every query runs offline.",
-			flags: [
-				{ name: "--file <path>", description: "Only show sessions and actions that touched this file" },
-				{ name: "--source <src>", description: "Filter by action source (e.g. `claude-code`, `cursor`, `human`)" },
-				{ name: "--since <window>", description: "Only show actions newer than a relative window (`2h`, `7d`) or an RFC3339 timestamp" },
-				{ name: "--top <n>", description: "Maximum number of sessions to show", default: "50" },
-				{ name: "--json / --text", description: "Force output format (default: JSON when piped, text on a TTY)" },
-			],
-			steps: [
-				{ title: "Capture observes actions", description: "`git-agent capture` (installed by `init --agent-hook` as a `PostToolUse` hook) observes each action's payload — the tool, files, and command — redacts secrets, and appends it to a tamper-evident, append-only event log." },
-				{ title: "Group into sessions", description: "Actions are grouped into sessions by source and instance, so a run of edits reads as one coherent session." },
-				{ title: "Filter", description: "Applies `--file`, `--source`, and `--since` to narrow the history to what you care about." },
-				{ title: "Display", description: "Prints sessions newest-first with each action's tool and files, as text or JSON. Read-only and offline." },
-			],
-		},
-		diagnoseData: {
-			cmd: "git-agent graph diagnose",
-			description: "Trace a regression to its cause",
-			usage:
-				"git-agent graph diagnose [symptom] [--file <path>] [--llm] [--top <n>] [--force] [--json|--text]",
-			overview:
-				"Point `git-agent graph diagnose` at a failing symptom — a test name, or nothing to use the most recent failure — and it names the agent action that most likely introduced it. It verifies the Event Log, derives the Suspect Window between the last passing and first failing test Outcome, expands the relevant file set via co-change `impact`, then ranks the suspect actions deterministically. Each Candidate carries the before/after File Blob Refs, so the introducing diff can be reconstructed. Everything runs offline with no `LLM`; `--llm` only re-orders the top-N, never adding candidates. A tampered Event Log exits 4 unless `--force`.",
-			flags: [
-				{ name: "--file <path>", description: "Seed file(s) to anchor the relevant set (repeatable)" },
-				{ name: "--top <n>", description: "Number of top candidates passed to the LLM re-rank", default: "5" },
-				{ name: "--llm", description: "Re-rank the top candidates with the configured `LLM` (reorders only)" },
-				{ name: "--llm-model <name>", description: "Model for the re-rank (overrides `git-agent.diagnose-model`; default: the main model)" },
-				{ name: "--force", description: "Proceed despite an Event Log chain integrity break" },
-				{ name: "--json", description: "Emit the diagnosis result as JSON" },
-			],
-			steps: [
-				{ title: "Verify the chain", description: "Walks the hash-chained Event Log and refuses (exit 4) on any integrity break unless `--force`." },
-				{ title: "Derive the suspect window", description: "Finds the last green and first red test Outcome Events for the symptom — the window in which the regression entered." },
-				{ title: "Expand the relevant set", description: "Seeds (from `--file` or the failing test's files) are expanded by co-change `impact` so coupled files are considered too." },
-				{ title: "Rank candidates", description: "Scores each suspect action by recency, impact overlap, churn, and later reverts; `--llm` may reorder the top-N but never adds candidates." },
-				{ title: "Output the diagnosis", description: "Prints ranked suspects with their before/after blob refs as text or JSON. Read-only — no commit, no mutation." },
-			],
-		},
-		provenanceData: {
-			cmd: "git-agent graph provenance",
-			description: "Audit the change history of a file",
-			usage: "git-agent graph provenance <file> [--json|--text]",
-			overview:
-				"Reconstruct a file's full, rename-aware history from the Event Log. `git-agent graph provenance <file>` merges every captured change (from `event_files`) with any out-of-band changes and folds in the file's pre-rename identities, so you see what touched it and when. Out-of-band rows — content no observed action explains (source `unknown`) — are flagged, surfacing blind-spot edits. Backed by the same hash-chained log `graph verify` checks for tampering. Read-only and offline.",
-			flags: [
-				{ name: "--json", description: "Emit the provenance view as JSON" },
-			],
-			steps: [
-				{ title: "Resolve identities", description: "Follows renames so the file's pre-rename paths are included in its history." },
-				{ title: "Merge the event log", description: "Collects every captured change and out-of-band change for those identities from the append-only Event Log." },
-				{ title: "Flag out-of-band", description: "Marks rows whose content no observed agent action explains (source `unknown`)." },
-				{ title: "Display", description: "Prints the chronological, rename-aware history with per-change blob refs as text or JSON. Read-only and offline." },
+				{ title: "Build the graph", description: "`graph index` replays the Event Log into projections and ensures the AST index; `graph sync` incrementally replays only new events (no reset)." },
+				{ title: "Check health", description: "`graph status` reports row counts; `graph verify` walks the hash chain and exits 4 on tampering." },
+				{ title: "Query impact", description: "`graph impact` (co-change/structural), `callers`/`callees`/`node` (AST call graph), `query` (FTS5 symbol search), `affected` (test-files-affected)." },
+				{ title: "Trace history", description: "`graph timeline` (action history), `provenance` (rename-aware file history), `diagnose` (regression to its introducing action)." },
 			],
 		},
 	},
@@ -448,12 +347,15 @@ export const translations: Record<Language, Translations> = {
 		// Home view
 		homeTitle: "git-agent",
 		homeSubtitle:
-			"AI Git 助手，自动将变更拆分为原子提交并生成规范提交消息 — 免费使用，无需配置 API 密钥。",
+			"AI Git 助手：原子提交、规范消息，外加可查询的代码图谱——让智能体带上下文编辑，而非盲目改码。免费、无需 API 密钥。",
 		homeInstallHint: "复制下方整行，粘贴到任意编程助手即可。",
 		homeInstallCopyLine: "安装 git-agent — 请按 https://git-agent.dev/install.md 中的指引操作",
 		copy: "复制",
 		copied: "已复制",
 		viewDetails: "查看详情 →",
+		graphPitchTitle: "一个了解你代码的智能体",
+		graphPitchBody:
+			"git-agent 在工作中为你构建可查询的代码图谱：AST 调用图、共变历史，以及每个智能体与人工操作的防篡改日志。改动前，看清楚还有什么会一起变（`graph impact`）；回归后，追溯到引入它的那次操作（`graph diagnose`）。图谱赋予智能体结构化上下文——调用者、被调用者、依赖者——让它带着理解去编辑，而非盲目改码。全程离线，无需 API 密钥。",
 
 		// Entry cards
 		initTitle: ["初始化", "你的仓库"],
@@ -476,44 +378,15 @@ export const translations: Record<Language, Translations> = {
 			"修改上次提交",
 			"合著者与 trailer 支持",
 		],
-		impactTitle: ["查找相关", "代码与文件"],
-		impactDescription:
-			"根据共变历史与 AST 结构，找出会随你的改动一起变化的文件与符号。离线运行，无需 API 密钥。",
-		impactFeatures: [
-			"基于 git 历史的共变影响",
-			"基于 AST 符号的结构影响",
-			"combined 模式融合两种信号",
-			"离线运行 — 无需 LLM 或 API 密钥",
-			"JSON 或文本输出",
-		],
-		timelineTitle: ["回顾智能体", "操作历史"],
-		timelineDescription:
-			"按会话分组查看近期智能体与人工的操作 — 作为 Claude Code hook 自动观测，追加到防篡改的离线事件日志。",
-		timelineFeatures: [
-			"按会话分组的操作历史",
-			"防篡改的哈希链事件日志",
-			"存储前自动脱敏密钥",
-			"通过 PostToolUse hook 自动捕获",
-			"离线运行 — 无需 LLM 或 API 密钥",
-		],
-		diagnoseTitle: ["把回归追溯", "到根因"],
-		diagnoseDescription:
-			"指向一个失败的测试，即可得到最可能引入它的智能体操作排序 —— 确定性、离线，并附带每个嫌疑操作的前后 diff。",
-		diagnoseFeatures: [
-			"由测试结果界定嫌疑窗口",
-			"按共变与改动量排序",
-			"每个嫌疑附前后 diff",
-			"可选 LLM 对前 N 名重排",
-			"日志被篡改则拒绝（退出码 4）",
-		],
-		provenanceTitle: ["审计文件的", "每一次改动"],
-		provenanceDescription:
-			"从事件日志重建文件完整的、识别重命名的历史 —— 每次智能体编辑与带外改动，均有归属并按序排列。离线、只读。",
-		provenanceFeatures: [
-			"识别重命名的改动历史",
-			"带外编辑被标记",
-			"每次改动附前后 blob",
-			"由可验证的哈希链支撑",
+		graphTitle: ["查询与审计", "智能体图谱"],
+		graphDescription:
+			"每个智能体与人工操作自动捕获到防篡改的事件日志，再投影为代码图谱：共变历史、AST 调用图、操作时间线、回归溯源、文件来源 —— 全程离线。",
+		graphFeatures: [
+			"共变 + AST 结构影响",
+			"callers / callees / node / FTS5 符号搜索",
+			"timeline / provenance / 回归 diagnose",
+			"哈希链防篡改事件日志",
+			"增量 sync，无需全量重建",
 			"离线运行 — 无需 LLM 或 API 密钥",
 		],
 
@@ -677,88 +550,23 @@ export const translations: Record<Language, Translations> = {
 				{ title: "提交或重新规划", description: "hook 通过则创建提交。若多次仍被 hook 拦住，最多做两轮完整重规划，然后以退出码 2 结束。" },
 			],
 		},
-		impactData: {
-			cmd: "git-agent graph impact",
-			description: "查找与你的改动相关的文件与符号",
+		graphData: {
+			cmd: "git-agent graph",
+			description: "查询与审计智能体事件日志和代码图谱",
 			usage:
-				"git-agent graph impact [path...] [--symbol <名称>] [--mode <模式>] [--depth <n>] [--top <n>] [--min-count <n>] [--reindex] [--json|--text]",
+				"git-agent graph <status|verify|index|sync|impact|timeline|diagnose|provenance|callers|callees|node|query|affected>",
 			overview:
-				"找出与一组种子相关的文件或符号。三种模式：`cochange`（默认）返回历史上一起变化的文件；`structural`（配合 `--symbol`）返回调用、被调用或引用该符号的 AST 符号；`combined` 融合两者。不带参数时，种子即为当前工作区的改动 —— “我改了这些，通常还有什么会跟着动？”。首次运行会自动索引 git 历史；之后每次查询都离线运行，无需 `LLM`，无需 API 密钥。工具目录（`.git-agent/`、`.claude/`）永远不作为种子。",
+				"每个捕获的智能体与人工操作都追加到防篡改、哈希链的事件日志。`graph` 是所有读取或审计该日志的命令的父命令：构建与同步派生索引（`index`、`sync`），检查健康与完整性（`status`、`verify`），查询共变与 AST 影响（`impact`、`callers`、`callees`、`node`、`query`、`affected`），追溯历史与回归（`timeline`、`provenance`、`diagnose`）。所有只读命令自动检测 JSON（管道）或文本（TTY）；全程离线，无需 `LLM` 或 API 密钥。",
 			flags: [
-				{ name: "--symbol <名称>", description: "按符号名查询结构影响（自动选择 `structural` 模式）" },
-				{ name: "--mode <模式>", description: "影响模式：`cochange`、`structural` 或 `combined`", default: "cochange（带 --symbol 时为 structural）" },
-				{ name: "--depth <n>", description: "共变传递深度；深度大于 1 的条目标记为 `[indirect, depth N]`", default: "1" },
-				{ name: "--top <n>", description: "最大结果数量", default: "20" },
-				{ name: "--min-count <n>", description: "纳入结果的最小共变次数（索引下限为 2）", default: "3" },
-				{ name: "--reindex", description: "查询前强制重新索引整个 git 历史" },
-				{ name: "--json / --text", description: "强制输出格式（默认：管道时 JSON，TTY 上为文本）" },
+				{ name: "--json / --text", description: "强制输出格式（默认：管道输出 JSON，终端输出文本）—— 所有查询子命令" },
+				{ name: "--reindex", description: "强制全量 AST 重建索引（impact/callers/callees/node/query/affected）" },
+				{ name: "--depth <n>", description: "传递遍历深度（impact/callers/callees/affected）" },
 			],
 			steps: [
-				{ title: "解析种子", description: "从参数取种子文件/目录；不带参数时取当前工作区改动。目录展开为跟踪的文件，工具路径被排除。" },
-				{ title: "索引 git 历史", description: "首次运行（或带 `--reindex`）时构建本地 SQLite 图，包含共变与 AST 数据；之后增量复用。" },
-				{ title: "查询图", description: "cochange 模式遍历文件耦合历史；structural 模式从种子符号遍历 AST 调用/引用边；combined 模式两者都跑。" },
-				{ title: "排序与聚合", description: "邻居跨种子聚合，因此与多个种子耦合的文件排在仅与单个种子耦合的文件之前。" },
-				{ title: "输出结果", description: "以文本或 JSON 打印排序后的路径或符号。不创建提交 —— `impact` 只读且离线。" },
-			],
-		},
-		timelineData: {
-			cmd: "git-agent graph timeline",
-			description: "回顾近期智能体与人工的操作历史",
-			usage:
-				"git-agent graph timeline [--file <路径>] [--source <来源>] [--since <2h|7d|RFC3339>] [--top <n>] [--json|--text]",
-			overview:
-				"按会话分组展示近期智能体与人工的操作历史，包含每个操作的工具与文件。历史由 `git-agent capture` 写入 —— 一个隐藏、极快（<200ms）的命令，从 PostToolUse hook 观测每个操作的载荷（工具、文件与命令），脱敏密钥后追加到防篡改、仅追加的事件日志。`init --agent-hook` 将其安装为 Claude Code 的 `PostToolUse` hook，因此操作会自动记录，无需 `LLM`，也绝不阻塞智能体。工具目录被排除，每次查询都离线运行。",
-			flags: [
-				{ name: "--file <路径>", description: "仅显示触及该文件的会话与操作" },
-				{ name: "--source <来源>", description: "按操作来源筛选（如 `claude-code`、`cursor`、`human`）" },
-				{ name: "--since <时间窗>", description: "仅显示晚于相对时间窗（`2h`、`7d`）或 RFC3339 时间戳的操作" },
-				{ name: "--top <n>", description: "最多显示的会话数量", default: "50" },
-				{ name: "--json / --text", description: "强制输出格式（默认：管道时 JSON，TTY 上为文本）" },
-			],
-			steps: [
-				{ title: "capture 观测操作", description: "`git-agent capture`（由 `init --agent-hook` 安装为 `PostToolUse` hook）观测每个操作的载荷 —— 工具、文件与命令 —— 脱敏密钥后追加到防篡改、仅追加的事件日志。" },
-				{ title: "分组为会话", description: "操作按来源与实例分组为会话，一连串编辑因此读起来是一个连贯会话。" },
-				{ title: "筛选", description: "应用 `--file`、`--source` 与 `--since`，把历史收窄到你关心的范围。" },
-				{ title: "展示", description: "按时间从新到旧打印会话，附每个操作的工具与文件，支持文本或 JSON。只读且离线。" },
-			],
-		},
-		diagnoseData: {
-			cmd: "git-agent graph diagnose",
-			description: "把回归追溯到根因",
-			usage:
-				"git-agent graph diagnose [症状] [--file <路径>] [--llm] [--top <n>] [--force] [--json|--text]",
-			overview:
-				"把 `git-agent graph diagnose` 指向一个失败的症状 —— 一个测试名，或不带参数以使用最近一次失败 —— 它便给出最可能引入该回归的智能体操作。它会校验事件日志，界定上次通过与首次失败测试结果之间的嫌疑窗口，通过共变 `impact` 扩展相关文件集，再对嫌疑操作做确定性排序。每个候选都带有前后 File Blob Ref，因此可重建引入问题的 diff。全程离线、无需 `LLM`；`--llm` 只对前 N 名重排，绝不新增候选。日志被篡改时退出码为 4，除非加 `--force`。",
-			flags: [
-				{ name: "--file <路径>", description: "锚定相关文件集的种子文件（可重复）" },
-				{ name: "--top <n>", description: "传给 LLM 重排的候选数量", default: "5" },
-				{ name: "--llm", description: "用配置的 `LLM` 对前若干候选重排（仅重排序）" },
-				{ name: "--llm-model <名称>", description: "重排所用模型（覆盖 `git-agent.diagnose-model`；默认主模型）" },
-				{ name: "--force", description: "在事件日志链完整性被破坏时仍继续" },
-				{ name: "--json", description: "以 JSON 输出诊断结果" },
-			],
-			steps: [
-				{ title: "校验链", description: "遍历哈希链事件日志，发现任何完整性破坏即拒绝（退出码 4），除非加 `--force`。" },
-				{ title: "界定嫌疑窗口", description: "找到该症状上次通过与首次失败的测试结果事件 —— 回归进入的窗口。" },
-				{ title: "扩展相关集", description: "种子（来自 `--file` 或失败测试的文件）经共变 `impact` 扩展，连同耦合文件一并考虑。" },
-				{ title: "对候选排序", description: "按新近度、影响重叠、改动量与后续回退为每个嫌疑操作打分；`--llm` 可对前 N 名重排，但绝不新增候选。" },
-				{ title: "输出诊断", description: "以文本或 JSON 打印带前后 blob ref 的排序嫌疑。只读 —— 不提交、不改动。" },
-			],
-		},
-		provenanceData: {
-			cmd: "git-agent graph provenance",
-			description: "审计一个文件的改动历史",
-			usage: "git-agent graph provenance <文件> [--json|--text]",
-			overview:
-				"从事件日志重建文件完整的、识别重命名的历史。`git-agent graph provenance <文件>` 将每次捕获的改动（来自 `event_files`）与任何带外改动合并，并纳入文件重命名前的身份，因此你能看到什么在何时触及了它。带外行 —— 没有任何观测操作能解释的内容（来源 `unknown`）—— 会被标记，从而暴露盲区编辑。其背后正是 `graph verify` 用来检测篡改的同一条哈希链。只读且离线。",
-			flags: [
-				{ name: "--json", description: "以 JSON 输出溯源视图" },
-			],
-			steps: [
-				{ title: "解析身份", description: "跟随重命名，把文件重命名前的路径纳入其历史。" },
-				{ title: "合并事件日志", description: "从仅追加的事件日志中，收集这些身份的每次捕获改动与带外改动。" },
-				{ title: "标记带外", description: "标记其内容没有任何观测智能体操作可解释的行（来源 `unknown`）。" },
-				{ title: "展示", description: "以文本或 JSON 打印按时间排序、识别重命名的历史，附每次改动的 blob ref。只读且离线。" },
+				{ title: "构建图谱", description: "`graph index` 把事件日志重放为投影并确保 AST 索引；`graph sync` 增量重放新事件（不 reset）。" },
+				{ title: "检查健康", description: "`graph status` 报告行数；`graph verify` 遍历哈希链，发现篡改则退出码 4。" },
+				{ title: "查询影响", description: "`graph impact`（共变/结构）、`callers`/`callees`/`node`（AST 调用图）、`query`（FTS5 符号搜索）、`affected`（受影响测试文件）。" },
+				{ title: "追溯历史", description: "`graph timeline`（操作历史）、`provenance`（识别重命名的文件历史）、`diagnose`（回归溯源到引入它的操作）。" },
 			],
 		},
 	},

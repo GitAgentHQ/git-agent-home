@@ -3,6 +3,7 @@ import { motion } from "motion/react";
 import type { ReactNode } from "react";
 
 import { motionDuration, motionEase, useAccessibleMotion } from "../utils/motion-prefs";
+import { renderInlineDocText } from "../utils/inline-doc-text";
 
 const MotionLink = motion.create(Link);
 import { CodeBlock } from "./code-block";
@@ -20,7 +21,7 @@ const COLOR_WHITE_07 = "rgba(255, 255, 255, 0.07)";
 const SHADOW_CARD_HOVER = "0 14px 44px rgba(0, 0, 0, 0.6)";
 
 interface HomeViewProps {
-	onSelect: (cmd: "init" | "commit" | "impact" | "timeline" | "diagnose" | "provenance") => void;
+	onSelect: (cmd: "init" | "commit" | "graph") => void;
 }
 
 /* 12 bars + 11×1px gap ≈ 44px; heights 22–30px for a lighter silhouette */
@@ -54,7 +55,7 @@ const BARS_COMMIT: BarConfig[] = [
 	{ width: 2, height: 28 },
 ];
 
-const BARS_IMPACT: BarConfig[] = [
+const BARS_GRAPH: BarConfig[] = [
 	{ width: 3, height: 24 },
 	{ width: 2, height: 30 },
 	{ width: 3, height: 22 },
@@ -67,51 +68,18 @@ const BARS_IMPACT: BarConfig[] = [
 	{ width: 3, height: 26 },
 	{ width: 2, height: 30 },
 	{ width: 3, height: 24 },
-];
-
-const BARS_TIMELINE: BarConfig[] = [
-	{ width: 2, height: 28 },
-	{ width: 3, height: 24 },
-	{ width: 3, height: 30 },
+	{ width: 3, height: 28 },
 	{ width: 2, height: 22 },
 	{ width: 3, height: 26 },
-	{ width: 3, height: 28 },
+	{ width: 3, height: 30 },
 	{ width: 2, height: 24 },
-	{ width: 3, height: 30 },
-	{ width: 3, height: 22 },
-	{ width: 2, height: 26 },
 	{ width: 3, height: 28 },
-	{ width: 3, height: 24 },
-];
-
-const BARS_DIAGNOSE: BarConfig[] = [
-	{ width: 3, height: 30 },
-	{ width: 2, height: 22 },
+	{ width: 3, height: 22 },
+	{ width: 2, height: 30 },
 	{ width: 3, height: 26 },
 	{ width: 3, height: 24 },
 	{ width: 2, height: 28 },
-	{ width: 3, height: 22 },
 	{ width: 3, height: 30 },
-	{ width: 2, height: 26 },
-	{ width: 3, height: 24 },
-	{ width: 3, height: 28 },
-	{ width: 2, height: 22 },
-	{ width: 3, height: 30 },
-];
-
-const BARS_PROVENANCE: BarConfig[] = [
-	{ width: 3, height: 24 },
-	{ width: 3, height: 28 },
-	{ width: 2, height: 30 },
-	{ width: 3, height: 22 },
-	{ width: 2, height: 26 },
-	{ width: 3, height: 24 },
-	{ width: 3, height: 30 },
-	{ width: 2, height: 28 },
-	{ width: 3, height: 22 },
-	{ width: 2, height: 26 },
-	{ width: 3, height: 30 },
-	{ width: 3, height: 24 },
 ];
 
 // Cost for 1,000 commits at ~4,200 input + ~400 output tokens each.
@@ -165,6 +133,16 @@ function PricingCompare() {
 			</div>
 			<p className="pricing-compare-note">{t.pricingNote}</p>
 		</div>
+	);
+}
+
+function GraphPitch() {
+	const { t } = useLanguage();
+	return (
+		<section className="graph-pitch">
+			<h2 className="graph-pitch-title">{t.graphPitchTitle}</h2>
+			<p className="graph-pitch-body">{renderInlineDocText(t.graphPitchBody)}</p>
+		</section>
 	);
 }
 
@@ -298,71 +276,24 @@ export function HomeView({ onSelect }: HomeViewProps) {
 					/>
 				</motion.div>
 				<motion.div
-					className="entry-grid-cell"
+					className="entry-grid-cell entry-grid-cell--wide"
 					variants={reduced ? undefined : entryGridItem}
 				>
 					<EntryCard
-						cmd="git-agent graph impact"
-						title={t.impactTitle}
-						description={t.impactDescription}
-						features={t.impactFeatures}
+						cmd="git-agent graph"
+						title={t.graphTitle}
+						description={t.graphDescription}
+						features={t.graphFeatures}
 						pattern={<DotsSquare rounded />}
-						bars={BARS_IMPACT}
+						bars={BARS_GRAPH}
 						serial="GA-003"
-						onClick={() => onSelect("impact")}
-						reducedMotion={reduced}
-					/>
-				</motion.div>
-				<motion.div
-					className="entry-grid-cell"
-					variants={reduced ? undefined : entryGridItem}
-				>
-					<EntryCard
-						cmd="git-agent graph timeline"
-						title={t.timelineTitle}
-						description={t.timelineDescription}
-						features={t.timelineFeatures}
-						pattern={<DotsSquare circle />}
-						bars={BARS_TIMELINE}
-						serial="GA-004"
-						onClick={() => onSelect("timeline")}
-						reducedMotion={reduced}
-					/>
-				</motion.div>
-				<motion.div
-					className="entry-grid-cell"
-					variants={reduced ? undefined : entryGridItem}
-				>
-					<EntryCard
-						cmd="git-agent graph diagnose"
-						title={t.diagnoseTitle}
-						description={t.diagnoseDescription}
-						features={t.diagnoseFeatures}
-						pattern={<DotsCircle />}
-						bars={BARS_DIAGNOSE}
-						serial="GA-005"
-						onClick={() => onSelect("diagnose")}
-						reducedMotion={reduced}
-					/>
-				</motion.div>
-				<motion.div
-					className="entry-grid-cell"
-					variants={reduced ? undefined : entryGridItem}
-				>
-					<EntryCard
-						cmd="git-agent graph provenance"
-						title={t.provenanceTitle}
-						description={t.provenanceDescription}
-						features={t.provenanceFeatures}
-						pattern={<DotsSquare rounded />}
-						bars={BARS_PROVENANCE}
-						serial="GA-006"
-						onClick={() => onSelect("provenance")}
+						onClick={() => onSelect("graph")}
 						reducedMotion={reduced}
 					/>
 				</motion.div>
 			</motion.div>
 
+			<GraphPitch />
 			<PricingCompare />
 			<ExploreSection />
 			<HomeFooter />
