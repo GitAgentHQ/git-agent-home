@@ -134,8 +134,6 @@ After capture runs, build the projections before querying: `git-agent graph inde
 
 **Using the call graph while coding.** Before changing a function, run `git-agent graph impact --symbol <Name>` (or `graph callers <Name>`) to see every caller that depends on it — across files and packages — so nothing coupled to the change is missed. After editing, `git-agent graph affected [files...]` lists exactly which test files to run (transitively, via the symbols you touched). `graph callees <Name>` shows what a function calls. These are the highest-leverage graph commands for active development; they run offline with no API key.
 
-**The graph database is never tracked.** `.git-agent/graph.db` is generated at runtime and git-agent keeps it out of version control automatically: `git-agent init` writes it into `.gitignore` and untracks any already-committed copy, and every graph command also writes the ignore rule to `.git/info/exclude` and untracks `graph.db` if a fork you cloned committed it. If you ever see a `chore: update graph database file` commit, run `git-agent init --gitignore` to fix it. Never `git add -f .git-agent/graph.db`.
-
 ---
 
 ## Step 5: Shell completion (optional)
@@ -166,7 +164,7 @@ So every coding agent follows the same git-agent workflow, add a short rule to t
   ```markdown
   ## git-agent
 
-  Use `git-agent` for commits and code-graph queries. Commit with `git-agent commit --intent "..."` (never hand-write messages; on 401 retry `--free`). Before editing a function, run `git-agent graph impact --symbol <Name>` / `graph callers <Name>` to find dependents; after editing, `git-agent graph affected` lists tests to run. Graph queries are offline (no API key); only `commit` and `init --scope` need a provider. Never track `.git-agent/graph.db`. Full reference: the `using-git-agent` skill.
+  Use `git-agent` for commits and code-graph queries. Commit with `git-agent commit --intent "..."` (never hand-write messages; on 401 retry `--free`). Before editing a function, run `git-agent graph impact --symbol <Name>` / `graph callers <Name>` to find dependents; after editing, `git-agent graph affected` lists tests to run. Graph queries are offline (no API key); only `commit` and `init --scope` need a provider. Full reference: the `using-git-agent` skill.
   ```
 
 - **no** — skip; the rule is optional but recommended for consistent agent behavior.
