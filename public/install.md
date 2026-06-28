@@ -7,7 +7,7 @@ You are setting up Git Agent for the user. Execute the following steps in order 
 Run this command to install the git-agent skill into your AI assistant:
 
 ```bash
-npx skills add https://github.com/GitAgentHQ/git-agent-cli --skill use-git-agent -y -g
+npx skills add https://github.com/GitAgentHQ/git-agent-cli --skill using-git-agent -y -g
 ```
 
 The skill contains the full reference for operating git-agent — commit splitting, hook behavior, provider config, error recovery, and the code graph (`graph impact`, `callers`/`callees`, `timeline`, `diagnose`, `provenance`). All subsequent behavior should follow that skill.
@@ -149,4 +149,4 @@ Ask: "Do you want to set up shell completion for git-agent? (yes / no)"
 
 ## Step 6: Confirm and hand off
 
-Tell the user that git-agent is ready. From this point on, follow the installed skill (`use-git-agent`) for all git-agent operations — committing, and querying the code graph before edits (`graph impact`), after regressions (`graph diagnose`), or when reviewing history (`graph timeline`, `graph provenance`).
+Tell the user that git-agent is ready. From this point on, follow the installed skill (`using-git-agent`) for all git-agent operations — committing, and querying the code graph before edits (`graph impact`), after regressions (`graph diagnose`), or when reviewing history (`graph timeline`, `graph provenance`).
