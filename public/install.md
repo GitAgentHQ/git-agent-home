@@ -132,6 +132,10 @@ The graph is fed by `git-agent capture`, a hidden command the Claude Code `PostT
 
 After capture runs, build the projections before querying: `git-agent graph index` (full) or `git-agent graph sync` (incremental).
 
+**Using the call graph while coding.** Before changing a function, run `git-agent graph impact --symbol <Name>` (or `graph callers <Name>`) to see every caller that depends on it — across files and packages — so nothing coupled to the change is missed. After editing, `git-agent graph affected [files...]` lists exactly which test files to run (transitively, via the symbols you touched). `graph callees <Name>` shows what a function calls. These are the highest-leverage graph commands for active development; they run offline with no API key.
+
+**The graph database is never tracked.** `.git-agent/graph.db` is generated at runtime and git-agent keeps it out of version control automatically: `git-agent init` writes it into `.gitignore` and untracks any already-committed copy, and every graph command also writes the ignore rule to `.git/info/exclude` and untracks `graph.db` if a fork you cloned committed it. If you ever see a `chore: update graph database file` commit, run `git-agent init --gitignore` to fix it. Never `git add -f .git-agent/graph.db`.
+
 ---
 
 ## Step 5: Shell completion (optional)
