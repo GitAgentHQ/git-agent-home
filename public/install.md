@@ -154,3 +154,28 @@ Ask: "Do you want to set up shell completion for git-agent? (yes / no)"
 ## Step 6: Confirm and hand off
 
 Tell the user that git-agent is ready. From this point on, follow the installed skill (`using-git-agent`) for all git-agent operations — committing, and querying the code graph before edits (`graph impact`), after regressions (`graph diagnose`), or when reviewing history (`graph timeline`, `graph provenance`).
+
+---
+
+## Step 7: Add a git-agent usage rule to your coding-agent config (recommended)
+
+So that every coding agent working in this repo follows the same git-agent workflow, add a short rule to the root `CLAUDE.md` (Claude Code) or `AGENTS.md` (other agents) at the repo root. Ask: "Do you want me to add a git-agent usage rule to your root CLAUDE.md / AGENTS.md? (yes / no)"
+
+- **yes** — append the block below to `CLAUDE.md` (or `AGENTS.md` if that's what the repo uses). Create the file if it does not exist. Do not overwrite existing content.
+
+  ```markdown
+  ## git-agent usage
+
+  Use `git-agent` for commits and code-graph queries in this repo.
+
+  - **Committing**: stage changes, then run `git-agent commit --intent "<one-sentence intent>"` (do not hand-write commit messages). On a 401, retry with `--free`.
+  - **Before editing a function**, run `git-agent graph impact --symbol <Name>` (or `graph callers <Name>`) to find every caller that depends on it; update coupled files together.
+  - **After editing**, run `git-agent graph affected [files...]` to see which tests to run.
+  - **Regressions**: `git-agent graph diagnose [symptom] --file <source>` traces a failure to the action that introduced it.
+  - Graph queries are read-only and offline (no LLM, no API key). Only `commit` and `init --scope` need a provider.
+  - Never `git add -f .git-agent/graph.db` — it is generated and auto-ignored. If it shows as tracked, run `git-agent init --gitignore`.
+  - Full reference: the `using-git-agent` skill.
+  ```
+
+- **no** — skip; the user can add it manually later. The rule is optional, but recommended for teams so every agent behaves consistently.
+
