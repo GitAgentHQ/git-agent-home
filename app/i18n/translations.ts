@@ -327,9 +327,9 @@ export const translations: Record<Language, Translations> = {
 			cmd: "git-agent graph",
 			description: "Query and audit the agent Event Log and code graph",
 			usage:
-				"git-agent graph <status|verify|index|sync|impact|timeline|diagnose|provenance|callers|callees|node|query|affected>",
+				"git-agent graph <status|verify|index|sync|impact|timeline|diagnose|provenance|callers|callees|node|query|affected|external-refs>",
 			overview:
-				"Every captured agent and human action appends to a tamper-evident, hash-chained Event Log. `graph` is the parent for every command that reads or audits it: build and sync the derived indexes (`index`, `sync`), check health and integrity (`status`, `verify`), query co-change and AST impact (`impact`, `callers`, `callees`, `node`, `query`, `affected`), and trace history and regressions (`timeline`, `provenance`, `diagnose`). All read-only commands auto-detect JSON (piped) vs text (TTY); everything runs offline with no `LLM` or API key.",
+				"Every captured agent and human action appends to a tamper-evident, hash-chained Event Log. `graph` is the parent for every command that reads or audits it: build and sync the derived indexes (`index`, `sync`), check health and integrity (`status`, `verify`), query co-change and AST impact (`impact`, `callers`, `callees`, `node`, `query`, `affected`), trace history and regressions (`timeline`, `provenance`, `diagnose`), and list call/field sites reaching into external packages (`external-refs`). All read-only commands auto-detect JSON (piped) vs text (TTY); everything runs offline with no `LLM` or API key.",
 			flags: [
 				{ name: "--json / --text", description: "Force output format (default: JSON when piped, text on a TTY) — every query subcommand" },
 				{ name: "--reindex", description: "Force a full AST re-index (impact/callers/callees/node/query/affected)" },
@@ -554,9 +554,9 @@ export const translations: Record<Language, Translations> = {
 			cmd: "git-agent graph",
 			description: "查询与审计智能体事件日志和代码图谱",
 			usage:
-				"git-agent graph <status|verify|index|sync|impact|timeline|diagnose|provenance|callers|callees|node|query|affected>",
+				"git-agent graph <status|verify|index|sync|impact|timeline|diagnose|provenance|callers|callees|node|query|affected|external-refs>",
 			overview:
-				"每个捕获的智能体与人工操作都追加到防篡改、哈希链的事件日志。`graph` 是所有读取或审计该日志的命令的父命令：构建与同步派生索引（`index`、`sync`），检查健康与完整性（`status`、`verify`），查询共变与 AST 影响（`impact`、`callers`、`callees`、`node`、`query`、`affected`），追溯历史与回归（`timeline`、`provenance`、`diagnose`）。所有只读命令自动检测 JSON（管道）或文本（TTY）；全程离线，无需 `LLM` 或 API 密钥。",
+				"每个捕获的智能体与人工操作都追加到防篡改、哈希链的事件日志。`graph` 是所有读取或审计该日志的命令的父命令：构建与同步派生索引（`index`、`sync`），检查健康与完整性（`status`、`verify`），查询共变与 AST 影响（`impact`、`callers`、`callees`、`node`、`query`、`affected`），追溯历史与回归（`timeline`、`provenance`、`diagnose`），以及列出指向外部包的调用/字段读取点（`external-refs`）。所有只读命令自动检测 JSON（管道）或文本（TTY）；全程离线，无需 `LLM` 或 API 密钥。",
 			flags: [
 				{ name: "--json / --text", description: "强制输出格式（默认：管道输出 JSON，终端输出文本）—— 所有查询子命令" },
 				{ name: "--reindex", description: "强制全量 AST 重建索引（impact/callers/callees/node/query/affected）" },
