@@ -21,7 +21,7 @@ const COLOR_WHITE_07 = "rgba(255, 255, 255, 0.07)";
 const SHADOW_CARD_HOVER = "0 14px 44px rgba(0, 0, 0, 0.6)";
 
 interface HomeViewProps {
-	onSelect: (cmd: "init" | "commit" | "graph") => void;
+	onSelect: (cmd: "init" | "commit" | "related") => void;
 }
 
 /* 12 bars + 11×1px gap ≈ 44px; heights 22–30px for a lighter silhouette */
@@ -55,31 +55,19 @@ const BARS_COMMIT: BarConfig[] = [
 	{ width: 2, height: 28 },
 ];
 
-const BARS_GRAPH: BarConfig[] = [
-	{ width: 3, height: 24 },
-	{ width: 2, height: 30 },
-	{ width: 3, height: 22 },
-	{ width: 3, height: 28 },
-	{ width: 2, height: 26 },
-	{ width: 3, height: 30 },
-	{ width: 3, height: 22 },
+const BARS_RELATED: BarConfig[] = [
 	{ width: 2, height: 28 },
 	{ width: 3, height: 24 },
-	{ width: 3, height: 26 },
-	{ width: 2, height: 30 },
-	{ width: 3, height: 24 },
-	{ width: 3, height: 28 },
+	{ width: 3, height: 30 },
 	{ width: 2, height: 22 },
 	{ width: 3, height: 26 },
-	{ width: 3, height: 30 },
-	{ width: 2, height: 24 },
 	{ width: 3, height: 28 },
+	{ width: 2, height: 24 },
+	{ width: 3, height: 30 },
 	{ width: 3, height: 22 },
-	{ width: 2, height: 30 },
+	{ width: 2, height: 28 },
 	{ width: 3, height: 26 },
 	{ width: 3, height: 24 },
-	{ width: 2, height: 28 },
-	{ width: 3, height: 30 },
 ];
 
 // Cost for 1,000 commits at ~4,200 input + ~400 output tokens each.
@@ -280,14 +268,14 @@ export function HomeView({ onSelect }: HomeViewProps) {
 					variants={reduced ? undefined : entryGridItem}
 				>
 					<EntryCard
-						cmd="git-agent graph"
-						title={t.graphTitle}
-						description={t.graphDescription}
-						features={t.graphFeatures}
+						cmd="git-agent related"
+						title={t.relatedTitle}
+						description={t.relatedDescription}
+						features={t.relatedFeatures}
 						pattern={<DotsSquare rounded />}
-						bars={BARS_GRAPH}
+						bars={BARS_RELATED}
 						serial="GA-003"
-						onClick={() => onSelect("graph")}
+						onClick={() => onSelect("related")}
 						reducedMotion={reduced}
 					/>
 				</motion.div>

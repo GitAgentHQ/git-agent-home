@@ -16,7 +16,7 @@ export function meta({}: Route.MetaArgs) {
 	];
 }
 
-type View = "home" | "init" | "commit" | "graph";
+type View = "home" | "init" | "commit" | "related";
 
 export default function Home() {
 	const [view, setView] = useState<View>("home");
@@ -40,10 +40,10 @@ export default function Home() {
 						onBack={() => setView("home")}
 					/>
 				)}
-				{view === "graph" && (
+				{view === "related" && (
 					<CommandDetail
-						key="graph"
-						{...t.graphData}
+						key="related"
+						{...t.relatedData}
 						onBack={() => setView("home")}
 					/>
 				)}

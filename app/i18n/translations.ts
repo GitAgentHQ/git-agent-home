@@ -19,9 +19,9 @@ export interface Translations {
 	commitTitle: [string, string];
 	commitDescription: string;
 	commitFeatures: string[];
-	graphTitle: [string, string];
-	graphDescription: string;
-	graphFeatures: string[];
+	relatedTitle: [string, string];
+	relatedDescription: string;
+	relatedFeatures: string[];
 
 	// Pricing
 	pricingTitle: string;
@@ -38,7 +38,7 @@ export interface Translations {
 	// Command pages
 	initData: CommandData;
 	commitData: CommandData;
-	graphData: CommandData;
+	relatedData: CommandData;
 
 	// Home explore
 	exploreTitle: string;
@@ -127,7 +127,7 @@ export const translations: Record<Language, Translations> = {
 		viewDetails: "View details →",
 		graphPitchTitle: "An agent that knows your code",
 		graphPitchBody:
-			"git-agent builds a queryable graph of your code as it works: the AST call graph, co-change history, and a tamper-evident log of every agent and human action. Before an edit, see what else changes with it (`graph impact`); after a regression, trace the exact action that introduced it (`graph diagnose`). The graph gives the agent structural context — callers, callees, dependents — so it edits with understanding, not blind. All offline, no API key.",
+			"git-agent builds a co-change graph of your code as it commits: the files that habitually change together, drawn from git history. Before an edit, `git-agent related` shows what else moves with it — and why, via the commits that prove the coupling; after a change, `git-agent status` reports index health. It's the temporal complement to grep: it surfaces couplings a symbol search can't see — a test in another package, a changelog, sibling files with no shared import. Offline, no API key, milliseconds per query — so the agent edits with understanding, not blind.",
 
 		// Entry cards
 		initTitle: ["Initialize", "your repo"],
@@ -150,16 +150,15 @@ export const translations: Record<Language, Translations> = {
 			"Amend last commit",
 			"Co-author and trailer support",
 		],
-		graphTitle: ["Query and audit", "the agent graph"],
-		graphDescription:
-			"Every agent and human action, captured automatically into a tamper-evident Event Log, then projected into a code graph: co-change history, AST call graph, action timeline, regression tracing, and file provenance — all offline.",
-		graphFeatures: [
-			"Co-change + AST structural impact",
-			"Callers, callees, node, and FTS5 symbol search",
-			"Timeline, provenance, and regression diagnose",
-			"Hash-chained, tamper-evident Event Log",
-			"Incremental sync, no full rebuild needed",
-			"Offline — no LLM or API key",
+		relatedTitle: ["Find files that", "change together"],
+		relatedDescription:
+			"Mine git history for co-change: given the files you're touching, surface what else habitually moves with them — and the commits that prove why.",
+		relatedFeatures: [
+			"Co-change from files, a directory, or your working tree",
+			"The commits that explain each coupling",
+			"--tests: which tests to run after a change",
+			"The temporal complement to grep",
+			"Language-agnostic, offline, no API key",
 		],
 
 		// Pricing
@@ -276,10 +275,11 @@ export const translations: Record<Language, Translations> = {
 		commitData: {
 			cmd: "git-agent commit",
 			description: "Generate commits with LLM assistance",
-			usage: "git-agent commit [--dry-run] [--intent <text>] [--amend] [--no-stage] [--co-author <name>] [--trailer <key:value>] [--no-attribution] [--free]",
+			usage: "git-agent commit [-o <fmt>] [--dry-run] [--intent <text>] [--amend] [--no-stage] [--co-author <name>] [--trailer <key:value>] [--no-attribution] [--free]",
 			overview:
-				"Stages tracked changes, groups them into up to five atomic commits per run, drafts conventional messages with an `LLM`, validates via `hook` from `config.yml` (`empty`, `conventional`, or custom script), and retries or re-plans when validation fails. Prefer running without provider flags (`FREE` or `~/.config/git-agent/config.yml`).",
+				"Stages tracked changes, groups them into up to five atomic commits per run, drafts conventional messages with an `LLM`, validates via `hook` from `config.yml` (`empty`, `conventional`, or custom script), and retries or re-plans when validation fails. Prefer running without provider flags (`FREE` or `~/.config/git-agent/config.yml`). Pass `-o json` for a structured result — `{dry_run, commits:[{title, message, files, sha, hook_outcome}], committed_count, final_sha}` — instead of human-readable text, so an agent can consume the plan and resulting SHAs.",
 			flags: [
+				{ name: "-o, --output <fmt>", description: "Output format: `text` (default) or `json`. `-o json` emits `{dry_run, commits:[{title, message, files, sha, hook_outcome}], committed_count, final_sha}` for agents to consume." },
 				{ name: "--dry-run", description: "Print planned commit messages without creating commits" },
 				{ name: "--intent <text>", description: "Free-text hint for how to group changes and phrase messages" },
 				{ name: "--amend", description: "Regenerate and amend the most recent commit message" },
@@ -323,23 +323,27 @@ export const translations: Record<Language, Translations> = {
 				{ title: "Commit or re-plan", description: "Creates commits when the hook passes. After repeated hook failures, runs up to two full re-plans, then exits with code 2." },
 			],
 		},
-		graphData: {
-			cmd: "git-agent graph",
-			description: "Query and audit the agent Event Log and code graph",
-			usage:
-				"git-agent graph <status|verify|index|sync|impact|timeline|diagnose|provenance|callers|callees|node|query|affected|external-refs>",
+		relatedData: {
+			cmd: "git-agent related",
+			description: "Find the files that change together",
+			usage: "git-agent related [path...] [--tests] [--depth <n>] [--top <n>] [--min-count <n>] [--reindex] [-o <fmt>]",
 			overview:
-				"Every captured agent and human action appends to a tamper-evident, hash-chained Event Log. `graph` is the parent for every command that reads or audits it: build and sync the derived indexes (`index`, `sync`), check health and integrity (`status`, `verify`), query co-change and AST impact (`impact`, `callers`, `callees`, `node`, `query`, `affected`), trace history and regressions (`timeline`, `provenance`, `diagnose`), and list call/field sites reaching into external packages (`external-refs`). All read-only commands auto-detect JSON (piped) vs text (TTY); everything runs offline with no `LLM` or API key.",
+				"Mine git history for co-change: which files habitually change in the same commits as the ones you give it, and the commits that prove the coupling (subject + sha + date). Seeds are file paths, a directory, or — with no arguments — your current working-tree changes (\"given what I've edited, what else usually changes, and why?\"). Files coupled to several seeds rank highest. It's the temporal complement to grep: it surfaces couplings a symbol search can't see — a test in another package, a changelog, sibling files with no shared import. Language-agnostic (git history, not parsing), offline, no API key, auto-indexed on first run. Read-only. In `-o json` each result carries a `commits` array as the evidence for why the files are coupled.",
 			flags: [
-				{ name: "--json / --text", description: "Force output format (default: JSON when piped, text on a TTY) — every query subcommand" },
-				{ name: "--reindex", description: "Force a full AST re-index (impact/callers/callees/node/query/affected)" },
-				{ name: "--depth <n>", description: "Transitive traversal depth (impact/callers/callees/affected)" },
+				{ name: "--tests", description: "Keep only related test files — a fast \"which tests should I run after this change?\"" },
+				{ name: "--depth <n>", description: "Transitive co-change depth; values >1 surface indirect couplings, flagged as such in the output", default: "1" },
+				{ name: "--top <n>", description: "Maximum number of results", default: "20" },
+				{ name: "--min-count <n>", description: "Minimum co-change count to include — filters out weak, incidental couplings", default: "3" },
+				{ name: "--reindex", description: "Force a full re-index of git history before querying", default: "false" },
+				{ name: "-o, --output <fmt>", description: "Output format: `auto`, `json`, or `text`. `auto` emits JSON when piped, text on a TTY; JSON adds the `commits` array per result." },
+				{ name: "-v, --verbose", description: "Enable verbose output (global)" },
 			],
 			steps: [
-				{ title: "Build the graph", description: "`graph index` replays the Event Log into projections and ensures the AST index; `graph sync` incrementally replays only new events (no reset)." },
-				{ title: "Check health", description: "`graph status` reports row counts; `graph verify` walks the hash chain and exits 4 on tampering." },
-				{ title: "Query impact", description: "`graph impact` (co-change/structural), `callers`/`callees`/`node` (AST call graph), `query` (FTS5 symbol search), `affected` (test-files-affected)." },
-				{ title: "Trace history", description: "`graph timeline` (action history), `provenance` (rename-aware file history), `diagnose` (regression to its introducing action)." },
+				{ title: "Resolve seeds", description: "Takes the given file paths or directory; with no arguments, uses your current working-tree changes as the seeds." },
+				{ title: "Auto-index git history", description: "On first run (or with `--reindex`), scans commit history to build the co-change graph — language-agnostic, offline, no API key. Later runs reuse the index and auto-sync." },
+				{ title: "Aggregate co-change", description: "For each seed, finds files that changed in the same commits and aggregates across seeds, so files coupled to several seeds rank highest. `--min-count` and `--depth` shape the result set." },
+				{ title: "Rank and attach evidence", description: "Ranks by coupling strength and attaches, per result, the commits that link it to the seeds (subject + sha + date) — the \"why are these related?\" evidence." },
+				{ title: "Emit results", description: "Prints the ranked files (text on a TTY, JSON when piped). `--tests` narrows to related test files; `--top` caps the count." },
 			],
 		},
 	},
@@ -355,7 +359,7 @@ export const translations: Record<Language, Translations> = {
 		viewDetails: "查看详情 →",
 		graphPitchTitle: "一个了解你代码的智能体",
 		graphPitchBody:
-			"git-agent 在工作中为你构建可查询的代码图谱：AST 调用图、共变历史，以及每个智能体与人工操作的防篡改日志。改动前，看清楚还有什么会一起变（`graph impact`）；回归后，追溯到引入它的那次操作（`graph diagnose`）。图谱赋予智能体结构化上下文——调用者、被调用者、依赖者——让它带着理解去编辑，而非盲目改码。全程离线，无需 API 密钥。",
+			"git-agent 在提交时为你构建共变图谱：来自 git 历史、习惯性一起改动的文件。改动前，`git-agent related` 告诉你还有什么会一起动——并附上证明这层耦合的提交；改动后，`git-agent status` 报告索引健康度。它是 grep 的时间维补充：能发现符号搜索看不见的耦合——位于另一个包的测试、changelog、没有共享 import 的关联文件。离线、无需 API 密钥、毫秒级响应——让智能体带着理解去编辑，而非盲目改码。",
 
 		// Entry cards
 		initTitle: ["初始化", "你的仓库"],
@@ -378,16 +382,15 @@ export const translations: Record<Language, Translations> = {
 			"修改上次提交",
 			"合著者与 trailer 支持",
 		],
-		graphTitle: ["查询与审计", "智能体图谱"],
-		graphDescription:
-			"每个智能体与人工操作自动捕获到防篡改的事件日志，再投影为代码图谱：共变历史、AST 调用图、操作时间线、回归溯源、文件来源 —— 全程离线。",
-		graphFeatures: [
-			"共变 + AST 结构影响",
-			"callers / callees / node / FTS5 符号搜索",
-			"timeline / provenance / 回归 diagnose",
-			"哈希链防篡改事件日志",
-			"增量 sync，无需全量重建",
-			"离线运行 — 无需 LLM 或 API 密钥",
+		relatedTitle: ["找出会", "一起改动的文件"],
+		relatedDescription:
+			"挖掘 git 历史中的共变：给定你正在改的文件，找出还有哪些习惯性一起动——并附上证明这层耦合的提交。",
+		relatedFeatures: [
+			"以文件、目录或工作区改动为种子查共变",
+			"附带解释每层耦合的提交",
+			"--tests：改完该跑哪些测试",
+			"grep 的时间维补充",
+			"语言无关、离线、无需 API 密钥",
 		],
 
 		// Pricing
@@ -503,10 +506,11 @@ export const translations: Record<Language, Translations> = {
 		commitData: {
 			cmd: "git-agent commit",
 			description: "用 LLM 辅助生成提交",
-			usage: "git-agent commit [--dry-run] [--intent <文本>] [--amend] [--no-stage] [--co-author <名称>] [--trailer <键:值>] [--no-attribution] [--free]",
+			usage: "git-agent commit [-o <格式>] [--dry-run] [--intent <文本>] [--amend] [--no-stage] [--co-author <名称>] [--trailer <键:值>] [--no-attribution] [--free]",
 			overview:
-				"暂存已跟踪的改动，每次运行最多分成五组原子提交，用 `LLM` 起草规范说明，按 `config.yml` 的 `hook` 校验（`empty`、`conventional` 或自定义脚本），失败则重试或重规划。默认优先不带 `provider` 参数（`FREE` 或 `~/.config/git-agent/config.yml`）。",
+				"暂存已跟踪的改动，每次运行最多分成五组原子提交，用 `LLM` 起草规范说明，按 `config.yml` 的 `hook` 校验（`empty`、`conventional` 或自定义脚本），失败则重试或重规划。默认优先不带 `provider` 参数（`FREE` 或 `~/.config/git-agent/config.yml`）。传入 `-o json` 可得到结构化结果——`{dry_run, commits:[{title, message, files, sha, hook_outcome}], committed_count, final_sha}`——而非人类可读文本，便于智能体消费提交计划与生成的 SHA。",
 			flags: [
+				{ name: "-o, --output <格式>", description: "输出格式：`text`（默认）或 `json`。`-o json` 输出 `{dry_run, commits:[{title, message, files, sha, hook_outcome}], committed_count, final_sha}`，便于智能体消费。" },
 				{ name: "--dry-run", description: "只打印拟定的提交说明，不创建提交" },
 				{ name: "--intent <文本>", description: "自由文本，提示如何分组改动和写说明" },
 				{ name: "--amend", description: "重新生成并修正最近的提交消息" },
@@ -550,23 +554,27 @@ export const translations: Record<Language, Translations> = {
 				{ title: "提交或重新规划", description: "hook 通过则创建提交。若多次仍被 hook 拦住，最多做两轮完整重规划，然后以退出码 2 结束。" },
 			],
 		},
-		graphData: {
-			cmd: "git-agent graph",
-			description: "查询与审计智能体事件日志和代码图谱",
-			usage:
-				"git-agent graph <status|verify|index|sync|impact|timeline|diagnose|provenance|callers|callees|node|query|affected|external-refs>",
+		relatedData: {
+			cmd: "git-agent related",
+			description: "找出会一起改动的文件",
+			usage: "git-agent related [路径...] [--tests] [--depth <n>] [--top <n>] [--min-count <n>] [--reindex] [-o <格式>]",
 			overview:
-				"每个捕获的智能体与人工操作都追加到防篡改、哈希链的事件日志。`graph` 是所有读取或审计该日志的命令的父命令：构建与同步派生索引（`index`、`sync`），检查健康与完整性（`status`、`verify`），查询共变与 AST 影响（`impact`、`callers`、`callees`、`node`、`query`、`affected`），追溯历史与回归（`timeline`、`provenance`、`diagnose`），以及列出指向外部包的调用/字段读取点（`external-refs`）。所有只读命令自动检测 JSON（管道）或文本（TTY）；全程离线，无需 `LLM` 或 API 密钥。",
+				"挖掘 git 历史中的共变：哪些文件习惯性地与你给定的文件在同一批提交中改动，以及证明这层耦合的提交（主题 + sha + 日期）。种子可以是文件路径、目录，或——无参数时——你当前的工作区改动（\"我改的这些，还有什么通常一起改、为什么？\"）。与多个种子都耦合的文件排名最高。它是 grep 的时间维补充：能发现符号搜索看不见的耦合——位于另一个包的测试、changelog、没有共享 import 的关联文件。语言无关（基于 git 历史而非解析）、离线、无需 API 密钥，首次运行自动建索引。只读。在 `-o json` 下，每条结果都带一个 `commits` 数组，作为这些文件为何耦合的证据。",
 			flags: [
-				{ name: "--json / --text", description: "强制输出格式（默认：管道输出 JSON，终端输出文本）—— 所有查询子命令" },
-				{ name: "--reindex", description: "强制全量 AST 重建索引（impact/callers/callees/node/query/affected）" },
-				{ name: "--depth <n>", description: "传递遍历深度（impact/callers/callees/affected）" },
+				{ name: "--tests", description: "只保留相关的测试文件——快速回答\"改完这处该跑哪些测试？\"" },
+				{ name: "--depth <n>", description: "传递性共变深度；大于 1 会显现间接耦合，并在输出中标注", default: "1" },
+				{ name: "--top <n>", description: "最大结果数", default: "20" },
+				{ name: "--min-count <n>", description: "纳入结果的最小共变次数——过滤掉偶发的弱耦合", default: "3" },
+				{ name: "--reindex", description: "查询前强制完整重建 git 历史索引", default: "false" },
+				{ name: "-o, --output <格式>", description: "输出格式：`auto`、`json` 或 `text`。`auto` 在管道时输出 JSON，TTY 时输出文本；JSON 会为每条结果附上 `commits` 数组。" },
+				{ name: "-v, --verbose", description: "启用详细输出（全局）" },
 			],
 			steps: [
-				{ title: "构建图谱", description: "`graph index` 把事件日志重放为投影并确保 AST 索引；`graph sync` 增量重放新事件（不 reset）。" },
-				{ title: "检查健康", description: "`graph status` 报告行数；`graph verify` 遍历哈希链，发现篡改则退出码 4。" },
-				{ title: "查询影响", description: "`graph impact`（共变/结构）、`callers`/`callees`/`node`（AST 调用图）、`query`（FTS5 符号搜索）、`affected`（受影响测试文件）。" },
-				{ title: "追溯历史", description: "`graph timeline`（操作历史）、`provenance`（识别重命名的文件历史）、`diagnose`（回归溯源到引入它的操作）。" },
+				{ title: "确定种子", description: "取给定的文件路径或目录；无参数时，以当前工作区改动作为种子。" },
+				{ title: "自动建索引", description: "首次运行（或加 `--reindex`）时扫描提交历史构建共变图谱——语言无关、离线、无需 API 密钥。后续运行复用索引并自动同步。" },
+				{ title: "聚合共变", description: "对每个种子，找出在同一批提交中改动的文件并跨种子聚合，使与多个种子都耦合的文件排名最高。`--min-count` 与 `--depth` 调整结果集。" },
+				{ title: "排序并附证据", description: "按耦合强度排序，并为每条结果附上将其与种子相连的提交（主题 + sha + 日期）——即\"它们为何相关？\"的证据。" },
+				{ title: "输出结果", description: "打印排序后的文件（TTY 输出文本，管道输出 JSON）。`--tests` 收窄为相关测试文件；`--top` 限制数量。" },
 			],
 		},
 	},

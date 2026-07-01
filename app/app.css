@@ -304,6 +304,10 @@ body {
 	flex: 1;
 }
 
+.entry-grid-cell--wide {
+	grid-column: 1 / -1;
+}
+
 .pricing-compare-cost {
 	font-family: var(--font-mono);
 	font-size: var(--fs-mono-label);
@@ -335,11 +339,6 @@ body {
 	width: 100%;
 	max-width: 860px;
 	align-items: stretch;
-}
-
-/* A flagship card that spans the full 2-column row. */
-.entry-grid-cell--wide {
-	grid-column: span 2;
 }
 
 @media (max-width: 680px) {
