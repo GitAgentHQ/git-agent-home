@@ -10,7 +10,7 @@ Run this command to install the git-agent skill into your AI assistant:
 npx skills add https://github.com/GitAgentHQ/git-agent-cli --skill using-git-agent -y -g
 ```
 
-The skill contains the full reference for operating git-agent — commit splitting, hook behavior, provider config, error recovery, and the code graph (`graph impact`, `callers`/`callees`, `timeline`, `diagnose`, `provenance`). All subsequent behavior should follow that skill.
+The skill contains the full reference for operating git-agent — commit splitting, hook behavior, provider config, error recovery, and co-change relations (`git-agent related` to see what changes together, `git-agent status` for index health). All subsequent behavior should follow that skill.
 
 ---
 
@@ -121,18 +121,13 @@ Ask: "Do you want to initialize git-agent in your current repository now? This g
 - **yes** — run `git-agent init --scope` and show the user the generated `.git-agent/config.yml`.
 - **no** — skip; the user can run `git-agent init` manually later.
 
-### Action capture (the code graph)
+### The co-change graph
 
-git-agent builds a queryable code graph — call graph, co-change history, and a tamper-evident log of every agent and human action — that powers `graph impact` (files that move with your change), `graph diagnose` (trace a regression to the action that introduced it), `graph timeline`, and `graph provenance`. All graph queries are read-only and offline (no LLM, no API key).
+git-agent builds a co-change graph of your code from git history — the files that habitually change together — and keeps it current automatically as you commit (no setup, no hook, no capture step). It powers two read-only, offline queries (no LLM, no API key): `git-agent related` (what else moves with a file, plus the commits that prove the coupling) and `git-agent status` (index health and row counts).
 
-The graph is fed by `git-agent capture`, a hidden command the Claude Code `PostToolUse` hook calls automatically. Ask: "Do you want to install the capture hook so agent edits are recorded into the graph automatically? (yes / no)"
+`related` is the temporal complement to grep: grep finds files by their current content and symbols, while `related` finds them by how they have changed together — surfacing couplings a symbol search can't see, such as a test in another package, a changelog, or sibling files with no shared import. It auto-indexes on first run, so there is nothing to install here — just know it is available.
 
-- **yes** — run `git-agent init --agent-hook`. This writes a `PostToolUse` hook (matcher `Edit|Write|Bash`) to `.claude/settings.json` that runs `git-agent capture --source claude-code` on each agent action. Capture is fast (<200ms), never blocks the agent, and redacts secrets before storage.
-- **no** — skip; the graph can still be built from git history via `git-agent graph index`, but agent actions won't be in the event log, so `timeline`/`diagnose`/`provenance` will only reflect commits, not live edits.
-
-After capture runs, build the projections before querying: `git-agent graph index` (full) or `git-agent graph sync` (incremental).
-
-**Using the call graph while coding.** Before changing a function, run `git-agent graph impact --symbol <Name>` (or `graph callers <Name>`) to see every caller that depends on it — across files and packages — so nothing coupled to the change is missed. After editing, `git-agent graph affected [files...]` lists exactly which test files to run (transitively, via the symbols you touched). `graph callees <Name>` shows what a function calls. These are the highest-leverage graph commands for active development; they run offline with no API key.
+**Using co-change while coding.** Before changing a file, run `git-agent related <files...>` to see what historically moves with it — and why, via the linking commits — so nothing coupled to the change is missed. After editing, `git-agent related <files...> --tests` lists exactly which test files to run. These run offline with no API key.
 
 ---
 
@@ -151,7 +146,7 @@ Ask: "Do you want to set up shell completion for git-agent? (yes / no)"
 
 ## Step 6: Confirm and hand off
 
-Tell the user that git-agent is ready. From this point on, follow the installed skill (`using-git-agent`) for all git-agent operations — committing, and querying the code graph before edits (`graph impact`), after regressions (`graph diagnose`), or when reviewing history (`graph timeline`, `graph provenance`).
+Tell the user that git-agent is ready. From this point on, follow the installed skill (`using-git-agent`) for all git-agent operations — committing, and querying co-change relations before edits (`git-agent related`) or checking index health (`git-agent status`).
 
 ---
 
@@ -164,7 +159,7 @@ So every coding agent follows the same git-agent workflow, add a short rule to t
   ```markdown
   ## git-agent
 
-  Use `git-agent` for commits and code-graph queries. Commit with `git-agent commit --intent "..."` (never hand-write messages; on 401 retry `--free`). Before editing a function, run `git-agent graph impact --symbol <Name>` / `graph callers <Name>` to find dependents; after editing, `git-agent graph affected` lists tests to run. Graph queries are offline (no API key); only `commit` and `init --scope` need a provider. Full reference: the `using-git-agent` skill.
+  Use `git-agent` for commits and co-change queries. Commit with `git-agent commit --intent "..."` (never hand-write messages; on 401 retry `--free`). Before editing, run `git-agent related <files...>` to find the files that historically change together (the temporal complement to grep); after editing, `git-agent related <files...> --tests` lists tests to run. `related` and `status` are offline (no API key); only `commit` and `init --scope` need a provider. Full reference: the `using-git-agent` skill.
   ```
 
 - **no** — skip; the rule is optional but recommended for consistent agent behavior.
