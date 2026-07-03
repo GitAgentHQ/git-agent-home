@@ -288,6 +288,7 @@ export const translations: Record<Language, Translations> = {
 				{ name: "--trailer <value>", description: 'Add an arbitrary git trailer, format "Key: Value" (repeatable)' },
 				{ name: "--no-attribution", description: "Omit the default Git Agent co-author signature" },
 				{ name: "--max-diff-lines <n>", description: "Maximum diff lines to send to the model; set to limit token cost", default: "0 (no limit)" },
+				{ name: "--max-plan-files <n>", description: "Maximum file paths listed individually in the planner prompt before collapsing to directory summaries", default: "0 (built-in default 150)" },
 				{
 					name: "--free",
 					description:
@@ -519,6 +520,7 @@ export const translations: Record<Language, Translations> = {
 				{ name: "--trailer <值>", description: "添加任意 git trailer，格式为 \"Key: Value\"（可重复）" },
 				{ name: "--no-attribution", description: "不添加默认的合著者签名（Git Agent）" },
 				{ name: "--max-diff-lines <n>", description: "发送给模型的最大 diff 行数；用于限制 token 成本", default: "0（无限制）" },
+				{ name: "--max-plan-files <n>", description: "规划提示中单独列出的最大文件路径数，超出后按目录折叠", default: "0（内置默认 150）" },
 				{
 					name: "--free",
 					description:
