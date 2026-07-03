@@ -15,9 +15,9 @@ export async function loader({ params }: LoaderFunctionArgs) {
 	return { entry };
 }
 
-export const meta: MetaFunction<typeof loader> = ({ data }) => {
-	if (!data?.entry) return [{ title: "Not Found" }];
-	const { entry } = data;
+export const meta: MetaFunction<typeof loader> = ({ loaderData }) => {
+	if (!loaderData?.entry) return [{ title: "Not Found" }];
+	const { entry } = loaderData;
 	return [
 		...buildMeta({
 			title: `What is ${entry.term.en}? | git-agent Glossary`,
