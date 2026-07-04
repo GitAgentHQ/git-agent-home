@@ -150,18 +150,25 @@ Tell the user that git-agent is ready. From this point on, follow the installed 
 
 ---
 
-## Step 7: Add a git-agent usage rule to your coding-agent config (recommended)
+## Step 7: Add a co-change usage rule to your coding-agent config (recommended)
 
-So every coding agent follows the same git-agent workflow, add a short rule to the agent's global instructions. For Claude Code that's `~/.claude/CLAUDE.md`; for other agents, locate the equivalent yourself (e.g. `AGENTS.md`, `~/.config/<agent>/...`). Ask: "Do you want me to add a git-agent usage rule to your coding-agent config? (yes / no)"
+The `using-git-agent` skill only fires when an agent decides to invoke it, so agents rarely run `git-agent related` on their own — they grep and edit. A short rule in the agent's **global** instructions (loaded on every task, in every repo) is what makes them do it proactively. Add one there, not per-project.
 
-- **yes** — append the block below to the agent's config file (create if absent; do not overwrite existing content).
+Ask the user two questions:
+
+1. "Do you want me to add a git-agent co-change usage rule to your coding agent's global config? (yes / no)"
+2. If yes: "Which agent? Claude Code (`~/.claude/CLAUDE.md`), or another agent — I'll add it to that agent's global instruction file under your home directory (e.g. `~/.codex/AGENTS.md`, `~/.config/<agent>/...`)?"
+
+Then act on the answer:
+
+- **Claude Code** — append the block below to `~/.claude/CLAUDE.md` (create the file if absent; never overwrite existing content).
+- **Another agent** — locate that agent's global instruction file under the user's home directory and append the same block, adapting only the sentence that names the skill if that agent has no skills.
+- **no** — skip; the rule is optional but recommended for consistent agent behavior.
 
   ```markdown
   ## git-agent
 
-  Use `git-agent` for commits and co-change queries. Commit with `git-agent commit --intent "..."` (never hand-write messages; on 401 retry `--free`). Before editing, run `git-agent related <files...>` to find the files that historically change together (the temporal complement to grep); after editing, `git-agent related <files...> --tests` lists tests to run. `related` and `status` are offline (no API key); only `commit` and `init --scope` need a provider. Full reference: the `using-git-agent` skill.
+  Before editing a feature or starting multi-file work in any git repo, run `git-agent related <files...>` to find the files that historically change together with the ones you are touching — the temporal complement to Grep (Grep finds current references; `related` finds what moves together, with the linking commits that explain why). Read those commits to judge each coupling and open the strongly-coupled files before finishing; after editing, `git-agent related <files...> --tests` lists which tests to run. Commit with `git-agent commit --intent "..."` (never hand-write messages; on 401 retry `--free`). `related` and `status` are offline and need no API key; only `commit` and `init --scope` need a provider. Full reference: the `using-git-agent` skill.
   ```
-
-- **no** — skip; the rule is optional but recommended for consistent agent behavior.
 
 
