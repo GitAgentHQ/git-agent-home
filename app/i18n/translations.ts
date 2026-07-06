@@ -277,7 +277,7 @@ export const translations: Record<Language, Translations> = {
 			description: "Generate commits with LLM assistance",
 			usage: "git-agent commit [-o <fmt>] [--dry-run] [--intent <text>] [--amend] [--no-stage] [--co-author <name>] [--trailer <key:value>] [--no-attribution] [--free]",
 			overview:
-				"Stages tracked changes, groups them into up to five atomic commits per run, drafts conventional messages with an `LLM`, validates via `hook` from `config.yml` (`empty`, `conventional`, or custom script), and retries or re-plans when validation fails. Prefer running without provider flags (`FREE` or `~/.config/git-agent/config.yml`). Pass `-o json` for a structured result — `{dry_run, commits:[{title, message, files, sha, hook_outcome}], committed_count, final_sha}` — instead of human-readable text, so an agent can consume the plan and resulting SHAs.",
+				"Stages tracked changes, groups them into up to five atomic commits per run, drafts conventional messages with an `LLM`, validates via `hook` from `config.yml` (`empty`, `conventional`, or custom script), and retries or re-plans when validation fails. Detected file renames are kept atomic: both paths of a move are forced into the same commit group after planning, so git records a rename rather than splitting it into a delete and an add across commits. Prefer running without provider flags (`FREE` or `~/.config/git-agent/config.yml`). Pass `-o json` for a structured result — `{dry_run, commits:[{title, message, files, sha, hook_outcome}], committed_count, final_sha}` — instead of human-readable text, so an agent can consume the plan and resulting SHAs.",
 			flags: [
 				{ name: "-o, --output <fmt>", description: "Output format: `text` (default) or `json`. `-o json` emits `{dry_run, commits:[{title, message, files, sha, hook_outcome}], committed_count, final_sha}` for agents to consume." },
 				{ name: "--dry-run", description: "Print planned commit messages without creating commits" },
@@ -287,7 +287,8 @@ export const translations: Record<Language, Translations> = {
 				{ name: "--co-author <name>", description: 'Add a co-author trailer, e.g. "Name <email@domain>" (repeatable). Required on every invocation when `require_model_co_author` is set in config.' },
 				{ name: "--trailer <value>", description: 'Add an arbitrary git trailer, format "Key: Value" (repeatable)' },
 				{ name: "--no-attribution", description: "Omit the default Git Agent co-author signature" },
-				{ name: "--max-diff-lines <n>", description: "Maximum diff lines to send to the model; set to limit token cost", default: "0 (no limit)" },
+				{ name: "--max-diff-bytes <n>", description: "Maximum diff bytes to send to the model; a byte cap always applies", default: "0 (built-in ~384 KiB)" },
+				{ name: "--max-diff-lines <n>", description: "Maximum diff lines to send to the model; set to limit token cost (a byte cap always applies on top)", default: "0 (no line limit)" },
 				{ name: "--max-plan-files <n>", description: "Maximum file paths listed individually in the planner prompt before collapsing to directory summaries", default: "0 (built-in default 150)" },
 				{
 					name: "--free",
@@ -509,7 +510,7 @@ export const translations: Record<Language, Translations> = {
 			description: "用 LLM 辅助生成提交",
 			usage: "git-agent commit [-o <格式>] [--dry-run] [--intent <文本>] [--amend] [--no-stage] [--co-author <名称>] [--trailer <键:值>] [--no-attribution] [--free]",
 			overview:
-				"暂存已跟踪的改动，每次运行最多分成五组原子提交，用 `LLM` 起草规范说明，按 `config.yml` 的 `hook` 校验（`empty`、`conventional` 或自定义脚本），失败则重试或重规划。默认优先不带 `provider` 参数（`FREE` 或 `~/.config/git-agent/config.yml`）。传入 `-o json` 可得到结构化结果——`{dry_run, commits:[{title, message, files, sha, hook_outcome}], committed_count, final_sha}`——而非人类可读文本，便于智能体消费提交计划与生成的 SHA。",
+				"暂存已跟踪的改动，每次运行最多分成五组原子提交，用 `LLM` 起草规范说明，按 `config.yml` 的 `hook` 校验（`empty`、`conventional` 或自定义脚本），失败则重试或重规划。检测到的文件重命名保持原子：规划后移动的两个路径会被强制分到同一提交组，确保 git 记录为重命名，而不是拆成跨提交的删除与新增。默认优先不带 `provider` 参数（`FREE` 或 `~/.config/git-agent/config.yml`）。传入 `-o json` 可得到结构化结果——`{dry_run, commits:[{title, message, files, sha, hook_outcome}], committed_count, final_sha}`——而非人类可读文本，便于智能体消费提交计划与生成的 SHA。",
 			flags: [
 				{ name: "-o, --output <格式>", description: "输出格式：`text`（默认）或 `json`。`-o json` 输出 `{dry_run, commits:[{title, message, files, sha, hook_outcome}], committed_count, final_sha}`，便于智能体消费。" },
 				{ name: "--dry-run", description: "只打印拟定的提交说明，不创建提交" },
@@ -519,7 +520,8 @@ export const translations: Record<Language, Translations> = {
 				{ name: "--co-author <名称>", description: "添加合著者 trailer，例如 \"Name <email@domain>\"（可重复）。配置中开启 `require_model_co_author` 后，每次调用都必须传。" },
 				{ name: "--trailer <值>", description: "添加任意 git trailer，格式为 \"Key: Value\"（可重复）" },
 				{ name: "--no-attribution", description: "不添加默认的合著者签名（Git Agent）" },
-				{ name: "--max-diff-lines <n>", description: "发送给模型的最大 diff 行数；用于限制 token 成本", default: "0（无限制）" },
+				{ name: "--max-diff-bytes <n>", description: "发送给模型的最大 diff 字节数；字节上限始终生效", default: "0（内置 ~384 KiB）" },
+				{ name: "--max-diff-lines <n>", description: "发送给模型的最大 diff 行数；用于限制 token 成本（其上仍叠加字节上限）", default: "0（无行数限制）" },
 				{ name: "--max-plan-files <n>", description: "规划提示中单独列出的最大文件路径数，超出后按目录折叠", default: "0（内置默认 150）" },
 				{
 					name: "--free",
