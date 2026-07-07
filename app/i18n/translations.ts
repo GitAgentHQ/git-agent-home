@@ -22,6 +22,9 @@ export interface Translations {
 	relatedTitle: [string, string];
 	relatedDescription: string;
 	relatedFeatures: string[];
+	statusTitle: [string, string];
+	statusDescription: string;
+	statusFeatures: string[];
 
 	// Pricing
 	pricingTitle: string;
@@ -39,6 +42,7 @@ export interface Translations {
 	initData: CommandData;
 	commitData: CommandData;
 	relatedData: CommandData;
+	statusData: CommandData;
 
 	// Home explore
 	exploreTitle: string;
@@ -159,6 +163,16 @@ export const translations: Record<Language, Translations> = {
 			"--tests: which tests to run after a change",
 			"The temporal complement to grep",
 			"Language-agnostic, offline, no API key",
+		],
+		statusTitle: ["Check", "index health"],
+		statusDescription:
+			"A read-only health check for the co-change index: whether it exists, the last indexed commit, and row counts — so you know if it's stale before you trust it.",
+		statusFeatures: [
+			"Index existence and last indexed commit",
+			"Row counts: commits, files, authors, pairs",
+			"Database size on disk",
+			"-o json for scripts and agents",
+			"Offline, no LLM, no API key",
 		],
 
 		// Pricing
@@ -348,6 +362,23 @@ export const translations: Record<Language, Translations> = {
 				{ title: "Emit results", description: "Prints the ranked files (text on a TTY, JSON when piped). `--tests` narrows to related test files; `--top` caps the count." },
 			],
 		},
+		statusData: {
+			cmd: "git-agent status",
+			description: "Check co-change index health",
+			usage: "git-agent status [-o <fmt>]",
+			overview:
+				"Prints a snapshot of the co-change index: whether it exists, the last indexed commit, row counts for commits, files, authors, and co-change pairs, and the database file size. Read-only — it never indexes anything itself; indexing happens automatically via `commit`, `init --graph`, or any `related` read. Prints human-readable text on a TTY; pass `-o json` for a structured `{exists, last_indexed_commit, commit_count, file_count, author_count, co_changed_count, db_size_bytes}` result an agent or script can parse. Fully offline: no `LLM`, no API key.",
+			flags: [
+				{ name: "-o, --output <fmt>", description: "Output format: `auto`, `json`, or `text`. `auto` emits JSON when piped, text on a TTY." },
+				{ name: "-v, --verbose", description: "Enable verbose output (global)" },
+			],
+			steps: [
+				{ title: "Locate the index", description: "Opens the repo's co-change database if one exists; reports its absence rather than building it." },
+				{ title: "Read index metadata", description: "Reads the last indexed commit, so you can tell how stale the index is." },
+				{ title: "Count rows", description: "Counts commits, files, authors, and co-change pairs, plus the database file size on disk." },
+				{ title: "Emit report", description: "Prints a human-readable summary on a TTY, or JSON when piped or with `-o json`, for a script or agent to consume." },
+			],
+		},
 	},
 	zh: {
 		// Home view
@@ -393,6 +424,16 @@ export const translations: Record<Language, Translations> = {
 			"--tests：改完该跑哪些测试",
 			"grep 的时间维补充",
 			"语言无关、离线、无需 API 密钥",
+		],
+		statusTitle: ["检查", "索引健康度"],
+		statusDescription:
+			"共变索引的只读体检：是否存在、最近索引到的提交、各类行数——让你在信任它之前先看清是否过期。",
+		statusFeatures: [
+			"索引是否存在、最近索引到的提交",
+			"行数统计：提交、文件、作者、共变对",
+			"数据库文件大小",
+			"-o json 供脚本与智能体使用",
+			"离线运行，无需 LLM、无需 API 密钥",
 		],
 
 		// Pricing
@@ -579,6 +620,23 @@ export const translations: Record<Language, Translations> = {
 				{ title: "聚合共变", description: "对每个种子，找出在同一批提交中改动的文件并跨种子聚合，使与多个种子都耦合的文件排名最高。`--min-count` 与 `--depth` 调整结果集。" },
 				{ title: "排序并附证据", description: "按耦合强度排序，并为每条结果附上将其与种子相连的提交（主题 + sha + 日期）——即\"它们为何相关？\"的证据。" },
 				{ title: "输出结果", description: "打印排序后的文件（TTY 输出文本，管道输出 JSON）。`--tests` 收窄为相关测试文件；`--top` 限制数量。" },
+			],
+		},
+		statusData: {
+			cmd: "git-agent status",
+			description: "查看共变索引的健康状态",
+			usage: "git-agent status [-o <格式>]",
+			overview:
+				"打印共变索引的快照：是否存在、最近一次索引到的提交、提交/文件/作者/共变对的行数，以及数据库文件大小。只读——它自身不做任何索引写入，索引由 `commit`、`init --graph` 或任意一次 `related` 查询自动建好。TTY 下输出可读文本；传入 `-o json` 可得到结构化的 `{exists, last_indexed_commit, commit_count, file_count, author_count, co_changed_count, db_size_bytes}` 结果，供智能体或脚本消费。完全离线：无需 `LLM`，无需 API 密钥。",
+			flags: [
+				{ name: "-o, --output <格式>", description: "输出格式：`auto`、`json` 或 `text`。`auto` 在管道时输出 JSON，TTY 时输出文本。" },
+				{ name: "-v, --verbose", description: "启用详细输出（全局）" },
+			],
+			steps: [
+				{ title: "定位索引", description: "打开仓库的共变数据库（如果存在）；不存在则如实报告，而不是替你建一个。" },
+				{ title: "读取索引元数据", description: "读取最近一次索引到的提交，帮你判断索引有多新鲜。" },
+				{ title: "统计行数", description: "统计提交、文件、作者与共变对的数量，以及数据库文件在磁盘上的大小。" },
+				{ title: "输出报告", description: "TTY 下打印可读摘要；管道场景或加 `-o json` 时输出 JSON，供脚本或智能体消费。" },
 			],
 		},
 	},

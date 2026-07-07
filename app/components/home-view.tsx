@@ -21,7 +21,7 @@ const COLOR_WHITE_07 = "rgba(255, 255, 255, 0.07)";
 const SHADOW_CARD_HOVER = "0 14px 44px rgba(0, 0, 0, 0.6)";
 
 interface HomeViewProps {
-	onSelect: (cmd: "init" | "commit" | "related") => void;
+	onSelect: (cmd: "init" | "commit" | "related" | "status") => void;
 }
 
 /* 12 bars + 11×1px gap ≈ 44px; heights 22–30px for a lighter silhouette */
@@ -68,6 +68,21 @@ const BARS_RELATED: BarConfig[] = [
 	{ width: 2, height: 28 },
 	{ width: 3, height: 26 },
 	{ width: 3, height: 24 },
+];
+
+const BARS_STATUS: BarConfig[] = [
+	{ width: 3, height: 24 },
+	{ width: 2, height: 30 },
+	{ width: 3, height: 22 },
+	{ width: 3, height: 28 },
+	{ width: 2, height: 26 },
+	{ width: 3, height: 24 },
+	{ width: 3, height: 30 },
+	{ width: 2, height: 22 },
+	{ width: 3, height: 28 },
+	{ width: 3, height: 24 },
+	{ width: 2, height: 30 },
+	{ width: 3, height: 26 },
 ];
 
 // Cost for 1,000 commits at ~4,200 input + ~400 output tokens each.
@@ -264,7 +279,7 @@ export function HomeView({ onSelect }: HomeViewProps) {
 					/>
 				</motion.div>
 				<motion.div
-					className="entry-grid-cell entry-grid-cell--wide"
+					className="entry-grid-cell"
 					variants={reduced ? undefined : entryGridItem}
 				>
 					<EntryCard
@@ -276,6 +291,22 @@ export function HomeView({ onSelect }: HomeViewProps) {
 						bars={BARS_RELATED}
 						serial="GA-003"
 						onClick={() => onSelect("related")}
+						reducedMotion={reduced}
+					/>
+				</motion.div>
+				<motion.div
+					className="entry-grid-cell"
+					variants={reduced ? undefined : entryGridItem}
+				>
+					<EntryCard
+						cmd="git-agent status"
+						title={t.statusTitle}
+						description={t.statusDescription}
+						features={t.statusFeatures}
+						pattern={<DotsSquare circle />}
+						bars={BARS_STATUS}
+						serial="GA-004"
+						onClick={() => onSelect("status")}
 						reducedMotion={reduced}
 					/>
 				</motion.div>

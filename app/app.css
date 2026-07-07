@@ -304,10 +304,6 @@ body {
 	flex: 1;
 }
 
-.entry-grid-cell--wide {
-	grid-column: 1 / -1;
-}
-
 .pricing-compare-cost {
 	font-family: var(--font-mono);
 	font-size: var(--fs-mono-label);
