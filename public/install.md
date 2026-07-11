@@ -95,7 +95,7 @@ Ask: "Do you want to include the AI model's `Co-Authored-By` trailer (e.g. from 
 
 ### Require AI model co-author trailer
 
-For teams that want every commit to be explicitly attributed to the AI model behind it, git-agent can refuse commits that lack a `Co-Authored-By` from a known AI provider domain (`anthropic.com`, `openai.com`, `google.com`). This is **disabled by default**.
+For teams that want every commit to be explicitly attributed to the AI model behind it, git-agent can refuse commits that lack a `Co-Authored-By` from a known AI provider domain. Built-in domains cover the common providers out of the box (`anthropic.com`, `openai.com`, `google.com`, `x.ai`, `zhipuai.cn`, `qwen.ai`, `deepseek.com`, `moonshot.ai`) — no extra domain list is required. This is **disabled by default**.
 
 Ask: "Do you want to require every commit to carry an AI model `Co-Authored-By` trailer? Commits without one will be rejected before the model is even called. (yes / no)"
 
@@ -112,7 +112,7 @@ Ask: "Do you want to require every commit to carry an AI model `Co-Authored-By` 
   require_model_co_author: true
   ```
 
-  When enabled, every `git-agent commit` invocation must include `--co-author "Model Name <email@allowed-domain>"` (e.g. `--co-author "Claude Opus 4.7 <noreply@anthropic.com>"`). git-agent validates this at the CLI layer and exits with a hint before calling the LLM if it is missing. To allow additional provider domains beyond the three defaults, add `model_co_author_domains: [acme.ai, ...]` to the same file. This setting is mutually exclusive with `no_model_co_author: true`.
+  When enabled, every `git-agent commit` invocation must include `--co-author "Model Name <email@allowed-domain>"` (e.g. `--co-author "Claude Opus 4.7 <noreply@anthropic.com>"` or `--co-author "Grok 4.5 <noreply@x.ai>"`). git-agent validates this at the CLI layer and exits with a hint before calling the LLM if it is missing. Only custom / lesser-known providers need `model_co_author_domains: [acme.ai, ...]`. This setting is mutually exclusive with `no_model_co_author: true`.
 
 ### Per-repo initialization
 
