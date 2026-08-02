@@ -166,9 +166,9 @@ export const translations: Record<Language, Translations> = {
 		],
 		statusTitle: ["Check", "index health"],
 		statusDescription:
-			"A read-only health check for the co-change index: whether it exists, the last indexed commit, and row counts — so you know if it's stale before you trust it.",
+			"A read-only health check for the co-change index: whether the index is built, the last indexed commit, and row counts — so you know if it's stale before you trust it.",
 		statusFeatures: [
-			"Index existence and last indexed commit",
+			"Index built state and last indexed commit",
 			"Row counts: commits, files, authors, pairs",
 			"Database size on disk",
 			"-o json for scripts and agents",
@@ -291,7 +291,7 @@ export const translations: Record<Language, Translations> = {
 			description: "Generate commits with LLM assistance",
 			usage: "git-agent commit [-o <fmt>] [--dry-run] [--intent <text>] [--amend] [--no-stage] [--co-author <name>] [--trailer <key:value>] [--no-attribution] [--free]",
 			overview:
-				"Stages tracked changes, groups them into up to five atomic commits per run, drafts conventional messages with an `LLM`, validates via `hook` from `config.yml` (`empty`, `conventional`, or custom script), and retries or re-plans when validation fails. Detected file renames are kept atomic: both paths of a move are forced into the same commit group after planning, so git records a rename rather than splitting it into a delete and an add across commits. Prefer running without provider flags (`FREE` or `~/.config/git-agent/config.yml`). Pass `-o json` for a structured result — `{dry_run, commits:[{title, message, files, sha, hook_outcome}], committed_count, final_sha}` — instead of human-readable text, so an agent can consume the plan and resulting SHAs.",
+				"Stages tracked changes, groups them into up to five atomic commits per run, drafts conventional messages with an `LLM`, validates via `hook` from `config.yml` (`empty`, `conventional`, or custom script), and retries or re-plans when validation fails. Detected file renames are kept atomic: both paths of a move are forced into the same commit group after planning, so git records a rename rather than splitting it into a delete and an add across commits. A preflight guard refuses prompts that exceed the endpoint's input ceiling before the LLM is called — default 1M tokens, raise it with the `max_input_tokens` config key. Prefer running without provider flags (`FREE` or `~/.config/git-agent/config.yml`). Pass `-o json` for a structured result — `{dry_run, commits:[{title, message, files, sha, hook_outcome}], committed_count, final_sha}` — instead of human-readable text, so an agent can consume the plan and resulting SHAs.",
 			flags: [
 				{ name: "-o, --output <fmt>", description: "Output format: `text` (default) or `json`. `-o json` emits `{dry_run, commits:[{title, message, files, sha, hook_outcome}], committed_count, final_sha}` for agents to consume." },
 				{ name: "--dry-run", description: "Print planned commit messages without creating commits" },
@@ -349,7 +349,7 @@ export const translations: Record<Language, Translations> = {
 				{ name: "--tests", description: "Keep only related test files — a fast \"which tests should I run after this change?\"" },
 				{ name: "--depth <n>", description: "Transitive co-change depth; values >1 surface indirect couplings, flagged as such in the output", default: "1" },
 				{ name: "--top <n>", description: "Maximum number of results", default: "20" },
-				{ name: "--min-count <n>", description: "Minimum co-change count to include — filters out weak, incidental couplings", default: "3" },
+				{ name: "--min-count <n>", description: "Minimum co-change count to include — filters out weak, incidental couplings", default: "2" },
 				{ name: "--reindex", description: "Force a full re-index of git history before querying", default: "false" },
 				{ name: "-o, --output <fmt>", description: "Output format: `auto`, `json`, or `text`. `auto` emits JSON when piped, text on a TTY; JSON adds the `commits` array per result." },
 				{ name: "-v, --verbose", description: "Enable verbose output (global)" },
@@ -367,13 +367,13 @@ export const translations: Record<Language, Translations> = {
 			description: "Check co-change index health",
 			usage: "git-agent status [-o <fmt>]",
 			overview:
-				"Prints a snapshot of the co-change index: whether it exists, the last indexed commit, row counts for commits, files, authors, and co-change pairs, and the database file size. Read-only — it never indexes anything itself; indexing happens automatically via `commit`, `init --graph`, or any `related` read. Prints human-readable text on a TTY; pass `-o json` for a structured `{exists, last_indexed_commit, commit_count, file_count, author_count, co_changed_count, db_size_bytes}` result an agent or script can parse. Fully offline: no `LLM`, no API key.",
+				"Prints a snapshot of the co-change index: whether the index is built, the last indexed commit, row counts for commits, files, authors, and co-change pairs, and the database file size in human-readable units (KiB/MiB/GiB/TiB). A repo with nothing indexed yet reports `Graph: not indexed` with a build hint instead of pretending the index is fresh. Read-only — it never indexes anything itself; indexing happens automatically via `commit`, `init --graph`, or any `related` read. Prints human-readable text on a TTY; pass `-o json` for a structured `{exists, last_indexed_commit, commit_count, file_count, author_count, co_changed_count, db_size_bytes}` result an agent or script can parse. Fully offline: no `LLM`, no API key.",
 			flags: [
 				{ name: "-o, --output <fmt>", description: "Output format: `auto`, `json`, or `text`. `auto` emits JSON when piped, text on a TTY." },
 				{ name: "-v, --verbose", description: "Enable verbose output (global)" },
 			],
 			steps: [
-				{ title: "Locate the index", description: "Opens the repo's co-change database if one exists; reports its absence rather than building it." },
+				{ title: "Locate the index", description: "Opens the repo's co-change database (created on first run) and reports whether anything is indexed yet — a never-built index shows `Graph: not indexed` with a build hint." },
 				{ title: "Read index metadata", description: "Reads the last indexed commit, so you can tell how stale the index is." },
 				{ title: "Count rows", description: "Counts commits, files, authors, and co-change pairs, plus the database file size on disk." },
 				{ title: "Emit report", description: "Prints a human-readable summary on a TTY, or JSON when piped or with `-o json`, for a script or agent to consume." },
@@ -427,9 +427,9 @@ export const translations: Record<Language, Translations> = {
 		],
 		statusTitle: ["检查", "索引健康度"],
 		statusDescription:
-			"共变索引的只读体检：是否存在、最近索引到的提交、各类行数——让你在信任它之前先看清是否过期。",
+			"共变索引的只读体检：索引是否已构建、最近索引到的提交、各类行数——让你在信任它之前先看清是否过期。",
 		statusFeatures: [
-			"索引是否存在、最近索引到的提交",
+			"索引是否已构建、最近索引到的提交",
 			"行数统计：提交、文件、作者、共变对",
 			"数据库文件大小",
 			"-o json 供脚本与智能体使用",
@@ -551,7 +551,7 @@ export const translations: Record<Language, Translations> = {
 			description: "用 LLM 辅助生成提交",
 			usage: "git-agent commit [-o <格式>] [--dry-run] [--intent <文本>] [--amend] [--no-stage] [--co-author <名称>] [--trailer <键:值>] [--no-attribution] [--free]",
 			overview:
-				"暂存已跟踪的改动，每次运行最多分成五组原子提交，用 `LLM` 起草规范说明，按 `config.yml` 的 `hook` 校验（`empty`、`conventional` 或自定义脚本），失败则重试或重规划。检测到的文件重命名保持原子：规划后移动的两个路径会被强制分到同一提交组，确保 git 记录为重命名，而不是拆成跨提交的删除与新增。默认优先不带 `provider` 参数（`FREE` 或 `~/.config/git-agent/config.yml`）。传入 `-o json` 可得到结构化结果——`{dry_run, commits:[{title, message, files, sha, hook_outcome}], committed_count, final_sha}`——而非人类可读文本，便于智能体消费提交计划与生成的 SHA。",
+				"暂存已跟踪的改动，每次运行最多分成五组原子提交，用 `LLM` 起草规范说明，按 `config.yml` 的 `hook` 校验（`empty`、`conventional` 或自定义脚本），失败则重试或重规划。检测到的文件重命名保持原子：规划后移动的两个路径会被强制分到同一提交组，确保 git 记录为重命名，而不是拆成跨提交的删除与新增。调用 LLM 前有预检护栏：总输入会对照端点上限校验（默认 100 万 token，可用 `max_input_tokens` 配置键调高），超限提示词会被拒绝。默认优先不带 `provider` 参数（`FREE` 或 `~/.config/git-agent/config.yml`）。传入 `-o json` 可得到结构化结果——`{dry_run, commits:[{title, message, files, sha, hook_outcome}], committed_count, final_sha}`——而非人类可读文本，便于智能体消费提交计划与生成的 SHA。",
 			flags: [
 				{ name: "-o, --output <格式>", description: "输出格式：`text`（默认）或 `json`。`-o json` 输出 `{dry_run, commits:[{title, message, files, sha, hook_outcome}], committed_count, final_sha}`，便于智能体消费。" },
 				{ name: "--dry-run", description: "只打印拟定的提交说明，不创建提交" },
@@ -609,7 +609,7 @@ export const translations: Record<Language, Translations> = {
 				{ name: "--tests", description: "只保留相关的测试文件——快速回答\"改完这处该跑哪些测试？\"" },
 				{ name: "--depth <n>", description: "传递性共变深度；大于 1 会显现间接耦合，并在输出中标注", default: "1" },
 				{ name: "--top <n>", description: "最大结果数", default: "20" },
-				{ name: "--min-count <n>", description: "纳入结果的最小共变次数——过滤掉偶发的弱耦合", default: "3" },
+				{ name: "--min-count <n>", description: "纳入结果的最小共变次数——过滤掉偶发的弱耦合", default: "2" },
 				{ name: "--reindex", description: "查询前强制完整重建 git 历史索引", default: "false" },
 				{ name: "-o, --output <格式>", description: "输出格式：`auto`、`json` 或 `text`。`auto` 在管道时输出 JSON，TTY 时输出文本；JSON 会为每条结果附上 `commits` 数组。" },
 				{ name: "-v, --verbose", description: "启用详细输出（全局）" },
@@ -627,13 +627,13 @@ export const translations: Record<Language, Translations> = {
 			description: "查看共变索引的健康状态",
 			usage: "git-agent status [-o <格式>]",
 			overview:
-				"打印共变索引的快照：是否存在、最近一次索引到的提交、提交/文件/作者/共变对的行数，以及数据库文件大小。只读——它自身不做任何索引写入，索引由 `commit`、`init --graph` 或任意一次 `related` 查询自动建好。TTY 下输出可读文本；传入 `-o json` 可得到结构化的 `{exists, last_indexed_commit, commit_count, file_count, author_count, co_changed_count, db_size_bytes}` 结果，供智能体或脚本消费。完全离线：无需 `LLM`，无需 API 密钥。",
+				"打印共变索引的快照：索引是否已构建、最近一次索引到的提交、提交/文件/作者/共变对的行数，以及数据库文件大小（自动换算 KiB/MiB/GiB/TiB）。尚未索引任何提交的仓库会报告 `Graph: not indexed` 并附构建提示。只读——它自身不做任何索引写入，索引由 `commit`、`init --graph` 或任意一次 `related` 查询自动建好。TTY 下输出可读文本；传入 `-o json` 可得到结构化的 `{exists, last_indexed_commit, commit_count, file_count, author_count, co_changed_count, db_size_bytes}` 结果，供智能体或脚本消费。完全离线：无需 `LLM`，无需 API 密钥。",
 			flags: [
 				{ name: "-o, --output <格式>", description: "输出格式：`auto`、`json` 或 `text`。`auto` 在管道时输出 JSON，TTY 时输出文本。" },
 				{ name: "-v, --verbose", description: "启用详细输出（全局）" },
 			],
 			steps: [
-				{ title: "定位索引", description: "打开仓库的共变数据库（如果存在）；不存在则如实报告，而不是替你建一个。" },
+				{ title: "定位索引", description: "打开仓库的共变数据库（首次运行即创建），报告是否已索引任何提交——从未建过索引的仓库会显示 `Graph: not indexed` 并附构建提示。" },
 				{ title: "读取索引元数据", description: "读取最近一次索引到的提交，帮你判断索引有多新鲜。" },
 				{ title: "统计行数", description: "统计提交、文件、作者与共变对的数量，以及数据库文件在磁盘上的大小。" },
 				{ title: "输出报告", description: "TTY 下打印可读摘要；管道场景或加 `-o json` 时输出 JSON，供脚本或智能体消费。" },
