@@ -25,6 +25,12 @@ export interface Translations {
 	statusTitle: [string, string];
 	statusDescription: string;
 	statusFeatures: string[];
+	skillsTitle: [string, string];
+	skillsDescription: string;
+	skillsFeatures: string[];
+	configTitle: [string, string];
+	configDescription: string;
+	configFeatures: string[];
 
 	// Pricing
 	pricingTitle: string;
@@ -43,6 +49,8 @@ export interface Translations {
 	commitData: CommandData;
 	relatedData: CommandData;
 	statusData: CommandData;
+	skillsData: CommandData;
+	configData: CommandData;
 
 	// Home explore
 	exploreTitle: string;
@@ -173,6 +181,26 @@ export const translations: Record<Language, Translations> = {
 			"Database size on disk",
 			"-o json for scripts and agents",
 			"Offline, no LLM, no API key",
+		],
+		skillsTitle: ["Read docs", "from the CLI"],
+		skillsDescription:
+			"The full usage guide — triggers, workflows, flags, exit codes — is served by the installed binary itself: `git-agent skills get core` prints it, so instructions never go stale.",
+		skillsFeatures: [
+			"Usage guide from the installed version",
+			"Full command reference: skills get cli",
+			"skills list shows every document",
+			"Embedded at build time — never stale",
+			"Offline, no LLM, no API key",
+		],
+		configTitle: ["Manage", "provider config"],
+		configDescription:
+			"Show, set, and inspect provider configuration — api_key, model, base_url, hooks — across user, project, and local scopes.",
+		configFeatures: [
+			"config show: resolved provider settings",
+			"config set / get <key>",
+			"User, project, and local scopes",
+			"snake_case and kebab-case keys",
+			"Hook configuration",
 		],
 
 		// Pricing
@@ -379,6 +407,35 @@ export const translations: Record<Language, Translations> = {
 				{ title: "Emit report", description: "Prints a human-readable summary on a TTY, or JSON when piped or with `-o json`, for a script or agent to consume." },
 			],
 		},
+		skillsData: {
+			cmd: "git-agent skills",
+			description: "Read usage docs from the CLI",
+			usage: "git-agent skills get <name> | git-agent skills list",
+			overview:
+				"Print git-agent's own usage documentation from the installed binary, so the content always matches the version you're running. `skills get core` serves the main usage guide — triggers, workflows, flags, exit codes; `skills get cli` serves the complete command reference (all flags, subcommands, config scopes, hook types); `skills list` shows every available document. The repository's skill stub (`skills/using-git-agent/SKILL.md`) is a discovery stub that delegates here, so instructions never go stale.",
+			flags: [],
+			steps: [
+				{ title: "Pick a document", description: "`git-agent skills list` shows what's available: `core` is the main usage guide, `cli` the complete command reference." },
+				{ title: "Print the document", description: "`git-agent skills get core` (or `cli`) prints the markdown guide to stdout — the same content, at the version you installed." },
+			],
+		},
+		configData: {
+			cmd: "git-agent config",
+			description: "Manage provider configuration",
+			usage: "git-agent config show | config set <key> <value> [--user|--project|--local] | config get <key>",
+			overview:
+				"Manage git-agent configuration across three scopes: `--user` (`~/.config/git-agent/config.yml`), `--project` (`.git-agent/config.yml`, checked into git), and `--local` (`.git-agent/config.local.yml`, gitignored). `config show` prints the resolved provider settings (api_key masked, model, base_url). `config set <key> <value>` writes a value — provider keys default to `--user`, everything else to `--project`; keys accept both snake_case and kebab-case. `config get <key>` shows the resolved value and its source scope (resolution: local > project > user; provider keys resolve from user only).",
+			flags: [
+				{ name: "--user", description: "Write to `~/.config/git-agent/config.yml` (provider keys: api_key, base_url, model)" },
+				{ name: "--project", description: "Write to `.git-agent/config.yml` — shared, checked into git" },
+				{ name: "--local", description: "Write to `.git-agent/config.local.yml` — personal override, gitignored" },
+			],
+			steps: [
+				{ title: "Show resolved config", description: "`git-agent config show` prints the effective provider settings — api_key masked, model, base_url — after applying flags, `git config`, the user config file, and build defaults." },
+				{ title: "Set a value", description: "`git-agent config set <key> <value>` writes to the chosen scope (provider keys default to `--user`, others to `--project`). Keys accept snake_case or kebab-case." },
+				{ title: "Inspect a value", description: "`git-agent config get <key>` shows the resolved value and where it came from — local overrides project overrides user; provider keys resolve from user scope only." },
+			],
+		},
 	},
 	zh: {
 		// Home view
@@ -434,6 +491,26 @@ export const translations: Record<Language, Translations> = {
 			"数据库文件大小",
 			"-o json 供脚本与智能体使用",
 			"离线运行，无需 LLM、无需 API 密钥",
+		],
+		skillsTitle: ["从 CLI", "读取文档"],
+		skillsDescription:
+			"完整使用指南——触发时机、工作流、参数、退出码——由已安装的二进制直接提供：`git-agent skills get core` 即可打印，说明永不过时。",
+		skillsFeatures: [
+			"来自已安装版本的使用指南",
+			"完整命令参考：skills get cli",
+			"skills list 列出全部文档",
+			"构建时嵌入——永不陈旧",
+			"离线运行，无需 LLM、无需 API 密钥",
+		],
+		configTitle: ["管理", "provider 配置"],
+		configDescription:
+			"查看、设置与检查 provider 配置——api_key、model、base_url、hooks——覆盖 user、project、local 三种作用域。",
+		configFeatures: [
+			"config show：解析后的 provider 配置",
+			"config set / get <key>",
+			"user、project、local 三种作用域",
+			"支持 snake_case 与 kebab-case 键名",
+			"hook 配置",
 		],
 
 		// Pricing
@@ -637,6 +714,35 @@ export const translations: Record<Language, Translations> = {
 				{ title: "读取索引元数据", description: "读取最近一次索引到的提交，帮你判断索引有多新鲜。" },
 				{ title: "统计行数", description: "统计提交、文件、作者与共变对的数量，以及数据库文件在磁盘上的大小。" },
 				{ title: "输出报告", description: "TTY 下打印可读摘要；管道场景或加 `-o json` 时输出 JSON，供脚本或智能体消费。" },
+			],
+		},
+		skillsData: {
+			cmd: "git-agent skills",
+			description: "从 CLI 读取使用文档",
+			usage: "git-agent skills get <名称> | git-agent skills list",
+			overview:
+				"从已安装的二进制打印 git-agent 自身的使用文档，保证内容永远与你运行的版本一致。`skills get core` 输出主使用指南——触发时机、工作流、参数、退出码；`skills get cli` 输出完整命令参考（全部参数、子命令、配置作用域、hook 类型）；`skills list` 列出所有可用文档。仓库中的技能 stub（`skills/using-git-agent/SKILL.md`）是指向这里的发现层，因此说明永不过时。",
+			flags: [],
+			steps: [
+				{ title: "选择文档", description: "`git-agent skills list` 列出可用文档：`core` 是主使用指南，`cli` 是完整命令参考。" },
+				{ title: "打印文档", description: "`git-agent skills get core`（或 `cli`）把 markdown 指南打印到 stdout——与你安装的版本完全一致的内容。" },
+			],
+		},
+		configData: {
+			cmd: "git-agent config",
+			description: "管理 provider 配置",
+			usage: "git-agent config show | config set <键> <值> [--user|--project|--local] | config get <键>",
+			overview:
+				"在三种作用域中管理 git-agent 配置：`--user`（`~/.config/git-agent/config.yml`）、`--project`（`.git-agent/config.yml`，纳入版本库）、`--local`（`.git-agent/config.local.yml`，被 gitignore）。`config show` 打印解析后的 provider 配置（api_key 打码、model、base_url）。`config set <键> <值>` 写入配置——provider 键默认写入 `--user`，其余默认写入 `--project`；键名同时接受 snake_case 与 kebab-case。`config get <键>` 显示解析后的值及其来源作用域（解析顺序：local > project > user；provider 键只从 user 作用域解析）。",
+			flags: [
+				{ name: "--user", description: "写入 `~/.config/git-agent/config.yml`（provider 键：api_key、base_url、model）" },
+				{ name: "--project", description: "写入 `.git-agent/config.yml`——共享配置，纳入版本库" },
+				{ name: "--local", description: "写入 `.git-agent/config.local.yml`——个人覆盖，被 gitignore" },
+			],
+			steps: [
+				{ title: "查看解析后的配置", description: "`git-agent config show` 打印生效的 provider 配置——api_key 打码、model、base_url——综合参数、`git config`、用户配置文件与构建默认值后的结果。" },
+				{ title: "设置值", description: "`git-agent config set <键> <值>` 写入所选作用域（provider 键默认 `--user`，其余默认 `--project`）。键名支持 snake_case 或 kebab-case。" },
+				{ title: "检查值", description: "`git-agent config get <键>` 显示解析后的值与来源——local 覆盖 project，project 覆盖 user；provider 键只从 user 作用域解析。" },
 			],
 		},
 	},

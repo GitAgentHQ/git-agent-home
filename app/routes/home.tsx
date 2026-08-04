@@ -17,7 +17,7 @@ export const meta: MetaFunction = () =>
 		canonicalUrl: `${BASE_URL}/`,
 	});
 
-type View = "home" | "init" | "commit" | "related" | "status";
+type View = "home" | "init" | "commit" | "related" | "status" | "skills" | "config";
 
 export default function Home() {
 	const [view, setView] = useState<View>("home");
@@ -52,6 +52,20 @@ export default function Home() {
 					<CommandDetail
 						key="status"
 						{...t.statusData}
+						onBack={() => setView("home")}
+					/>
+				)}
+				{view === "skills" && (
+					<CommandDetail
+						key="skills"
+						{...t.skillsData}
+						onBack={() => setView("home")}
+					/>
+				)}
+				{view === "config" && (
+					<CommandDetail
+						key="config"
+						{...t.configData}
 						onBack={() => setView("home")}
 					/>
 				)}

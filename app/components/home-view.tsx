@@ -21,7 +21,7 @@ const COLOR_WHITE_07 = "rgba(255, 255, 255, 0.07)";
 const SHADOW_CARD_HOVER = "0 14px 44px rgba(0, 0, 0, 0.6)";
 
 interface HomeViewProps {
-	onSelect: (cmd: "init" | "commit" | "related" | "status") => void;
+	onSelect: (cmd: "init" | "commit" | "related" | "status" | "skills" | "config") => void;
 }
 
 /* 12 bars + 11×1px gap ≈ 44px; heights 22–30px for a lighter silhouette */
@@ -83,6 +83,36 @@ const BARS_STATUS: BarConfig[] = [
 	{ width: 3, height: 24 },
 	{ width: 2, height: 30 },
 	{ width: 3, height: 26 },
+];
+
+const BARS_SKILLS: BarConfig[] = [
+	{ width: 2, height: 22 },
+	{ width: 3, height: 28 },
+	{ width: 2, height: 24 },
+	{ width: 3, height: 30 },
+	{ width: 3, height: 22 },
+	{ width: 2, height: 26 },
+	{ width: 3, height: 28 },
+	{ width: 2, height: 30 },
+	{ width: 3, height: 24 },
+	{ width: 3, height: 22 },
+	{ width: 2, height: 28 },
+	{ width: 3, height: 26 },
+];
+
+const BARS_CONFIG: BarConfig[] = [
+	{ width: 3, height: 30 },
+	{ width: 2, height: 22 },
+	{ width: 3, height: 26 },
+	{ width: 3, height: 24 },
+	{ width: 2, height: 28 },
+	{ width: 3, height: 22 },
+	{ width: 2, height: 30 },
+	{ width: 3, height: 24 },
+	{ width: 3, height: 28 },
+	{ width: 2, height: 26 },
+	{ width: 3, height: 22 },
+	{ width: 3, height: 30 },
 ];
 
 // Cost for 1,000 commits at ~4,200 input + ~400 output tokens each.
@@ -307,6 +337,38 @@ export function HomeView({ onSelect }: HomeViewProps) {
 						bars={BARS_STATUS}
 						serial="GA-004"
 						onClick={() => onSelect("status")}
+						reducedMotion={reduced}
+					/>
+				</motion.div>
+				<motion.div
+					className="entry-grid-cell"
+					variants={reduced ? undefined : entryGridItem}
+				>
+					<EntryCard
+						cmd="git-agent skills"
+						title={t.skillsTitle}
+						description={t.skillsDescription}
+						features={t.skillsFeatures}
+						pattern={<DotsCircle />}
+						bars={BARS_SKILLS}
+						serial="GA-005"
+						onClick={() => onSelect("skills")}
+						reducedMotion={reduced}
+					/>
+				</motion.div>
+				<motion.div
+					className="entry-grid-cell"
+					variants={reduced ? undefined : entryGridItem}
+				>
+					<EntryCard
+						cmd="git-agent config"
+						title={t.configTitle}
+						description={t.configDescription}
+						features={t.configFeatures}
+						pattern={<DotsSquare />}
+						bars={BARS_CONFIG}
+						serial="GA-006"
+						onClick={() => onSelect("config")}
 						reducedMotion={reduced}
 					/>
 				</motion.div>
