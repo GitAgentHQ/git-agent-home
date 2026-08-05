@@ -395,7 +395,7 @@ export const translations: Record<Language, Translations> = {
 			description: "Check co-change index health",
 			usage: "git-agent status [-o <fmt>]",
 			overview:
-				"Prints a snapshot of the co-change index: whether the index is built, the last indexed commit, row counts for commits, files, authors, and co-change pairs, and the database file size in human-readable units (KiB/MiB/GiB/TiB). A repo with nothing indexed yet reports `Graph: not indexed` with a build hint instead of pretending the index is fresh. Read-only — it never indexes anything itself; indexing happens automatically via `commit`, `init --graph`, or any `related` read. Prints human-readable text on a TTY; pass `-o json` for a structured `{exists, last_indexed_commit, commit_count, file_count, author_count, co_changed_count, db_size_bytes}` result an agent or script can parse. Fully offline: no `LLM`, no API key.",
+				"Prints a snapshot of the co-change index: whether the index is built, the last indexed commit, row counts for commits, files, authors, and co-change pairs, and the database file size in human-readable units (KiB/MiB/GiB/TiB). A repo with nothing indexed yet reports `Graph: not indexed` with a build hint instead of pretending the index is fresh. Read-only — it never indexes anything itself; indexing happens automatically via `commit` or any `related` read (`--reindex` forces a full rebuild). Prints human-readable text on a TTY; pass `-o json` for a structured `{exists, last_indexed_commit, commit_count, file_count, author_count, co_changed_count, db_size_bytes}` result an agent or script can parse. Fully offline: no `LLM`, no API key.",
 			flags: [
 				{ name: "-o, --output <fmt>", description: "Output format: `auto`, `json`, or `text`. `auto` emits JSON when piped, text on a TTY." },
 				{ name: "-v, --verbose", description: "Enable verbose output (global)" },
@@ -704,7 +704,7 @@ export const translations: Record<Language, Translations> = {
 			description: "查看共变索引的健康状态",
 			usage: "git-agent status [-o <格式>]",
 			overview:
-				"打印共变索引的快照：索引是否已构建、最近一次索引到的提交、提交/文件/作者/共变对的行数，以及数据库文件大小（自动换算 KiB/MiB/GiB/TiB）。尚未索引任何提交的仓库会报告 `Graph: not indexed` 并附构建提示。只读——它自身不做任何索引写入，索引由 `commit`、`init --graph` 或任意一次 `related` 查询自动建好。TTY 下输出可读文本；传入 `-o json` 可得到结构化的 `{exists, last_indexed_commit, commit_count, file_count, author_count, co_changed_count, db_size_bytes}` 结果，供智能体或脚本消费。完全离线：无需 `LLM`，无需 API 密钥。",
+				"打印共变索引的快照：索引是否已构建、最近一次索引到的提交、提交/文件/作者/共变对的行数，以及数据库文件大小（自动换算 KiB/MiB/GiB/TiB）。尚未索引任何提交的仓库会报告 `Graph: not indexed` 并附构建提示。只读——它自身不做任何索引写入，索引由 `commit` 或任意一次 `related` 查询自动建好（`--reindex` 强制完整重建）。TTY 下输出可读文本；传入 `-o json` 可得到结构化的 `{exists, last_indexed_commit, commit_count, file_count, author_count, co_changed_count, db_size_bytes}` 结果，供智能体或脚本消费。完全离线：无需 `LLM`，无需 API 密钥。",
 			flags: [
 				{ name: "-o, --output <格式>", description: "输出格式：`auto`、`json` 或 `text`。`auto` 在管道时输出 JSON，TTY 时输出文本。" },
 				{ name: "-v, --verbose", description: "启用详细输出（全局）" },
