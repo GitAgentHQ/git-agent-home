@@ -42,7 +42,6 @@ The `public/skill.md` file is served as a static asset and registered as a skill
 | Project | Description |
 |---------|-------------|
 | [git-agent-cli](https://github.com/GitAgentHQ/git-agent-cli) | AI-powered Git CLI |
-| [git-agent-proxy](https://github.com/GitAgentHQ/git-agent-proxy) | Cloudflare Worker proxy with auth and rate limiting |
 
 ## License
 

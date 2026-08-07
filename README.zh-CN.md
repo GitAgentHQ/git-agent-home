@@ -42,7 +42,6 @@ pnpm deploy
 | 项目 | 描述 |
 |------|------|
 | [git-agent-cli](https://github.com/GitAgentHQ/git-agent-cli) | AI 驱动的 Git CLI |
-| [git-agent-proxy](https://github.com/GitAgentHQ/git-agent-proxy) | 具备认证和限流功能的 Cloudflare Worker 代理 |
 
 ## 许可证
 

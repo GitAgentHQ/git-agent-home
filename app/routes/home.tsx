@@ -8,7 +8,7 @@ import { BASE_URL } from "../lib/constants";
 import { useLanguage } from "../contexts/language-context";
 
 const HOME_DESCRIPTION =
-	"AI-first Git CLI: conventional commits and atomic splits. Prefer official FREE (no provider flags), then ~/.config/git-agent/config.yml; use --api-key/--base-url/--model only for explicit overrides.";
+	"AI-first Git CLI: conventional commits and atomic splits. Official release binaries use a free shared gateway with zero config; bring your own key via ~/.config/git-agent/config.yml, and use --api-key/--base-url/--model for explicit overrides or --free to force the free shared gateway.";
 
 export const meta: MetaFunction = () =>
 	buildMeta({

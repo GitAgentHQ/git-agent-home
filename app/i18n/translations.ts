@@ -131,7 +131,7 @@ export const translations: Record<Language, Translations> = {
 		// Home view
 		homeTitle: "git-agent",
 		homeSubtitle:
-			"AI Git assistant: atomic commits, conventional messages, and a queryable code graph — so agents edit with context, not blind. Free, no API key.",
+			"AI Git assistant: atomic commits, conventional messages, and a queryable code graph — so agents edit with context, not blind. Free shared gateway, zero config.",
 		homeInstallHint: "Copy the line below and paste it into any coding agent.",
 		homeInstallCopyLine: "Install git-agent — follow https://git-agent.dev/install.md",
 		copy: "Copy",
@@ -237,7 +237,7 @@ export const translations: Record<Language, Translations> = {
 			"git-agent understands each language's project layout and generates accurate conventional commit messages automatically.",
 		pseoVsHubTitle: "Comparisons",
 		pseoVsHubSubtitle:
-			"See how git-agent compares to other AI commit tools across atomic splitting, free tier access, and hook integration.",
+			"See how git-agent compares to other AI commit tools across atomic splitting, free shared gateway access, and hook integration.",
 		pseoGlossaryHubTitle: "Git workflow glossary",
 		pseoGlossaryHubSubtitle:
 			"Plain-language explanations of conventional commits, atomic commits, pre-commit hooks, and more Git workflow concepts.",
@@ -274,9 +274,9 @@ export const translations: Record<Language, Translations> = {
 			cmd: "git-agent init",
 			description: "Initialize your repository",
 			usage:
-				"git-agent init [--scope] [--hook <value>] [--gitignore] [--force] [--local] [--user] [--max-commits <n>] [--api-key <key>] [--model <name>] [--base-url <url>]",
+				"git-agent init [--scope] [--hook <value>] [--gitignore] [--force] [--local] [--user] [--max-commits <n>] [--api-key <key>] [--model <name>] [--base-url <url>] [--free]",
 			overview:
-				"Set up `git-agent` in the current repo. With no flags, runs the full setup wizard: ensures a git repo exists (runs `git init` if needed), generates `.gitignore` via AI, generates commit scopes with descriptions from git history via AI, and writes `.git-agent/config.yml` with scopes and `hook: [conventional]`. Each step can also run alone via flags. Existing `.git-agent/config.yml` stays put unless you pass `--force`. Use `git-agent config set hook <value>` to reconfigure hooks. Prefer `FREE` or `~/.config/git-agent/config.yml` over `init` provider flags.",
+				"Set up `git-agent` in the current repo. With no flags, runs the full setup wizard: ensures a git repo exists (runs `git init` if needed), generates `.gitignore` via AI, generates commit scopes with descriptions from git history via AI, and writes `.git-agent/config.yml` with scopes and `hook: [conventional]`. Each step can also run alone via flags. Existing `.git-agent/config.yml` stays put unless you pass `--force`. Use `git-agent config set hook <value>` to reconfigure hooks. Official release binaries use the free shared gateway with zero config; bring your own key via `~/.config/git-agent/config.yml` when you need it.",
 			flags: [
 				{ name: "--scope", description: "Derive scopes with descriptions from commit history and project layout (`LLM`)" },
 				{ name: "--hook <value>", description: "Hook to configure: `conventional`, `empty`, or a file path (repeatable). Stores in `.git-agent/config.yml`." },
@@ -288,7 +288,7 @@ export const translations: Record<Language, Translations> = {
 				{
 					name: "--api-key <key>",
 					description:
-						"One-off API key override. Prefer `FREE` or `~/.config/git-agent/config.yml`; use only when you need a temporary override.",
+						"One-off API key override. Official release binaries use the free shared gateway by default; set a key here only for a temporary bring-your-own-key override.",
 				},
 				{
 					name: "--model <name>",
@@ -300,13 +300,18 @@ export const translations: Record<Language, Translations> = {
 					description:
 						"One-off base URL override. Prefer `YAML` or `git config` for persistence.",
 				},
+				{
+					name: "--free",
+					description:
+						"Force routing through the free shared gateway, overriding any `api_key` / `base_url` / `model` from flags, `git config`, or the config file. On official release binaries the embedded gateway URL is used; the Worker pins the model and holds the credential server-side.",
+				},
 				{ name: "-v, --verbose", description: "Enable verbose output (global)" },
 			],
 			steps: [
 				{
 					title: "Validate environment",
 					description:
-						"Ensures a git repo exists (runs `git init` if needed) and resolves provider key: prefer official `FREE` (no flags); else `~/.config/git-agent/config.yml` or `git config`; use `init` provider flags only for explicit one-off needs.",
+						"Ensures a git repo exists (runs `git init` if needed) and resolves provider key: official release binaries use the free shared gateway (zero config); else `~/.config/git-agent/config.yml` or `git config`; use `init` provider flags only for explicit one-off needs. Pass `--free` to force the free shared gateway and ignore all bring-your-own-key sources.",
 				},
 				{ title: "Generate .gitignore", description: "`LLM` writes a `.gitignore` for the detected layout. Skips if one exists unless `--force`." },
 				{ title: "Analyze commit history", description: "Reads up to `--max-commits` recent commit subjects, the project's top-level directories, and tracked file list (capped at 300 entries)." },
@@ -319,7 +324,7 @@ export const translations: Record<Language, Translations> = {
 			description: "Generate commits with LLM assistance",
 			usage: "git-agent commit [-o <fmt>] [--dry-run] [--intent <text>] [--amend] [--no-stage] [--co-author <name>] [--trailer <key:value>] [--no-attribution] [--free]",
 			overview:
-				"Stages tracked changes, groups them into up to five atomic commits per run, drafts conventional messages with an `LLM`, validates via `hook` from `config.yml` (`empty`, `conventional`, or custom script), and retries or re-plans when validation fails. Detected file renames are kept atomic: both paths of a move are forced into the same commit group after planning, so git records a rename rather than splitting it into a delete and an add across commits. A preflight guard refuses prompts that exceed the endpoint's input ceiling before the LLM is called — default 1M tokens, raise it with the `max_input_tokens` config key. Prefer running without provider flags (`FREE` or `~/.config/git-agent/config.yml`). Pass `-o json` for a structured result — `{dry_run, commits:[{title, message, files, sha, hook_outcome}], committed_count, final_sha}` — instead of human-readable text, so an agent can consume the plan and resulting SHAs.",
+				"Stages tracked changes, groups them into up to five atomic commits per run, drafts conventional messages with an `LLM`, validates via `hook` from `config.yml` (`empty`, `conventional`, or custom script), and retries or re-plans when validation fails. Detected file renames are kept atomic: both paths of a move are forced into the same commit group after planning, so git records a rename rather than splitting it into a delete and an add across commits. A preflight guard refuses prompts that exceed the endpoint's input ceiling before the LLM is called — default 1M tokens, raise it with the `max_input_tokens` config key. Official release binaries run against the free shared gateway with no provider flags; bring your own key via `~/.config/git-agent/config.yml` when needed. Pass `-o json` for a structured result — `{dry_run, commits:[{title, message, files, sha, hook_outcome}], committed_count, final_sha}` — instead of human-readable text, so an agent can consume the plan and resulting SHAs.",
 			flags: [
 				{ name: "-o, --output <fmt>", description: "Output format: `text` (default) or `json`. `-o json` emits `{dry_run, commits:[{title, message, files, sha, hook_outcome}], committed_count, final_sha}` for agents to consume." },
 				{ name: "--dry-run", description: "Print planned commit messages without creating commits" },
@@ -333,14 +338,9 @@ export const translations: Record<Language, Translations> = {
 				{ name: "--max-diff-lines <n>", description: "Maximum diff lines to send to the model; set to limit token cost (a byte cap always applies on top)", default: "0 (no line limit)" },
 				{ name: "--max-plan-files <n>", description: "Maximum file paths listed individually in the planner prompt before collapsing to directory summaries", default: "0 (built-in default 150)" },
 				{
-					name: "--free",
-					description:
-						"Use only build-time embedded credentials; ignores `git config`, config file, and build defaults; not combinable with `--api-key`, `--model`, or `--base-url`",
-				},
-				{
 					name: "--api-key <key>",
 					description:
-						"One-off API key override. Prefer `FREE` or `~/.config/git-agent/config.yml`; use only for explicit temporary overrides.",
+						"One-off API key override. Official release binaries use the free shared gateway by default; set a key here only for a temporary bring-your-own-key override.",
 				},
 				{
 					name: "--model <name>",
@@ -352,13 +352,18 @@ export const translations: Record<Language, Translations> = {
 					description:
 						"One-off base URL override. Prefer `YAML` or `git config` for persistence.",
 				},
+				{
+					name: "--free",
+					description:
+						"Force routing through the free shared gateway, overriding any `api_key` / `base_url` / `model` from flags, `git config`, or the config file. On official release binaries the embedded gateway URL is used; the Worker pins the model and holds the credential server-side.",
+				},
 				{ name: "-v, --verbose", description: "Enable verbose output including retry details and hook feedback" },
 			],
 			steps: [
 				{
 					title: "Resolve configuration",
 					description:
-						"Prefer no provider flags (official `FREE` when available); if missing key and no `~/.config/git-agent/config.yml`, add that file or `git config` before using `--api-key`/`--model`/`--base-url`. When several sources exist, precedence is: CLI flags > `git config --local` > `~/.config/git-agent/config.yml` > build defaults. `--free` uses embedded credentials only.",
+						"Official release binaries use the free shared gateway with no provider flags; to bring your own key, add `~/.config/git-agent/config.yml` or use `git config`. When several sources exist, precedence is: CLI flags > `git config --local` > `~/.config/git-agent/config.yml` > free shared gateway default. Pass `--free` to force the free shared gateway and ignore all bring-your-own-key sources.",
 				},
 				{ title: "Collect diffs", description: "Unless `--no-stage` is set, runs `git add --all` to stage all tracked changes. Then reads both staged and unstaged diffs to understand the full scope of changes." },
 				{ title: "Plan commits via LLM", description: "Groups files into up to five atomic commits by concern (`feat`, `fix`, `refactor`, `test`, `docs`). `--intent` steers grouping when set." },
@@ -441,7 +446,7 @@ export const translations: Record<Language, Translations> = {
 		// Home view
 		homeTitle: "git-agent",
 		homeSubtitle:
-			"AI Git 助手：原子提交、规范消息，外加可查询的代码图谱——让智能体带上下文编辑，而非盲目改码。免费、无需 API 密钥。",
+			"AI Git 助手：原子提交、规范消息，外加可查询的代码图谱——让智能体带上下文编辑，而非盲目改码。免费共享网关，零配置。",
 		homeInstallHint: "复制下方整行，粘贴到任意编程助手即可。",
 		homeInstallCopyLine: "安装 git-agent — 请按 https://git-agent.dev/install.md 中的指引操作",
 		copy: "复制",
@@ -547,7 +552,7 @@ export const translations: Record<Language, Translations> = {
 			"git-agent 理解每种语言的项目结构，自动生成准确的规范化提交信息。",
 		pseoVsHubTitle: "与其他工具对比",
 		pseoVsHubSubtitle:
-			"了解 git-agent 与其他 AI 提交工具的区别——原子拆分、免费套餐、钩子集成。",
+			"了解 git-agent 与其他 AI 提交工具的区别——原子拆分、免费共享网关、钩子集成。",
 		pseoGlossaryHubTitle: "Git 工作流术语",
 		pseoGlossaryHubSubtitle:
 			"规范化提交、原子提交、pre-commit 钩子及更多 Git 概念的解释。",
@@ -583,9 +588,9 @@ export const translations: Record<Language, Translations> = {
 			cmd: "git-agent init",
 			description: "初始化你的仓库",
 			usage:
-				"git-agent init [--scope] [--hook <值>] [--gitignore] [--force] [--local] [--user] [--max-commits <n>] [--api-key <密钥>] [--model <名称>] [--base-url <地址>]",
+				"git-agent init [--scope] [--hook <值>] [--gitignore] [--force] [--local] [--user] [--max-commits <n>] [--api-key <密钥>] [--model <名称>] [--base-url <地址>] [--free]",
 			overview:
-				"在当前仓库启用 `git-agent`。无参数时运行完整向导：确保 git 仓库存在（必要时运行 `git init`）、通过 AI 生成 `.gitignore`、从 git 历史通过 AI 生成带描述的提交作用域，并将作用域和 `hook: [conventional]` 写入 `.git-agent/config.yml`。各步也可单独用参数触发。已有 `.git-agent/config.yml` 会保留，除非加 `--force`。用 `git-agent config set hook <值>` 重新配置 hook。优先 `FREE` 或 `~/.config/git-agent/config.yml`，再考虑 `init` 的 `provider` 参数。",
+				"在当前仓库启用 `git-agent`。无参数时运行完整向导：确保 git 仓库存在（必要时运行 `git init`）、通过 AI 生成 `.gitignore`、从 git 历史通过 AI 生成带描述的提交作用域，并将作用域和 `hook: [conventional]` 写入 `.git-agent/config.yml`。各步也可单独用参数触发。已有 `.git-agent/config.yml` 会保留，除非加 `--force`。用 `git-agent config set hook <值>` 重新配置 hook。官方发布的二进制默认使用免费共享网关（零配置）；需要时可通过 `~/.config/git-agent/config.yml` 自带密钥。",
 			flags: [
 				{ name: "--scope", description: "根据提交历史与项目布局推导带描述的作用域（`LLM`）" },
 				{ name: "--hook <值>", description: "要配置的 hook：`conventional`、`empty` 或文件路径（可重复）。存入 `.git-agent/config.yml`。" },
@@ -597,7 +602,7 @@ export const translations: Record<Language, Translations> = {
 				{
 					name: "--api-key <密钥>",
 					description:
-						"临时覆盖 API 密钥。优先 `FREE` 或 `~/.config/git-agent/config.yml`；仅在需要一次性覆盖时使用。",
+						"临时覆盖 API 密钥。官方发布的二进制默认使用免费共享网关；仅在需要临时自带密钥覆盖时在此设置。",
 				},
 				{
 					name: "--model <名称>",
@@ -609,13 +614,18 @@ export const translations: Record<Language, Translations> = {
 					description:
 						"临时指定 base URL。长期配置建议用 `YAML` 或 `git config`。",
 				},
+				{
+					name: "--free",
+					description:
+						"强制走免费共享网关，覆盖来自参数、`git config` 或配置文件的任何 `api_key` / `base_url` / `model`。官方发布二进制使用内置的网关地址；模型由 Worker 固定，凭据保存在服务端。",
+				},
 				{ name: "-v, --verbose", description: "启用详细输出（全局）" },
 			],
 			steps: [
 				{
 					title: "验证环境",
 					description:
-						"确保 git 仓库存在（必要时运行 `git init`），解析密钥来源：优先官方 `FREE`（无额外参数）；否则 `~/.config/git-agent/config.yml` 或 `git config`；仅在明确需要时使用 `init` 的 `provider` 参数。",
+						"确保 git 仓库存在（必要时运行 `git init`），解析密钥来源：官方发布的二进制使用免费共享网关（零配置）；否则 `~/.config/git-agent/config.yml` 或 `git config`；仅在明确需要时使用 `init` 的 `provider` 参数。",
 				},
 				{ title: "生成 .gitignore", description: "由 `LLM` 按当前目录结构写 `.gitignore`。已存在则跳过，除非加 `--force`。" },
 				{ title: "分析提交历史", description: "读取最近 `--max-commits` 条提交主题、项目顶层目录和跟踪文件列表（最多 300 条）。" },
@@ -628,7 +638,7 @@ export const translations: Record<Language, Translations> = {
 			description: "用 LLM 辅助生成提交",
 			usage: "git-agent commit [-o <格式>] [--dry-run] [--intent <文本>] [--amend] [--no-stage] [--co-author <名称>] [--trailer <键:值>] [--no-attribution] [--free]",
 			overview:
-				"暂存已跟踪的改动，每次运行最多分成五组原子提交，用 `LLM` 起草规范说明，按 `config.yml` 的 `hook` 校验（`empty`、`conventional` 或自定义脚本），失败则重试或重规划。检测到的文件重命名保持原子：规划后移动的两个路径会被强制分到同一提交组，确保 git 记录为重命名，而不是拆成跨提交的删除与新增。调用 LLM 前有预检护栏：总输入会对照端点上限校验（默认 100 万 token，可用 `max_input_tokens` 配置键调高），超限提示词会被拒绝。默认优先不带 `provider` 参数（`FREE` 或 `~/.config/git-agent/config.yml`）。传入 `-o json` 可得到结构化结果——`{dry_run, commits:[{title, message, files, sha, hook_outcome}], committed_count, final_sha}`——而非人类可读文本，便于智能体消费提交计划与生成的 SHA。",
+				"暂存已跟踪的改动，每次运行最多分成五组原子提交，用 `LLM` 起草规范说明，按 `config.yml` 的 `hook` 校验（`empty`、`conventional` 或自定义脚本），失败则重试或重规划。检测到的文件重命名保持原子：规划后移动的两个路径会被强制分到同一提交组，确保 git 记录为重命名，而不是拆成跨提交的删除与新增。调用 LLM 前有预检护栏：总输入会对照端点上限校验（默认 100 万 token，可用 `max_input_tokens` 配置键调高），超限提示词会被拒绝。官方发布的二进制默认不带 `provider` 参数、直连免费共享网关；需要时可通过 `~/.config/git-agent/config.yml` 自带密钥。传入 `-o json` 可得到结构化结果——`{dry_run, commits:[{title, message, files, sha, hook_outcome}], committed_count, final_sha}`——而非人类可读文本，便于智能体消费提交计划与生成的 SHA。",
 			flags: [
 				{ name: "-o, --output <格式>", description: "输出格式：`text`（默认）或 `json`。`-o json` 输出 `{dry_run, commits:[{title, message, files, sha, hook_outcome}], committed_count, final_sha}`，便于智能体消费。" },
 				{ name: "--dry-run", description: "只打印拟定的提交说明，不创建提交" },
@@ -642,14 +652,9 @@ export const translations: Record<Language, Translations> = {
 				{ name: "--max-diff-lines <n>", description: "发送给模型的最大 diff 行数；用于限制 token 成本（其上仍叠加字节上限）", default: "0（无行数限制）" },
 				{ name: "--max-plan-files <n>", description: "规划提示中单独列出的最大文件路径数，超出后按目录折叠", default: "0（内置默认 150）" },
 				{
-					name: "--free",
-					description:
-						"仅使用构建时嵌入的凭证；忽略 `git config`、配置文件与构建默认值；不可与 `--api-key`、`--model`、`--base-url` 同时使用",
-				},
-				{
 					name: "--api-key <密钥>",
 					description:
-						"临时覆盖 API 密钥。优先 `FREE` 或 `~/.config/git-agent/config.yml`；仅在需要一次性覆盖时使用。",
+						"临时覆盖 API 密钥。官方发布的二进制默认使用免费共享网关；仅在需要临时自带密钥覆盖时在此设置。",
 				},
 				{
 					name: "--model <名称>",
@@ -661,13 +666,18 @@ export const translations: Record<Language, Translations> = {
 					description:
 						"临时指定 base URL。长期配置建议用 `YAML` 或 `git config`。",
 				},
+				{
+					name: "--free",
+					description:
+						"强制走免费共享网关，覆盖来自参数、`git config` 或配置文件的任何 `api_key` / `base_url` / `model`。官方发布二进制使用内置的网关地址；模型由 Worker 固定，凭据保存在服务端。",
+				},
 				{ name: "-v, --verbose", description: "启用详细输出，包括重试详情和 hook 反馈" },
 			],
 			steps: [
 				{
 					title: "解析配置",
 					description:
-						"向用户说明：默认不带 `provider` 参数（官方 `FREE` 可用时）；若缺密钥且无 `~/.config/git-agent/config.yml`，先建议创建该文件或 `git config`，再考虑 `--api-key`/`--model`/`--base-url`。多来源同时存在时：CLI 参数 > `git config --local` > `~/.config/git-agent/config.yml` > 构建默认值。`--free` 仅使用嵌入凭证。",
+						"向用户说明：官方发布的二进制默认不带 `provider` 参数、直连免费共享网关；要自带密钥，先创建 `~/.config/git-agent/config.yml` 或使用 `git config`。多来源同时存在时：CLI 参数 > `git config --local` > `~/.config/git-agent/config.yml` > 免费共享网关默认值。传入 `--free` 可强制走免费共享网关，忽略所有自带密钥来源。",
 				},
 				{ title: "收集 diffs", description: "除非设置 `--no-stage`，否则运行 `git add --all` 暂存所有跟踪的更改。然后读取已暂存和未暂存的 diff，以了解更改的全部范围。" },
 				{ title: "通过 LLM 规划提交", description: "按关注点（`feat`、`fix`、`refactor`、`test`、`docs`）把文件分成最多五组原子提交。有 `--intent` 时优先按其提示分组。" },

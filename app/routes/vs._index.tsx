@@ -10,7 +10,7 @@ export const meta: MetaFunction = () =>
 	buildMeta({
 		title: "git-agent vs Other AI Commit Tools | Comparisons",
 		description:
-			"Compare git-agent against aicommit2, Commitizen, czg, gitmoji-cli, and more. See how atomic commit splitting and a free tier set git-agent apart.",
+			"Compare git-agent against aicommit2, Commitizen, czg, gitmoji-cli, and more. See how atomic commit splitting and a free shared gateway set git-agent apart.",
 		canonicalUrl: `${BASE_URL}/vs`,
 	});
 
