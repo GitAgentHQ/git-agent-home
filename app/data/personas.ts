@@ -1424,6 +1424,1016 @@ git-agent init   # detects Rails app structure and suggests scopes`,
       },
     ],
   },
+  {
+    slug: "angular",
+    language: { en: "Angular", zh: "Angular" },
+    tagline: {
+      en: "Conventional commits for Angular components, services, and NgRx stores",
+      zh: "为 Angular 组件、服务和 NgRx 状态管理生成约定式提交",
+    },
+    description: {
+      en: "git-agent understands Angular module structure, standalone component patterns, and NgRx effects, producing atomic conventional commits that reflect Angular's opinionated architecture.",
+      zh: "git-agent 理解 Angular 模块结构、独立组件模式和 NgRx 副作用，生成反映 Angular 架构约定的原子约定式提交。",
+    },
+    diffExample: `diff --git a/src/app/users/user-list.component.ts b/src/app/users/user-list.component.ts
+index 3a1b2c4..8d9e7f5 100644
+--- a/src/app/users/user-list.component.ts
++++ b/src/app/users/user-list.component.ts
+@@ -1,20 +1,22 @@
+-import { Component, OnInit } from "@angular/core";
++import { Component, signal, computed, inject } from "@angular/core";
+ import { UserService } from "./user.service";
+-import { Observable } from "rxjs";
++import { toSignal } from "@angular/core/rxjs-interop";
+
+ @Component({
+   selector: "app-user-list",
+   templateUrl: "./user-list.component.html",
+-  changeDetection: ChangeDetectionStrategy.Default,
++  changeDetection: ChangeDetectionStrategy.OnPush,
++  standalone: true,
++  imports: [CommonModule, RouterLink],
+ })
+ export class UserListComponent implements OnInit {
+-  users$: Observable<User[]> = this.userService.getUsers();
+-  filteredUsers$: Observable<User[]> = this.users$;
++  private userService = inject(UserService);
++  readonly users = toSignal(this.userService.getUsers(), { initialValue: [] });
++  readonly searchTerm = signal("");
++  readonly filteredUsers = computed(() =>
++    this.users().filter((u) =>
++      u.name.toLowerCase().includes(this.searchTerm().toLowerCase())
++    )
++  );
+ }`,
+    commitExample: `refactor(users): migrate UserListComponent to OnPush and signals
+
+- switch to OnPush change detection for better performance on large lists
+- replace async pipe and Observable with signal/toSignal pattern
+- add searchTerm signal and filteredUsers computed for reactive filtering
+- migrate to standalone component with inject() instead of constructor DI
+
+The async pipe with Observable streams was causing unnecessary change
+detection cycles; the signal-based approach provides granular reactivity
+with zero overhead when the list is not actively changing.`,
+    installSnippet: `brew install gitagenthq/tap/git-agent
+# inside your Angular project
+git-agent init   # detects angular.json project structure and suggests scopes`,
+    features: [
+      {
+        en: "Understands NgRx store, effect, and reducer changes for accurate commit scoping",
+        zh: "理解 NgRx store、effect 和 reducer 变更以准确划分提交范围",
+      },
+      {
+        en: "Recognises standalone vs NgModule architecture differences",
+        zh: "识别独立组件与 NgModule 架构的区别",
+      },
+      {
+        en: "Separates Angular Material and component library upgrades into chore commits",
+        zh: "将 Angular Material 和组件库的升级归入 chore 提交",
+      },
+      {
+        en: "Handles Angular CLI workspace configuration (angular.json) changes distinctly",
+        zh: "单独处理 Angular CLI 工作区配置（angular.json）的变更",
+      },
+    ],
+    relatedLinks: [
+      {
+        label: { en: "What are Conventional Commits?", zh: "什么是约定式提交？" },
+        href: "/glossary/conventional-commits",
+      },
+      {
+        label: { en: "Atomic commits explained", zh: "原子提交详解" },
+        href: "/glossary/atomic-commits",
+      },
+      {
+        label: { en: "refactor commit template", zh: "refactor 提交模板" },
+        href: "/templates/refactor",
+      },
+    ],
+    faq: [
+      {
+        question: {
+          en: "Does git-agent handle Angular CLI generated files?",
+          zh: "git-agent 能处理 Angular CLI 生成的文件吗？",
+        },
+        answer: {
+          en: "Yes. Generated files from ng generate are recognised as scaffolded code. git-agent commits them together with related changes rather than creating noise commits for each generated file.",
+          zh: "可以。ng generate 生成的文件被识别为脚手架代码。git-agent 会将它们与相关变更一起提交，而不是为每个生成的文件创建无意义的提交。",
+        },
+      },
+      {
+        question: {
+          en: "How does git-agent handle NgRx boilerplate files?",
+          zh: "git-agent 如何处理 NgRx 样板文件？",
+        },
+        answer: {
+          en: "Actions, reducers, effects, and selectors for the same feature slice are grouped together into a single commit. The LLM understands the NgRx architecture and describes changes at the feature level.",
+          zh: "同一功能模块的 actions、reducers、effects 和 selectors 会被归入同一提交。LLM 理解 NgRx 架构，在功能层面描述变更。",
+        },
+      },
+      {
+        question: {
+          en: "Can git-agent work with Angular Universal and SSR projects?",
+          zh: "git-agent 能用于 Angular Universal 和 SSR 项目吗？",
+        },
+        answer: {
+          en: "Yes. Server-side transfer state, platform-server module changes, and Angular Universal config are all handled correctly alongside the standard Angular diffs.",
+          zh: "可以。服务端传输状态、platform-server 模块变更和 Angular Universal 配置都能与标准 Angular diff 一起正确处理。",
+        },
+      },
+    ],
+  },
+  {
+    slug: "svelte",
+    language: { en: "Svelte", zh: "Svelte" },
+    tagline: {
+      en: "Conventional commits for Svelte 5 runes and SvelteKit projects",
+      zh: "为 Svelte 5 runes 和 SvelteKit 项目生成约定式提交",
+    },
+    description: {
+      en: "git-agent understands Svelte 5 runes syntax, SvelteKit route conventions, and store patterns, producing atomic conventional commits that match Svelte's reactive paradigm.",
+      zh: "git-agent 理解 Svelte 5 runes 语法、SvelteKit 路由约定和 store 模式，生成匹配 Svelte 响应式范式的原子约定式提交。",
+    },
+    diffExample: `diff --git a/src/lib/stores/counter.svelte.ts b/src/lib/stores/counter.svelte.ts
+index 2c4f1a3..7b8e9d2 100644
+--- a/src/lib/stores/counter.svelte.ts
++++ b/src/lib/stores/counter.svelte.ts
+@@ -1,16 +1,22 @@
+-import { writable, derived } from "svelte/store";
++import { writable, derived } from "svelte/store";
+
+-export const count = writable(0);
+-export const double = derived(count, ($c) => $c * 2);
++export class Counter {
++  count = $state(0);
++  max = $state(100);
++  double = $derived(this.count * 2);
++  isAtLimit = $derived(this.count >= this.max);
+
+-export function increment() {
+-  count.update((n) => n + 1);
+-}
++  increment() {
++    if (this.count < this.max) {
++      this.count++;
++    }
++  }
+
+-export function reset() {
+-  count.set(0);
+-}
++  reset() {
++    this.count = 0;
++  }
++}`,
+    commitExample: `refactor(store): migrate counter store to Svelte 5 runes class syntax
+
+- replace writable/derived store with $state/$derived class-based runes
+- add max and isAtLimit reactive state for boundary-aware counting
+- guard increment against exceeding max limit
+
+The legacy store API introduced indirection through update/set calls;
+the runes class syntax provides direct mutable state with compiler-managed
+reactivity, reducing boilerplate and improving type inference.`,
+    installSnippet: `brew install gitagenthq/tap/git-agent
+# inside your Svelte project
+git-agent init   # detects SvelteKit src/routes structure and suggests scopes`,
+    features: [
+      {
+        en: "Understands Svelte 5 runes ($state, $derived, $effect) in .svelte.ts files",
+        zh: "理解 Svelte 5 runes（$state、$derived、$effect）在 .svelte.ts 文件中的用法",
+      },
+      {
+        en: "Recognises SvelteKit route groups, layouts, and server load functions",
+        zh: "识别 SvelteKit 路由组、布局和服务端加载函数",
+      },
+      {
+        en: "Separates Svelte component template changes from script logic changes",
+        zh: "将 Svelte 组件模板变更与脚本逻辑变更分离提交",
+      },
+      {
+        en: "Handles legacy Svelte store and new runes syntax side by side",
+        zh: "同时处理旧版 Svelte store 和新版 runes 语法",
+      },
+    ],
+    relatedLinks: [
+      {
+        label: { en: "What are Conventional Commits?", zh: "什么是约定式提交？" },
+        href: "/glossary/conventional-commits",
+      },
+      {
+        label: { en: "Atomic commits explained", zh: "原子提交详解" },
+        href: "/glossary/atomic-commits",
+      },
+      {
+        label: { en: "refactor commit template", zh: "refactor 提交模板" },
+        href: "/templates/refactor",
+      },
+    ],
+    faq: [
+      {
+        question: {
+          en: "Does git-agent understand Svelte 5 runes syntax?",
+          zh: "git-agent 理解 Svelte 5 runes 语法吗？",
+        },
+        answer: {
+          en: "Yes. The LLM understands $state, $derived, $effect, and $props runes, and can accurately describe migrations from the legacy store API to the runes-based approach.",
+          zh: "是的。LLM 理解 $state、$derived、$effect 和 $props 等 runes，能准确描述从旧版 store API 到 runes 的迁移。",
+        },
+      },
+      {
+        question: {
+          en: "Can git-agent handle SvelteKit form actions and API routes?",
+          zh: "git-agent 能处理 SvelteKit 表单操作和 API 路由吗？",
+        },
+        answer: {
+          en: "Yes. SvelteKit +server.ts files and form actions are recognised as server-side logic and committed separately from client-side component changes when they are independent.",
+          zh: "可以。SvelteKit 的 +server.ts 文件和表单操作被识别为服务端逻辑，在独立时会与客户端组件变更分开提交。",
+        },
+      },
+      {
+        question: {
+          en: "How does git-agent handle Svelte component CSS scoping?",
+          zh: "git-agent 如何处理 Svelte 组件 CSS 作用域？",
+        },
+        answer: {
+          en: "CSS changes inside a .svelte file's style block are grouped with the component's template and script changes, since they are part of the same component definition.",
+          zh: ".svelte 文件中 style 块内的 CSS 变更会与组件模板和脚本变更归入同一提交，因为它们属于同一个组件定义。",
+        },
+      },
+    ],
+  },
+  {
+    slug: "csharp",
+    language: { en: "C#", zh: "C#" },
+    tagline: {
+      en: "Conventional commits for .NET and C# projects",
+      zh: "为 .NET 和 C# 项目生成约定式提交",
+    },
+    description: {
+      en: "git-agent understands .NET solution structure, ASP.NET Core middleware patterns, Entity Framework migrations, and C# language features, producing accurate conventional commits for enterprise .NET codebases.",
+      zh: "git-agent 理解 .NET 解决方案结构、ASP.NET Core 中间件模式、Entity Framework 迁移和 C# 语言特性，为企业级 .NET 代码库生成准确的约定式提交。",
+    },
+    diffExample: `diff --git a/src/Services/OrderService.cs b/src/Services/OrderService.cs
+index 4d1e2f3..9a8b7c6 100644
+--- a/src/Services/OrderService.cs
++++ b/src/Services/OrderService.cs
+@@ -5,15 +5,24 @@
+ using Microsoft.EntityFrameworkCore;
++using Microsoft.Extensions.Logging;
+
+-public class OrderService
++public class OrderService(ILogger<OrderService> logger, AppDbContext db)
+ {
+-    private readonly AppDbContext _db;
+-    public OrderService(AppDbContext db) { _db = db; }
+-
+-    public async Task<Order> CreateOrder(CreateOrderRequest request)
++    public async Task<Order> CreateOrder(CreateOrderRequest request)
+     {
++        ArgumentNullException.ThrowIfNull(request);
++        using var transaction = await db.Database.BeginTransactionAsync();
+         try
+         {
+-            var order = new Order(request);
+-            _db.Orders.Add(order);
+-            await db.SaveChangesAsync();
++            var order = new Order(request);
++            db.Orders.Add(order);
++            await db.SaveChangesAsync();
++            await transaction.CommitAsync();
++            logger.LogInformation("Created order {OrderId}", order.Id);
+             return order;
+         }
+-        catch (DbUpdateException ex)
++        catch (DbUpdateException ex) when (ex.InnerException?.Message.Contains("IX_Orders_Number") == true)
+         {
++            await transaction.RollbackAsync();
+             throw new OrderConflictException(request.Number, ex);
+         }
+     }
+ }`,
+    commitExample: `refactor(orders): migrate to primary constructors and add transactional safety
+
+- convert OrderService to use C# 12 primary constructor syntax
+- add ArgumentNullException guard for request parameter
+- wrap persist in explicit transaction with rollback on conflict
+- catch filtered DbUpdateException for duplicate order number specifically
+- add structured logging for order creation events
+
+The traditional constructor pattern added unnecessary boilerplate; primary
+constructors make the dependency contract explicit at the class declaration
+site. The transaction ensures partial writes are rolled back if either
+SaveChanges or logging fails.`,
+    installSnippet: `brew install gitagenthq/tap/git-agent
+# inside your .NET project
+git-agent init   # detects .sln / .csproj structure and suggests scopes`,
+    features: [
+      {
+        en: "Understands .NET solution and project reference structure for scope detection",
+        zh: "理解 .NET 解决方案和项目引用结构以检测提交范围",
+      },
+      {
+        en: "Recognises Entity Framework migration files and separates them into db commits",
+        zh: "识别 Entity Framework 迁移文件并将其分离为 db 类型提交",
+      },
+      {
+        en: "Handles ASP.NET Core middleware pipeline and endpoint configuration changes",
+        zh: "处理 ASP.NET Core 中间件管道和端点配置的变更",
+      },
+      {
+        en: "Works with both .csproj and modern SDK-style project files",
+        zh: "支持传统 .csproj 和现代 SDK 风格的项目文件",
+      },
+    ],
+    relatedLinks: [
+      {
+        label: { en: "What are Conventional Commits?", zh: "什么是约定式提交？" },
+        href: "/glossary/conventional-commits",
+      },
+      {
+        label: { en: "Atomic commits explained", zh: "原子提交详解" },
+        href: "/glossary/atomic-commits",
+      },
+      {
+        label: { en: "refactor commit template", zh: "refactor 提交模板" },
+        href: "/templates/refactor",
+      },
+    ],
+    faq: [
+      {
+        question: {
+          en: "Does git-agent handle .NET SDK and runtime version changes?",
+          zh: "git-agent 能处理 .NET SDK 和运行时版本变更吗？",
+        },
+        answer: {
+          en: "Yes. global.json and TargetFramework changes in .csproj files are detected as build configuration changes and committed separately as chore commits.",
+          zh: "可以。global.json 和 .csproj 文件中的 TargetFramework 变更被识别为构建配置变更，会单独作为 chore 提交。",
+        },
+      },
+      {
+        question: {
+          en: "How does git-agent handle Entity Framework migrations?",
+          zh: "git-agent 如何处理 Entity Framework 迁移？",
+        },
+        answer: {
+          en: "Migration files in Migrations/ directories are grouped into a separate db commit. The Snapshot and Designer files that accompany a migration stay with the migration file.",
+          zh: "Migrations/ 目录中的迁移文件会被归入独立的 db 提交。伴随迁移的 Snapshot 和 Designer 文件会与迁移文件一起提交。",
+        },
+      },
+      {
+        question: {
+          en: "Can git-agent work with Blazor projects?",
+          zh: "git-agent 能用于 Blazor 项目吗？",
+        },
+        answer: {
+          en: "Yes. Blazor component files (.razor), code-behind files, and Razor class library changes are all handled. The LLM understands the Blazor component lifecycle and rendering model.",
+          zh: "可以。Blazor 组件文件（.razor）、code-behind 文件和 Razor 类库的变更均能处理。LLM 理解 Blazor 组件生命周期和渲染模型。",
+        },
+      },
+    ],
+  },
+  {
+    slug: "php-laravel",
+    language: { en: "PHP (Laravel)", zh: "PHP (Laravel)" },
+    tagline: {
+      en: "Conventional commits for Laravel and PHP projects",
+      zh: "为 Laravel 和 PHP 项目生成约定式提交",
+    },
+    description: {
+      en: "git-agent understands Laravel's MVC architecture, Eloquent ORM patterns, Artisan commands, and PHP namespace conventions, producing atomic conventional commits that align with Laravel best practices.",
+      zh: "git-agent 理解 Laravel 的 MVC 架构、Eloquent ORM 模式、Artisan 命令和 PHP 命名空间约定，生成符合 Laravel 最佳实践的原子约定式提交。",
+    },
+    diffExample: `diff --git a/app/Http/Controllers/OrderController.php b/app/Http/Controllers/OrderController.php
+index 5c2a1b4..3d8f7e9 100644
+--- a/app/Http/Controllers/OrderController.php
++++ b/app/Http/Controllers/OrderController.php
+@@ -1,14 +1,24 @@
+ <?php
+
+ namespace App\Http\Controllers;
+
++use App\Actions\CreateOrderAction;
++use App\DataTransferObjects\OrderData;
++use App\Exceptions\InsufficientStockException;
+ use App\Models\Order;
+-use Illuminate\Http\Request;
++use App\Http\Requests\StoreOrderRequest;
+
+ class OrderController extends Controller
+ {
+-    public function store(Request $request)
++    public function __construct(
++        private readonly CreateOrderAction $createOrder,
++    ) {}
++
++    public function store(StoreOrderRequest $request)
+     {
+-        $order = Order::create($request->all());
+-        return response()->json($order, 201);
++        $order = $this->createOrder->execute(
++            OrderData::fromRequest($request->validated())
++        );
++        return OrderResource::make($order)->response()->setStatusCode(201);
+     }
+ }`,
+    commitExample: `feat(orders): move order creation to dedicated action class with form request
+
+- extract order creation logic from controller into CreateOrderAction class
+- replace loose Request::all() with typed StoreOrderRequest and validation rules
+- introduce OrderData DTO for type-safe data transfer through the action
+- return OrderResource instead of raw JSON for consistent API responses
+
+The controller was handling both HTTP concerns and business logic; the
+action class encapsulates the creation workflow, making it testable
+independently of the HTTP layer and reusable across controllers and
+queue jobs.`,
+    installSnippet: `brew install gitagenthq/tap/git-agent
+# inside your Laravel project
+git-agent init   # detects app/ directory structure and suggests scopes`,
+    features: [
+      {
+        en: "Understands Laravel directory conventions (app/Models, app/Http/Controllers, app/Actions) for scope naming",
+        zh: "理解 Laravel 目录约定（app/Models、app/Http/Controllers、app/Actions）以命名提交范围",
+      },
+      {
+        en: "Separates Eloquent model changes from migration and seeder changes",
+        zh: "将 Eloquent 模型变更与迁移文件和种子文件变更分离",
+      },
+      {
+        en: "Recognises Artisan command and scheduled task definitions for accurate commit types",
+        zh: "识别 Artisan 命令和计划任务定义以生成准确的提交类型",
+      },
+      {
+        en: "Handles Composer dependency updates (composer.json/composer.lock) as chore commits",
+        zh: "将 Composer 依赖更新（composer.json/composer.lock）处理为 chore 提交",
+      },
+    ],
+    relatedLinks: [
+      {
+        label: { en: "What are Conventional Commits?", zh: "什么是约定式提交？" },
+        href: "/glossary/conventional-commits",
+      },
+      {
+        label: { en: "Atomic commits explained", zh: "原子提交详解" },
+        href: "/glossary/atomic-commits",
+      },
+      {
+        label: { en: "feat commit template", zh: "feat 提交模板" },
+        href: "/templates/feat",
+      },
+    ],
+    faq: [
+      {
+        question: {
+          en: "Does git-agent handle Laravel Sail and Docker development setups?",
+          zh: "git-agent 能处理 Laravel Sail 和 Docker 开发环境吗？",
+        },
+        answer: {
+          en: "Yes. git-agent runs outside of Docker. It reads the staged git diff directly, so it works with any development environment including Laravel Sail, Valet, and Herd without additional configuration.",
+          zh: "可以。git-agent 在 Docker 外部运行，直接读取 git 暂存的 diff，因此无需额外配置即可与 Laravel Sail、Valet 和 Herd 等开发环境兼容。",
+        },
+      },
+      {
+        question: {
+          en: "How does git-agent handle Laravel Nova and Filament admin panel changes?",
+          zh: "git-agent 如何处理 Laravel Nova 和 Filament 管理后台的变更？",
+        },
+        answer: {
+          en: "Admin panel resource files and configuration are recognised as distinct concerns. They are committed separately from core application logic when the changes are independent.",
+          zh: "管理后台的资源文件和配置被识别为独立的关注点，在变更独立时会与核心应用逻辑分开提交。",
+        },
+      },
+      {
+        question: {
+          en: "Can git-agent work with PHP package libraries and non-Laravel frameworks?",
+          zh: "git-agent 能用于 PHP 包库和非 Laravel 框架吗？",
+        },
+        answer: {
+          en: "Yes. Symfony, Slim, WordPress plugin development, and standalone PHP packages are all supported. git-agent focuses on the diff content rather than the framework.",
+          zh: "可以。Symfony、Slim、WordPress 插件开发和独立的 PHP 包均受支持。git-agent 关注的是 diff 内容而非具体框架。",
+        },
+      },
+    ],
+  },
+  {
+    slug: "dart-flutter",
+    language: { en: "Dart (Flutter)", zh: "Dart (Flutter)" },
+    tagline: {
+      en: "Conventional commits for Flutter widgets and Dart packages",
+      zh: "为 Flutter 组件和 Dart 包生成约定式提交",
+    },
+    description: {
+      en: "git-agent understands Flutter widget trees, state management patterns (Riverpod, BLoC, Provider), and Dart package conventions, producing atomic conventional commits for mobile and cross-platform codebases.",
+      zh: "git-agent 理解 Flutter 组件树、状态管理模式（Riverpod、BLoC、Provider）和 Dart 包约定，为移动端和跨平台代码库生成原子约定式提交。",
+    },
+    diffExample: `diff --git a/lib/features/auth/providers/auth_provider.dart b/lib/features/auth/providers/auth_provider.dart
+index 1f4a2c3..8e7b9d5 100644
+--- a/lib/features/auth/providers/auth_provider.dart
++++ b/lib/features/auth/providers/auth_provider.dart
+@@ -1,18 +1,24 @@
+ import 'package:flutter_riverpod/flutter_riverpod.dart';
++import 'package:riverpod_annotation/riverpod_annotation.dart';
++import 'package:freezed_annotation/freezed_annotation.dart';
+
+-class AuthNotifier extends StateNotifier<AsyncValue<User?>> {
+-  AuthNotifier(this._authService) : super(const AsyncValue.data(null));
++part 'auth_provider.freezed.dart';
++part 'auth_provider.g.dart';
+
+-  final AuthService _authService;
++@freezed
++sealed class AuthState with _$AuthState {
++  const factory AuthState.initial() = _Initial;
++  const factory AuthState.authenticated(User user) = _Authenticated;
++  const factory AuthState.unauthenticated() = _Unauthenticated;
++}
+
+-  Future<void> login(String email, String password) async {
+-    state = const AsyncValue.loading();
+-    state = await AsyncValue.guard(() => _authService.login(email, password));
+-  }
++@riverpod
++class Auth extends _$Auth {
++  @override
++  AuthState build() => const AuthState.initial();
+
+-  Future<void> logout() async {
+-    await _authService.logout();
+-    state = const AsyncValue.data(null);
++  Future<void> login(String email, String password) async {
++    state = await AsyncValue.guard(() => userService.login(email, password));
++    state = AuthState.authenticated(user);
+   }
+ }`,
+    commitExample: `refactor(auth): migrate to Riverpod code generation and freezed union state
+
+- replace StateNotifier with Riverpod code-gen @riverpod annotation
+- model auth state as sealed union (initial/authenticated/unauthenticated) via freezed
+- generate part files for type-safe state handling
+- simplify login method by removing manual loading state management
+
+The raw StateNotifier required manual AsyncValue management and allowed
+invalid state combinations; the sealed union makes impossible states
+unrepresentable while the code-gen eliminates boilerplate.`,
+    installSnippet: `brew install gitagenthq/tap/git-agent
+# inside your Flutter project
+git-agent init   # reads pubspec.yaml and lib/ structure for scope suggestions`,
+    features: [
+      {
+        en: "Understands Flutter widget tree rebuild patterns and state management architecture",
+        zh: "理解 Flutter 组件树重建模式和状态管理架构",
+      },
+      {
+        en: "Recognises Riverpod, BLoC, and Provider patterns for accurate commit descriptions",
+        zh: "识别 Riverpod、BLoC 和 Provider 模式以生成准确的提交描述",
+      },
+      {
+        en: "Separates Flutter asset and pubspec.yaml changes into dedicated commits",
+        zh: "将 Flutter 资源和 pubspec.yaml 变更分离为独立的提交",
+      },
+      {
+        en: "Works with Flutter platform-specific code (android/, ios/) without mixing concerns",
+        zh: "处理 Flutter 平台特定代码（android/、ios/）时不混淆关注点",
+      },
+    ],
+    relatedLinks: [
+      {
+        label: { en: "What are Conventional Commits?", zh: "什么是约定式提交？" },
+        href: "/glossary/conventional-commits",
+      },
+      {
+        label: { en: "Atomic commits explained", zh: "原子提交详解" },
+        href: "/glossary/atomic-commits",
+      },
+      {
+        label: { en: "refactor commit template", zh: "refactor 提交模板" },
+        href: "/templates/refactor",
+      },
+    ],
+    faq: [
+      {
+        question: {
+          en: "Does git-agent handle Flutter's generated code (freezed, json_serializable)?",
+          zh: "git-agent 能处理 Flutter 的生成代码（freezed、json_serializable）吗？",
+        },
+        answer: {
+          en: "Yes. Generated .freezed.dart and .g.dart files are recognised as build artefacts. git-agent commits them alongside their source definition rather than treating them as separate unrelated changes.",
+          zh: "可以。生成的 .freezed.dart 和 .g.dart 文件被识别为构建产物。git-agent 会将它们与源定义一起提交，而非作为独立的无关变更处理。",
+        },
+      },
+      {
+        question: {
+          en: "How does git-agent handle Flutter platform channel changes?",
+          zh: "git-agent 如何处理 Flutter 平台通道的变更？",
+        },
+        answer: {
+          en: "Dart-side MethodChannel definitions and the native counterpart (Swift/Kotlin) are kept in separate commits, as they belong to the Flutter module and the platform-specific module respectively.",
+          zh: "Dart 端的 MethodChannel 定义和原生实现（Swift/Kotlin）会分别提交，因为它们分别属于 Flutter 模块和平台特定模块。",
+        },
+      },
+      {
+        question: {
+          en: "Can git-agent work with Flutter monorepos (melos, pub workspaces)?",
+          zh: "git-agent 能用于 Flutter monorepo（melos、pub workspaces）吗？",
+        },
+        answer: {
+          en: "Yes. git-agent detects melos and pub workspace configurations and suggests scopes per package. Changes to different packages within the same commit are split into separate commits.",
+          zh: "可以。git-agent 检测 melos 和 pub workspace 配置，并按包建议提交范围。同一提交中不同包的变更会被拆分为独立的提交。",
+        },
+      },
+    ],
+  },
+  {
+    slug: "c-cpp",
+    language: { en: "C/C++", zh: "C/C++" },
+    tagline: {
+      en: "Conventional commits for C and C++ projects",
+      zh: "为 C 和 C++ 项目生成约定式提交",
+    },
+    description: {
+      en: "git-agent understands C/C++ header and implementation separation, CMake project structure, and modern C++ patterns, producing atomic conventional commits for systems and embedded codebases.",
+      zh: "git-agent 理解 C/C++ 头文件和实现文件的分离、CMake 项目结构以及现代 C++ 模式，为系统和嵌入式代码库生成原子约定式提交。",
+    },
+    diffExample: `diff --git a/src/io/file_reader.cpp b/src/io/file_reader.cpp
+index 3d1b8c2..7a9e4f6 100644
+--- a/src/io/file_reader.cpp
++++ b/src/io/file_reader.cpp
+@@ -1,14 +1,22 @@
+ #include "file_reader.h"
++#include <memory>
++#include <system_error>
+
+-FileReader::FileReader(const char* path) : file_(fopen(path, "r")) {
+-    if (!file_) throw std::runtime_error("failed to open file");
++FileReader::FileReader(const std::filesystem::path& path)
++    : file_(std::fopen(path.c_str(), "r")) {
++    if (!file_) {
++        throw std::system_error(errno, std::generic_category(),
++                                path.string());
++    }
+ }
+
+-FileReader::~FileReader() { if (file_) fclose(file_); }
++FileReader::~FileReader() = default;
+
+-FileReader::FileReader(FileReader&& other) noexcept
+-    : file_(std::exchange(other.file_, nullptr)) {}
++FileReader::FileReader(FileReader&&) noexcept = default;
+
+-std::string FileReader::ReadLine() {
++std::expected<std::string, FileReader::Error> FileReader::ReadLine() {
++    if (!file_) return std::unexpected(Error::NotOpen);
+     std::array<char, 256> buf;
+     if (auto* p = std::fgets(buf.data(), buf.size(), file_)) {
+         return std::string(p);
+diff --git a/src/io/file_reader.h b/src/io/file_reader.h
+index 5c2a1b4..8d3f7e9 100644
+--- a/src/io/file_reader.h
++++ b/src/io/file_reader.h
+@@ -1,8 +1,14 @@
+ #pragma once
++#include <expected>
++#include <filesystem>
+ #include <string>
++#include <memory>
+
+ class FileReader {
+ public:
++    enum class Error { NotOpen, ReadError, Eof };
++
+     explicit FileReader(const std::filesystem::path& path);
+     ~FileReader();
+     FileReader(FileReader&&) noexcept;`,
+    commitExample: `refactor(io): modernise FileReader with RAII, std::expected, and filesystem path
+
+- replace raw fopen/fclose with RAII via unique_ptr custom deleter (defaulted destructor)
+- migrate from const char* to std::filesystem::path for Unicode path support
+- switch return type from string to std::expected<string, Error> for explicit error handling
+- replace std::runtime_error with std::system_error preserving errno context
+- default move constructor/assignment instead of manual exchange
+
+The old API leaked file descriptor ownership semantics into callers and
+threw exceptions on I/O errors; std::expected makes failures part of the
+return type, and the modernised path handling supports Unicode filenames
+on all platforms.`,
+    installSnippet: `brew install gitagenthq/tap/git-agent
+# inside your C/C++ project
+git-agent init   # detects CMakeLists.txt / Makefile structure for scopes`,
+    features: [
+      {
+        en: "Understands header (.h/.hpp) and implementation file pairs for atomic grouping",
+        zh: "理解头文件（.h/.hpp）与实现文件的配对关系以进行原子分组",
+      },
+      {
+        en: "Recognises CMakeLists.txt and Makefile build configuration changes as chore commits",
+        zh: "将 CMakeLists.txt 和 Makefile 构建配置变更识别为 chore 提交",
+      },
+      {
+        en: "Separates C++ template metaprogramming changes from runtime code changes",
+        zh: "将 C++ 模板元编程变更与运行时代码变更分离",
+      },
+      {
+        en: "Handles embedded C projects with platform-specific #ifdef blocks correctly",
+        zh: "正确处理包含平台特定 #ifdef 块的嵌入式 C 项目",
+      },
+    ],
+    relatedLinks: [
+      {
+        label: { en: "What are Conventional Commits?", zh: "什么是约定式提交？" },
+        href: "/glossary/conventional-commits",
+      },
+      {
+        label: { en: "Atomic commits explained", zh: "原子提交详解" },
+        href: "/glossary/atomic-commits",
+      },
+      {
+        label: { en: "refactor commit template", zh: "refactor 提交模板" },
+        href: "/templates/refactor",
+      },
+    ],
+    faq: [
+      {
+        question: {
+          en: "Does git-agent handle C++ template metaprogramming diffs?",
+          zh: "git-agent 能处理 C++ 模板元编程的 diff 吗？",
+        },
+        answer: {
+          en: "Yes. The LLM understands template specialisation, SFINAE, constexpr, and concepts. Template-related changes are grouped together and described in terms of their effect on the type system.",
+          zh: "可以。LLM 理解模板特化、SFINAE、constexpr 和 concepts。模板相关的变更会被归为一组，并从其对类型系统的影响角度进行描述。",
+        },
+      },
+      {
+        question: {
+          en: "How does git-agent handle C++ preprocessor directives and conditional compilation?",
+          zh: "git-agent 如何处理 C++ 预处理器指令和条件编译？",
+        },
+        answer: {
+          en: "Preprocessor changes are kept with the code they guard. The LLM understands #ifdef / #endif blocks and will note platform-specific additions in the commit message.",
+          zh: "预处理器变更会与它们所保护的代码一起提交。LLM 理解 #ifdef / #endif 块，并会在提交信息中注明平台特定的新增内容。",
+        },
+      },
+      {
+        question: {
+          en: "Can git-agent work with CMake presets and vcpkg/conan dependency management?",
+          zh: "git-agent 能用于 CMake presets 和 vcpkg/conan 依赖管理吗？",
+        },
+        answer: {
+          en: "Yes. CMakePresets.json, vcpkg.json, and conanfile.txt changes are detected as build configuration changes and committed separately from source code changes.",
+          zh: "可以。CMakePresets.json、vcpkg.json 和 conanfile.txt 的变更被识别为构建配置变更，会与源代码变更分开提交。",
+        },
+      },
+    ],
+  },
+  {
+    slug: "scala",
+    language: { en: "Scala", zh: "Scala" },
+    tagline: {
+      en: "Conventional commits for Scala and functional programming projects",
+      zh: "为 Scala 和函数式编程项目生成约定式提交",
+    },
+    description: {
+      en: "git-agent understands Scala's type-level programming, ZIO and Cats Effect patterns, and sbt build definitions, producing atomic conventional commits for Scala codebases of any size.",
+      zh: "git-agent 理解 Scala 的类型级编程、ZIO 和 Cats Effect 模式以及 sbt 构建定义，为任意规模的 Scala 代码库生成原子约定式提交。",
+    },
+    diffExample: `diff --git a/src/main/scala/com/example/user/UserService.scala b/src/main/scala/com/example/user/UserService.scala
+index 7f2c3a1..4b9d8e6 100644
+--- a/src/main/scala/com/example/user/UserService.scala
++++ b/src/main/scala/com/example/user/UserService.scala
+@@ -1,20 +1,26 @@
+ package com.example.user
+
+-import scala.concurrent.{ExecutionContext, Future}
+-import com.example.db.Database
++import zio.*
+
+-class UserService(db: Database)(implicit ec: ExecutionContext) {
+-  def getUser(id: String): Future[Option[User]] = {
+-    db.query[User]("SELECT * FROM users WHERE id = ?", id)
+-  }
++class UserService(db: Database) {
++  def getUser(id: String): ZIO[Any, AppError, User] = {
++    for
++      row <- db.query[User]("SELECT * FROM users WHERE id = ?", id)
++      user <- ZIO.fromOption(row).orElseFail(AppError.NotFound(id))
++    yield user
++  }
+
+-  def createUser(data: CreateUser): Future[User] = {
+-    db.execute("INSERT INTO users ...", data).map { _ =>
+-      User(id = UUID.randomUUID(), name = data.name)
+-    }
++  def createUser(data: CreateUser): ZIO[Any, AppError, User] = {
++    for
++      id <- Random.nextUUID
++      _ <- db.execute("INSERT INTO users ...", data)
++    yield User(id = id, name = data.name)
++  }
++
++  def deleteUser(id: String): ZIO[Any, AppError, Unit] = {
++    db.execute("DELETE FROM users WHERE id = ?", id).unit
+   }
+ }`,
+    commitExample: `refactor(users): migrate UserService from Future to ZIO effect system
+
+- replace implicit ExecutionContext with ZIO's built-in fiber-based concurrency
+- make getUser return ZIO[Any, AppError, User] with explicit NotFound error
+- replace UUID.randomUUID() with ZIO Random service for testability
+- add deleteUser method with proper error channel typing
+- remove implicit parameter list in favour of ZIO environment
+
+The Future-based API hid errors in failed futures and required global
+ExecutionContext threading; the ZIO migration makes the error channel
+explicit, eliminates implicit dependencies, and enables structured
+concurrency with interruption support.`,
+    installSnippet: `brew install gitagenthq/tap/git-agent
+# inside your Scala project
+git-agent init   # reads build.sbt subproject definitions for scope suggestions`,
+    features: [
+      {
+        en: "Understands sbt multi-project builds and provides per-module scope suggestions",
+        zh: "理解 sbt 多项目构建，提供按模块的提交范围建议",
+      },
+      {
+        en: "Recognises ZIO and Cats Effect type signatures for accurate commit descriptions",
+        zh: "识别 ZIO 和 Cats Effect 类型签名以生成准确的提交描述",
+      },
+      {
+        en: "Separates Scala 2 and Scala 3 source compatibility changes into distinct commits",
+        zh: "将 Scala 2 和 Scala 3 的源代码兼容性变更分离为不同的提交",
+      },
+      {
+        en: "Handles Scala macro and compile-time reflection changes correctly",
+        zh: "正确处理 Scala 宏和编译时反射的变更",
+      },
+    ],
+    relatedLinks: [
+      {
+        label: { en: "What are Conventional Commits?", zh: "什么是约定式提交？" },
+        href: "/glossary/conventional-commits",
+      },
+      {
+        label: { en: "Atomic commits explained", zh: "原子提交详解" },
+        href: "/glossary/atomic-commits",
+      },
+      {
+        label: { en: "refactor commit template", zh: "refactor 提交模板" },
+        href: "/templates/refactor",
+      },
+    ],
+    faq: [
+      {
+        question: {
+          en: "Does git-agent handle Scala 3 syntax alongside Scala 2?",
+          zh: "git-agent 能同时处理 Scala 3 和 Scala 2 的语法吗？",
+        },
+        answer: {
+          en: "Yes. The LLM understands both Scala 2 and Scala 3 syntax including indentation-based syntax, enums, given/using, and extension methods. Migration diffs between the two versions are described accurately.",
+          zh: "可以。LLM 理解 Scala 2 和 Scala 3 的语法，包括缩进语法、enum、given/using 和扩展方法。两个版本之间的迁移 diff 会被准确描述。",
+        },
+      },
+      {
+        question: {
+          en: "How does git-agent handle ZIO effectful code with for-comprehensions?",
+          zh: "git-agent 如何处理包含 for-comprehension 的 ZIO 效果代码？",
+        },
+        answer: {
+          en: "ZIO for-comprehension changes are recognised as sequential effect composition. The LLM understands the ZIO type parameters (R, E, A) and accurately describes the error channel and dependency changes.",
+          zh: "ZIO for-comprehension 的变更被识别为顺序效果组合。LLM 理解 ZIO 类型参数（R, E, A），能准确描述错误通道和依赖的变更。",
+        },
+      },
+      {
+        question: {
+          en: "Can git-agent work with Scala.js and Scala Native projects?",
+          zh: "git-agent 能用于 Scala.js 和 Scala Native 项目吗？",
+        },
+        answer: {
+          en: "Yes. Cross-platform projects with sbt-crossproject are handled correctly. Platform-specific source directories are recognised, and changes to shared vs platform-specific code are committed appropriately.",
+          zh: "可以。使用 sbt-crossproject 的跨平台项目能正确处理。平台特定的源目录会被识别，共享代码与平台特定代码的变更会分别提交。",
+        },
+      },
+    ],
+  },
+  {
+    slug: "elixir",
+    language: { en: "Elixir", zh: "Elixir" },
+    tagline: {
+      en: "Conventional commits for Elixir and Phoenix projects",
+      zh: "为 Elixir 和 Phoenix 项目生成约定式提交",
+    },
+    description: {
+      en: "git-agent understands Phoenix context boundaries, Ecto query and schema changes, and OTP GenServer patterns, producing atomic conventional commits for Elixir's functional, actor-based architecture.",
+      zh: "git-agent 理解 Phoenix Context 边界、Ecto 查询和模式变更以及 OTP GenServer 模式，为基于 Actor 的 Elixir 函数式架构生成原子约定式提交。",
+    },
+    diffExample: `diff --git a/lib/my_app/accounts/account.ex b/lib/my_app/accounts/account.ex
+index 2c4f1a3..8b7d9e5 100644
+--- a/lib/my_app/accounts/account.ex
++++ b/lib/my_app/accounts/account.ex
+@@ -1,14 +1,22 @@
+ defmodule MyApp.Accounts.Account do
+   use Ecto.Schema
++  import Ecto.Changeset
+
+   schema "accounts" do
+     field :email, :string
+     field :name, :string
++    field :role, Ecto.Enum, values: [:user, :admin, :moderator]
++    field :status, Ecto.Enum, values: [:active, :suspended, :archived]
++    field :last_login_at, :utc_datetime
+     timestamps()
+   end
+
+-  def changeset(account, attrs) do
+-    cast(account, attrs, [:email, :name])
++  def changeset(account, attrs) do
++    account
++    |> cast(attrs, [:email, :name, :role])
++    |> validate_required([:email, :role])
++    |> validate_format(:email, ~r/^[^\\s@]+@[^\\s@]+$/)
++    |> unique_constraint(:email)
+   end
+ end`,
+    commitExample: `feat(accounts): add role-based access control and account status tracking
+
+- add role field with user/admin/moderator enum values for authorization
+- add status field with active/suspended/archived lifecycle states
+- add last_login_at timestamp for audit and idle account detection
+- strengthen changeset with email format validation and unique constraint
+- add role to allowed cast fields while keeping name as optional
+
+Previously all accounts were treated equally with no access control
+granularity; the role enum enables middleware-level authorization checks
+while the status field supports account lifecycle management without
+hard deletes.`,
+    installSnippet: `brew install gitagenthq/tap/git-agent
+# inside your Elixir project
+git-agent init   # detects Phoenix context structure and suggests scopes`,
+    features: [
+      {
+        en: "Understands Phoenix Context boundaries and suggests scope names per context",
+        zh: "理解 Phoenix Context 边界，建议按 Context 分隔的提交范围",
+      },
+      {
+        en: "Separates Ecto schema changes from migration files into distinct commits",
+        zh: "将 Ecto schema 变更与迁移文件分离为不同的提交",
+      },
+      {
+        en: "Recognises OTP supervision tree changes and GenServer lifecycle modifications",
+        zh: "识别 OTP 监督树变更和 GenServer 生命周期修改",
+      },
+      {
+        en: "Handles Phoenix LiveView mount, handle_event, and render changes appropriately",
+        zh: "正确处理 Phoenix LiveView 的 mount、handle_event 和 render 变更",
+      },
+    ],
+    relatedLinks: [
+      {
+        label: { en: "What are Conventional Commits?", zh: "什么是约定式提交？" },
+        href: "/glossary/conventional-commits",
+      },
+      {
+        label: { en: "Atomic commits explained", zh: "原子提交详解" },
+        href: "/glossary/atomic-commits",
+      },
+      {
+        label: { en: "feat commit template", zh: "feat 提交模板" },
+        href: "/templates/feat",
+      },
+    ],
+    faq: [
+      {
+        question: {
+          en: "Does git-agent handle Phoenix LiveView diffs correctly?",
+          zh: "git-agent 能正确处理 Phoenix LiveView 的 diff 吗？",
+        },
+        answer: {
+          en: "Yes. The LLM understands LiveView lifecycle (mount, handle_event, handle_info, render) and will commit changes across these callbacks together when they are part of the same feature.",
+          zh: "可以。LLM 理解 LiveView 生命周期（mount、handle_event、handle_info、render），在属于同一功能时会将跨回调的变更一起提交。",
+        },
+      },
+      {
+        question: {
+          en: "How does git-agent handle Ecto migration files?",
+          zh: "git-agent 如何处理 Ecto 迁移文件？",
+        },
+        answer: {
+          en: "Migration files in priv/repo/migrations/ are always committed separately from schema changes. The LLM generates accurate db scope messages describing the schema evolution.",
+          zh: "priv/repo/migrations/ 中的迁移文件始终与 schema 变更分开提交。LLM 会生成准确的 db 范围信息来描述 schema 演进。",
+        },
+      },
+      {
+        question: {
+          en: "Can git-agent work with umbrella applications?",
+          zh: "git-agent 能用于 umbrella 应用吗？",
+        },
+        answer: {
+          en: "Yes. Elixir umbrella applications are fully supported. Each child app is treated as a separate scope, and changes across multiple apps in the same commit are split into per-app commits.",
+          zh: "可以。Elixir umbrella 应用完全受支持。每个子应用被视为独立的提交范围，同一提交中跨多个应用的变更会被拆分为按应用划分的提交。",
+        },
+      },
+    ],
+  },
 ];
 
 export function findPersona(slug: string): PersonaEntry | undefined {

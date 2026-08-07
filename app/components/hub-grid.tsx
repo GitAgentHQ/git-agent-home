@@ -10,6 +10,8 @@ interface HubEntry {
 	language?: I18nText;
 	term?: I18nText;
 	type?: I18nText;
+	title?: I18nText;
+	tool?: I18nText;
 	name?: string;
 	tagline?: I18nText;
 	description?: I18nText;
@@ -19,7 +21,7 @@ interface HubEntry {
 interface HubGridProps {
 	entries: HubEntry[];
 	basePath: string;
-	labelKey?: "language" | "term" | "type" | "name";
+	labelKey?: "language" | "term" | "type" | "name" | "title" | "tool";
 	descKey?: "tagline" | "description" | "definition";
 	currentLang: "en" | "zh";
 }

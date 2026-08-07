@@ -11,3 +11,26 @@ export interface CrossLink {
 	label: I18nText;
 	href: string;
 }
+
+export interface IntegrationEntry {
+	slug: string;
+	tool: I18nText;
+	tagline: I18nText;
+	description: I18nText;
+	benefits: I18nText[];
+	setupSteps: I18nText[];
+	relatedLinks: CrossLink[];
+	faq: FaqItem[];
+}
+
+export interface UseCaseEntry {
+	slug: string;
+	title: I18nText;
+	tagline: I18nText;
+	description: I18nText;
+	challenge: I18nText;
+	solution: I18nText;
+	steps: I18nText[];
+	relatedLinks: CrossLink[];
+	faq: FaqItem[];
+}

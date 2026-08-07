@@ -738,6 +738,601 @@ of 402.`,
       },
     ],
   },
+  {
+    slug: "commitlint",
+    name: "commitlint",
+    tagline: {
+      en: "git-agent vs commitlint",
+      zh: "git-agent 与 commitlint 对比",
+    },
+    description: {
+      en: "Compare git-agent and commitlint: LLM-powered commit authoring vs rule-based commit message linting for conventional commits.",
+      zh: "对比 git-agent 与 commitlint 在 LLM 驱动的提交信息生成与基于规则的提交信息校验方面的差异。",
+    },
+    competitorDescription: {
+      en: "commitlint is a conventional commit linter that validates commit messages against configurable rules, commonly used in CI pipelines and pre-commit hooks.",
+      zh: "commitlint 是一款约定式提交校验工具，通过可配置规则验证提交信息，常用于 CI 流水线和 pre-commit 钩子中。",
+    },
+    rows: [
+      {
+        feature: { en: "Atomic commit splitting", zh: "原子提交拆分" },
+        gitAgent: "yes",
+        competitor: "no",
+      },
+      {
+        feature: { en: "LLM-backed message drafting", zh: "LLM 驱动的提交信息生成" },
+        gitAgent: "yes",
+        competitor: "no",
+      },
+      {
+        feature: { en: "Conventional Commits format", zh: "约定式提交格式" },
+        gitAgent: "yes",
+        competitor: "yes — linting focus",
+      },
+      {
+        feature: { en: "Pre-commit hook integration", zh: "Pre-commit 钩子集成" },
+        gitAgent: "yes",
+        competitor: "yes — linting only",
+      },
+      {
+        feature: { en: "Dry-run preview", zh: "预演预览" },
+        gitAgent: "yes",
+        competitor: "no",
+      },
+      {
+        feature: { en: "Amend last commit message", zh: "修改最后一次提交信息" },
+        gitAgent: "yes",
+        competitor: "no",
+      },
+      {
+        feature: { en: "Free shared gateway", zh: "免费共享网关" },
+        gitAgent: "yes",
+        competitor: "yes — no LLM",
+      },
+      {
+        feature: { en: "Config-file based scope definitions", zh: "基于配置文件的范围定义" },
+        gitAgent: "yes — .git-agent/config.yml",
+        competitor: "yes — .commitlintrc.js",
+      },
+    ],
+    installComparison: {
+      gitAgent: "brew install gitagenthq/tap/git-agent",
+      competitor: "npm install -g @commitlint/cli @commitlint/config-conventional",
+    },
+    outputExample: {
+      gitAgent: `refactor(store): extract price calculation into a dedicated module
+
+- move discount, tax, and shipping logic from OrderStore into PriceCalculator
+- keep public API unchanged — all callers still import from the store module
+- add unit tests for PriceCalculator in isolation
+
+The OrderStore had grown to 800 lines with mixed concerns; extracting
+pricing makes the store focused on order lifecycle only.`,
+      competitor: "N/A — commitlint lints messages, it does not generate them",
+    },
+    relatedLinks: [
+      {
+        label: { en: "What are Conventional Commits?", zh: "什么是约定式提交？" },
+        href: "/glossary/conventional-commits",
+      },
+      {
+        label: { en: "Commit message format guide", zh: "提交信息格式指南" },
+        href: "/glossary/commit-message-format",
+      },
+      {
+        label: { en: "refactor commit template", zh: "refactor 提交模板" },
+        href: "/templates/refactor",
+      },
+    ],
+    faq: [
+      {
+        question: {
+          en: "Can commitlint and git-agent be used together?",
+          zh: "commitlint 和 git-agent 能一起使用吗？",
+        },
+        answer: {
+          en: "Yes. Use git-agent to author commits and commitlint to validate them in CI. git-agent's own pre-commit hook already validates Conventional Commits format, so commitlint's linting is complementary for CI enforcement.",
+          zh: "可以。使用 git-agent 撰写提交，使用 commitlint 在 CI 中验证。git-agent 自身的 pre-commit 钩子已经验证了约定式提交格式，commitlint 的校验可作为 CI 中的补充。",
+        },
+      },
+      {
+        question: {
+          en: "Does git-agent need a .commitlintrc.js configuration file?",
+          zh: "git-agent 需要 .commitlintrc.js 配置文件吗？",
+        },
+        answer: {
+          en: "No. git-agent uses its own .git-agent/config.yml for scope definitions and does not read commitlint config. The messages it generates follow the Conventional Commits spec and pass commitlint's default rules.",
+          zh: "不需要。git-agent 使用自己的 .git-agent/config.yml 进行范围定义，不读取 commitlint 配置。它生成的消息遵循约定式提交规范，能通过 commitlint 的默认规则。",
+        },
+      },
+      {
+        question: {
+          en: "Can git-agent help me write commits that satisfy commitlint rules?",
+          zh: "git-agent 能帮助我写出满足 commitlint 规则的提交信息吗？",
+        },
+        answer: {
+          en: "Yes. git-agent generates messages that follow the Conventional Commits specification, which is the foundation of commitlint's default ruleset. Any custom commitlint rules you add will need to be compatible with the spec.",
+          zh: "可以。git-agent 生成的消息遵循约定式提交规范，这是 commitlint 默认规则集的基础。你添加的任何自定义 commitlint 规则需要与规范兼容。",
+        },
+      },
+    ],
+  },
+  {
+    slug: "semantic-release-vs",
+    name: "semantic-release",
+    tagline: {
+      en: "git-agent vs semantic-release",
+      zh: "git-agent 与 semantic-release 对比",
+    },
+    description: {
+      en: "Compare git-agent and semantic-release: commit authoring with LLM automation vs automated version management, changelog generation, and npm publishing.",
+      zh: "对比 git-agent 与 semantic-release 在 LLM 自动化提交信息生成与自动版本管理、变更日志生成及 npm 发布方面的差异。",
+    },
+    competitorDescription: {
+      en: "semantic-release automates version bumps, changelog generation, and package publishing based on conventional commit messages in your git history.",
+      zh: "semantic-release 基于 git 历史中的约定式提交信息，自动执行版本递增、变更日志生成和包发布。",
+    },
+    rows: [
+      {
+        feature: { en: "Atomic commit splitting", zh: "原子提交拆分" },
+        gitAgent: "yes",
+        competitor: "no",
+      },
+      {
+        feature: { en: "LLM-backed message drafting", zh: "LLM 驱动的提交信息生成" },
+        gitAgent: "yes",
+        competitor: "no",
+      },
+      {
+        feature: { en: "Conventional Commits format", zh: "约定式提交格式" },
+        gitAgent: "yes",
+        competitor: "yes — consumption focus",
+      },
+      {
+        feature: { en: "Pre-commit hook integration", zh: "Pre-commit 钩子集成" },
+        gitAgent: "yes",
+        competitor: "no",
+      },
+      {
+        feature: { en: "Dry-run preview", zh: "预演预览" },
+        gitAgent: "yes",
+        competitor: "yes — --dry-run flag",
+      },
+      {
+        feature: { en: "Amend last commit message", zh: "修改最后一次提交信息" },
+        gitAgent: "yes",
+        competitor: "no",
+      },
+      {
+        feature: { en: "Free shared gateway", zh: "免费共享网关" },
+        gitAgent: "yes",
+        competitor: "yes — no LLM",
+      },
+      {
+        feature: { en: "Config-file based scope definitions", zh: "基于配置文件的范围定义" },
+        gitAgent: "yes — .git-agent/config.yml",
+        competitor: "yes — .releaserc.js",
+      },
+    ],
+    installComparison: {
+      gitAgent: "brew install gitagenthq/tap/git-agent",
+      competitor: "npm install -g semantic-release",
+    },
+    outputExample: {
+      gitAgent: `feat(i18n): add Japanese locale support with CJK font fallback
+
+- add ja.json translation keys for all user-facing strings
+- configure CJK font stack in the CSS theme for proper character rendering
+- add language detection for ja-JP locale in the LanguageProvider
+
+Japanese users were defaulting to English because no locale was detected
+and the fallback font lacked CJK glyph coverage.`,
+      competitor: "N/A — semantic-release manages releases, it does not author commits",
+    },
+    relatedLinks: [
+      {
+        label: { en: "What are Conventional Commits?", zh: "什么是约定式提交？" },
+        href: "/glossary/conventional-commits",
+      },
+      {
+        label: { en: "Conventional changelog explained", zh: "约定式变更日志详解" },
+        href: "/glossary/conventional-changelog",
+      },
+      {
+        label: { en: "feat commit template", zh: "feat 提交模板" },
+        href: "/templates/feat",
+      },
+    ],
+    faq: [
+      {
+        question: {
+          en: "Can I use git-agent together with semantic-release?",
+          zh: "git-agent 能和 semantic-release 一起使用吗？",
+        },
+        answer: {
+          en: "Yes. They are complementary. git-agent helps you write the conventional commits that semantic-release needs to determine version bumps and generate changelogs. Use git-agent for authoring, semantic-release for publishing.",
+          zh: "可以。它们是互补的。git-agent 帮助你撰写语义化发布所需的约定式提交信息。使用 git-agent 撰写提交，使用 semantic-release 进行发布。",
+        },
+      },
+      {
+        question: {
+          en: "Does git-agent generate changelogs like semantic-release?",
+          zh: "git-agent 能像 semantic-release 一样生成变更日志吗？",
+        },
+        answer: {
+          en: "No. git-agent focuses on commit authoring. Changelog generation is better handled by dedicated tools like semantic-release, convco, or release-please that read your commit history.",
+          zh: "不能。git-agent 专注于提交信息生成。变更日志生成由专用工具处理，如 semantic-release、convco 或 release-please，它们读取你的提交历史来生成日志。",
+        },
+      },
+      {
+        question: {
+          en: "Does semantic-release require perfectly formatted commit messages?",
+          zh: "semantic-release 要求提交信息格式完美吗？",
+        },
+        answer: {
+          en: "Yes. semantic-release determines version bumps from commit types. git-agent's Conventional Commits output ensures your commits are always correctly formatted for semantic-release consumption.",
+          zh: "是的。semantic-release 根据提交类型确定版本递增。git-agent 的约定式提交输出确保你的提交始终正确格式化，供 semantic-release 使用。",
+        },
+      },
+    ],
+  },
+  {
+    slug: "cocogitto",
+    name: "cocogitto",
+    tagline: {
+      en: "git-agent vs cocogitto",
+      zh: "git-agent 与 cocogitto 对比",
+    },
+    description: {
+      en: "Compare git-agent and cocogitto: LLM-powered commit authoring vs Rust-based conventional commits toolkit with changelog and version bumping.",
+      zh: "对比 git-agent 与 cocogitto 在 LLM 驱动的提交信息生成与基于 Rust 的约定式提交工具集（含变更日志和版本递增）方面的差异。",
+    },
+    competitorDescription: {
+      en: "cocogitto is a Rust-based CLI toolkit for conventional commits that provides commit generation, changelog creation, and automated version bumping.",
+      zh: "cocogitto 是一款基于 Rust 的约定式提交 CLI 工具集，提供提交信息生成、变更日志创建和自动版本递增功能。",
+    },
+    rows: [
+      {
+        feature: { en: "Atomic commit splitting", zh: "原子提交拆分" },
+        gitAgent: "yes",
+        competitor: "no",
+      },
+      {
+        feature: { en: "LLM-backed message drafting", zh: "LLM 驱动的提交信息生成" },
+        gitAgent: "yes",
+        competitor: "no — template-based",
+      },
+      {
+        feature: { en: "Conventional Commits format", zh: "约定式提交格式" },
+        gitAgent: "yes",
+        competitor: "yes",
+      },
+      {
+        feature: { en: "Pre-commit hook integration", zh: "Pre-commit 钩子集成" },
+        gitAgent: "yes",
+        competitor: "no",
+      },
+      {
+        feature: { en: "Dry-run preview", zh: "预演预览" },
+        gitAgent: "yes",
+        competitor: "yes — cog verify",
+      },
+      {
+        feature: { en: "Amend last commit message", zh: "修改最后一次提交信息" },
+        gitAgent: "yes",
+        competitor: "no",
+      },
+      {
+        feature: { en: "Free shared gateway", zh: "免费共享网关" },
+        gitAgent: "yes",
+        competitor: "yes — no LLM, local only",
+      },
+      {
+        feature: { en: "Config-file based scope definitions", zh: "基于配置文件的范围定义" },
+        gitAgent: "yes — .git-agent/config.yml",
+        competitor: "yes — cog.toml",
+      },
+    ],
+    installComparison: {
+      gitAgent: "brew install gitagenthq/tap/git-agent",
+      competitor: "brew install cocogitto  # or cargo install cocogitto",
+    },
+    outputExample: {
+      gitAgent: `style(lint): reformat all files with Biome 2.0 defaults
+
+- run biome check --write across the entire codebase
+- fix trailing commas, semicolons, and quote style to match Biome defaults
+- remove legacy ESLint and Prettier config files
+
+The project was migrating from ESLint/Prettier to Biome; this commit
+applies the new formatter rules uniformly.`,
+      competitor: "style(lint): reformat with Biome 2.0",
+    },
+    relatedLinks: [
+      {
+        label: { en: "What are Conventional Commits?", zh: "什么是约定式提交？" },
+        href: "/glossary/conventional-commits",
+      },
+      {
+        label: { en: "Atomic commits explained", zh: "原子提交详解" },
+        href: "/glossary/atomic-commits",
+      },
+      {
+        label: { en: "style commit template", zh: "style 提交模板" },
+        href: "/templates/style",
+      },
+    ],
+    faq: [
+      {
+        question: {
+          en: "Is cocogitto's commit generation comparable to git-agent's LLM output?",
+          zh: "cocogitto 的提交生成与 git-agent 的 LLM 输出可以相比吗？",
+        },
+        answer: {
+          en: "No. cocogitto generates commit messages from user-provided parameters, not from your diff. git-agent reads the actual staged diff and generates detailed, context-aware messages. cocogitto's messages are shorter and templated.",
+          zh: "不能。cocogitto 根据用户提供的参数生成提交信息，而非读取你的 diff。git-agent 读取实际暂存的 diff 并生成详细、上下文感知的信息。cocogitto 的信息更短且基于模板。",
+        },
+      },
+      {
+        question: {
+          en: "Does cocogitto support changelog generation?",
+          zh: "cocogitto 支持变更日志生成吗？",
+        },
+        answer: {
+          en: "Yes. cocogitto's cog changelog command generates changelogs from conventional commit history, which git-agent does not do. This makes cocogitto a good complement to git-agent for projects that need both authoring and release tooling.",
+          zh: "支持。cocogitto 的 cog changelog 命令从约定式提交历史生成变更日志，这是 git-agent 不具备的功能。这使得 cocogitto 成为 git-agent 在需要同时进行提交撰写和发布管理时的良好补充。",
+        },
+      },
+      {
+        question: {
+          en: "Are cocogitto and git-agent both standalone binaries?",
+          zh: "cocogitto 和 git-agent 都是独立二进制文件吗？",
+        },
+        answer: {
+          en: "Yes. Both are standalone binaries with no runtime dependencies beyond git. cocogitto is written in Rust, git-agent in Go. Neither requires Node.js, Python, or any other runtime.",
+          zh: "是的。两者都是独立二进制文件，除 git 外没有运行时依赖。cocogitto 使用 Rust 编写，git-agent 使用 Go 编写。两者都不需要 Node.js、Python 或任何其他运行时。",
+        },
+      },
+    ],
+  },
+  {
+    slug: "gitchangelog",
+    name: "gitchangelog",
+    tagline: {
+      en: "git-agent vs gitchangelog",
+      zh: "git-agent 与 gitchangelog 对比",
+    },
+    description: {
+      en: "Compare git-agent and gitchangelog: LLM-powered commit authoring vs a Python-based changelog generator that parses git commit history.",
+      zh: "对比 git-agent 与 gitchangelog 在 LLM 驱动的提交信息生成与基于 Python 的变更日志生成器（解析 git 提交历史）方面的差异。",
+    },
+    competitorDescription: {
+      en: "gitchangelog is a Python-based changelog generator that parses your git log and produces changelogs using configurable templates and grouping rules.",
+      zh: "gitchangelog 是一款基于 Python 的变更日志生成器，解析你的 git 日志并使用可配置模板和分组规则生成变更日志。",
+    },
+    rows: [
+      {
+        feature: { en: "Atomic commit splitting", zh: "原子提交拆分" },
+        gitAgent: "yes",
+        competitor: "no",
+      },
+      {
+        feature: { en: "LLM-backed message drafting", zh: "LLM 驱动的提交信息生成" },
+        gitAgent: "yes",
+        competitor: "no",
+      },
+      {
+        feature: { en: "Conventional Commits format", zh: "约定式提交格式" },
+        gitAgent: "yes",
+        competitor: "no — custom format",
+      },
+      {
+        feature: { en: "Pre-commit hook integration", zh: "Pre-commit 钩子集成" },
+        gitAgent: "yes",
+        competitor: "no",
+      },
+      {
+        feature: { en: "Dry-run preview", zh: "预演预览" },
+        gitAgent: "yes",
+        competitor: "no",
+      },
+      {
+        feature: { en: "Amend last commit message", zh: "修改最后一次提交信息" },
+        gitAgent: "yes",
+        competitor: "no",
+      },
+      {
+        feature: { en: "Free shared gateway", zh: "免费共享网关" },
+        gitAgent: "yes",
+        competitor: "yes — no LLM, local only",
+      },
+      {
+        feature: { en: "Config-file based scope definitions", zh: "基于配置文件的范围定义" },
+        gitAgent: "yes — .git-agent/config.yml",
+        competitor: "yes — .gitchangelog.rc",
+      },
+    ],
+    installComparison: {
+      gitAgent: "brew install gitagenthq/tap/git-agent",
+      competitor: "pip install gitchangelog",
+    },
+    outputExample: {
+      gitAgent: `fix(webhook): validate HMAC signature before processing payload
+
+- verify X-Hub-Signature-256 header against HMAC-SHA256 of request body
+- return 401 with signature_mismatch error on invalid signatures
+- log failed attempts with client IP for audit trail
+
+The webhook endpoint was accepting unsigned payloads, making it
+vulnerable to spoofed events from non-authenticated sources.`,
+      competitor: "N/A — gitchangelog generates changelogs, not commit messages",
+    },
+    relatedLinks: [
+      {
+        label: { en: "What are Conventional Commits?", zh: "什么是约定式提交？" },
+        href: "/glossary/conventional-commits",
+      },
+      {
+        label: { en: "Conventional changelog explained", zh: "约定式变更日志详解" },
+        href: "/glossary/conventional-changelog",
+      },
+      {
+        label: { en: "fix commit template", zh: "fix 提交模板" },
+        href: "/templates/fix",
+      },
+    ],
+    faq: [
+      {
+        question: {
+          en: "Is gitchangelog a replacement for git-agent?",
+          zh: "gitchangelog 能替代 git-agent 吗？",
+        },
+        answer: {
+          en: "No. They serve different purposes. gitchangelog generates changelogs from existing git history. git-agent authors new commits. They can be used together — use git-agent to write good commits, then gitchangelog to render them into a changelog.",
+          zh: "不能。它们有不同的用途。gitchangelog 从现有 git 历史生成变更日志。git-agent 撰写新的提交。它们可以一起使用——用 git-agent 写好提交，再用 gitchangelog 渲染成变更日志。",
+        },
+      },
+      {
+        question: {
+          en: "Does gitchangelog support Conventional Commits?",
+          zh: "gitchangelog 支持约定式提交吗？",
+        },
+        answer: {
+          en: "gitchangelog uses its own section-based commit message format, not the Conventional Commits specification. To use gitchangelog effectively with git-agent, you would need to configure gitchangelog's parsing rules to match Conventional Commits output.",
+          zh: "gitchangelog 使用自己的基于章节的提交信息格式，而非约定式提交规范。要有效使用 gitchangelog 与 git-agent，你需要配置 gitchangelog 的解析规则以匹配约定式提交的输出。",
+        },
+      },
+      {
+        question: {
+          en: "Which tool is better for a team new to structured commits?",
+          zh: "对于刚接触结构化提交的团队，哪个工具更好？",
+        },
+        answer: {
+          en: "git-agent lowers the barrier by generating structured commits automatically — no training needed. gitchangelog assumes your team already writes structured commits consistently and just needs a changelog from them.",
+          zh: "git-agent 通过自动生成结构化提交来降低门槛——无需培训。gitchangelog 假设你的团队已经一致地编写结构化提交，只需要从中生成变更日志。",
+        },
+      },
+    ],
+  },
+  {
+    slug: "gitlint",
+    name: "gitlint",
+    tagline: {
+      en: "git-agent vs gitlint",
+      zh: "git-agent 与 gitlint 对比",
+    },
+    description: {
+      en: "Compare git-agent and gitlint: LLM-powered commit message authoring vs Python-based commit message linting for conventional commit compliance.",
+      zh: "对比 git-agent 与 gitlint 在 LLM 驱动的提交信息生成与基于 Python 的提交信息校验方面的差异。",
+    },
+    competitorDescription: {
+      en: "gitlint is a Python-based commit message linter that validates commit messages against configurable rules with a focus on Conventional Commits and general best practices.",
+      zh: "gitlint 是一款基于 Python 的提交信息校验工具，通过可配置规则验证提交信息，专注于约定式提交和通用最佳实践。",
+    },
+    rows: [
+      {
+        feature: { en: "Atomic commit splitting", zh: "原子提交拆分" },
+        gitAgent: "yes",
+        competitor: "no",
+      },
+      {
+        feature: { en: "LLM-backed message drafting", zh: "LLM 驱动的提交信息生成" },
+        gitAgent: "yes",
+        competitor: "no",
+      },
+      {
+        feature: { en: "Conventional Commits format", zh: "约定式提交格式" },
+        gitAgent: "yes",
+        competitor: "yes — linting focus",
+      },
+      {
+        feature: { en: "Pre-commit hook integration", zh: "Pre-commit 钩子集成" },
+        gitAgent: "yes",
+        competitor: "yes — via pre-commit framework",
+      },
+      {
+        feature: { en: "Dry-run preview", zh: "预演预览" },
+        gitAgent: "yes",
+        competitor: "no",
+      },
+      {
+        feature: { en: "Amend last commit message", zh: "修改最后一次提交信息" },
+        gitAgent: "yes",
+        competitor: "no",
+      },
+      {
+        feature: { en: "Free shared gateway", zh: "免费共享网关" },
+        gitAgent: "yes",
+        competitor: "yes — no LLM, local only",
+      },
+      {
+        feature: { en: "Config-file based scope definitions", zh: "基于配置文件的范围定义" },
+        gitAgent: "yes — .git-agent/config.yml",
+        competitor: "yes — .gitlint",
+      },
+    ],
+    installComparison: {
+      gitAgent: "brew install gitagenthq/tap/git-agent",
+      competitor: "pip install gitlint",
+    },
+    outputExample: {
+      gitAgent: `build(docker): switch base image from Ubuntu 22.04 to Alpine 3.20
+
+- replace apt-get install with apk add for runtime dependencies
+- reduce image size from 420MB to 98MB across all layers
+- add multi-stage build for compiled Go binary to keep the runtime layer minimal
+
+The Ubuntu image was 4x larger than needed for a Go application;
+Alpine provides the same glibc compatibility with a fraction of the size.`,
+      competitor: "N/A — gitlint validates messages, it does not generate them",
+    },
+    relatedLinks: [
+      {
+        label: { en: "What are Conventional Commits?", zh: "什么是约定式提交？" },
+        href: "/glossary/conventional-commits",
+      },
+      {
+        label: { en: "Pre-commit hooks explained", zh: "pre-commit 钩子详解" },
+        href: "/glossary/pre-commit-hooks",
+      },
+      {
+        label: { en: "build commit template", zh: "build 提交模板" },
+        href: "/templates/build",
+      },
+    ],
+    faq: [
+      {
+        question: {
+          en: "Can gitlint and git-agent be used together?",
+          zh: "gitlint 和 git-agent 能一起使用吗？",
+        },
+        answer: {
+          en: "Yes. They are complementary. Use git-agent to author commit messages and gitlint to validate them in CI or as a pre-commit hook. git-agent's messages pass gitlint's default Conventional Commits rules.",
+          zh: "可以。它们是互补的。使用 git-agent 撰写提交信息，使用 gitlint 在 CI 或 pre-commit 钩子中验证。git-agent 的提交信息能通过 gitlint 的默认约定式提交规则。",
+        },
+      },
+      {
+        question: {
+          en: "Does gitlint require Python to be installed?",
+          zh: "gitlint 需要安装 Python 吗？",
+        },
+        answer: {
+          en: "Yes. gitlint is a Python package installed via pip. git-agent is a standalone Go binary with no Python or Node.js runtime dependency.",
+          zh: "是的。gitlint 是通过 pip 安装的 Python 包。git-agent 是独立的 Go 二进制文件，没有 Python 或 Node.js 运行时依赖。",
+        },
+      },
+      {
+        question: {
+          en: "Which tool is better for enforcing commit standards in CI?",
+          zh: "在 CI 中强制执行提交标准，哪个工具更好？",
+        },
+        answer: {
+          en: "gitlint is purpose-built for CI linting with detailed rule violations and context. git-agent is a commit authoring tool whose pre-commit hook validates format before the commit lands. For CI enforcement, combining both is ideal: git-agent for authoring, gitlint for CI validation.",
+          zh: "gitlint 专门为 CI 校验而设计，能提供详细的规则违规信息和上下文。git-agent 是提交信息生成工具，其 pre-commit 钩子在提交前验证格式。对于 CI 强制执行，两者结合最为理想：git-agent 用于撰写，gitlint 用于 CI 验证。",
+        },
+      },
+    ],
+  },
 ];
 
 export function findComparison(slug: string): ComparisonEntry | undefined {

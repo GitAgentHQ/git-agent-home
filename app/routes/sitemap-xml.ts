@@ -2,6 +2,8 @@ import { personaEntries } from "../data/personas";
 import { comparisonEntries } from "../data/comparisons";
 import { glossaryEntries } from "../data/glossary";
 import { templateEntries } from "../data/templates";
+import { integrationEntries } from "../data/integrations";
+import { useCaseEntries } from "../data/use-cases";
 import { BASE_URL } from "../lib/constants";
 const TODAY = new Date().toISOString().split("T")[0];
 
@@ -23,6 +25,8 @@ export function loader() {
 		urlEntry("/vs", "weekly", "0.8"),
 		urlEntry("/glossary", "weekly", "0.8"),
 		urlEntry("/templates", "weekly", "0.8"),
+		urlEntry("/integrations", "weekly", "0.8"),
+		urlEntry("/use-cases", "weekly", "0.8"),
 	];
 
 	const dynamicPages = [
@@ -30,6 +34,8 @@ export function loader() {
 		...comparisonEntries.map((e) => urlEntry(`/vs/${e.slug}`, "monthly", "0.7")),
 		...glossaryEntries.map((e) => urlEntry(`/glossary/${e.slug}`, "monthly", "0.7")),
 		...templateEntries.map((e) => urlEntry(`/templates/${e.slug}`, "monthly", "0.7")),
+		...integrationEntries.map((e) => urlEntry(`/integrations/${e.slug}`, "monthly", "0.7")),
+		...useCaseEntries.map((e) => urlEntry(`/use-cases/${e.slug}`, "monthly", "0.7")),
 	];
 
 	const xml = [

@@ -407,6 +407,16 @@ function ExploreSection() {
 			name: t.exploreTemplatesName,
 			desc: t.exploreTemplatesDesc,
 		},
+		{
+			href: "/integrations",
+			name: t.exploreIntegrationsName,
+			desc: t.exploreIntegrationsDesc,
+		},
+		{
+			href: "/use-cases",
+			name: t.exploreUseCasesName,
+			desc: t.exploreUseCasesDesc,
+		},
 	];
 
 	const exploreLinks = cards.map((card) => (

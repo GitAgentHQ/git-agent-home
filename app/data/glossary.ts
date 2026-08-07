@@ -778,6 +778,782 @@ The tension between squashing and atomic commits is important to understand. Squ
       },
     ],
   },
+  {
+    slug: "git-rebase",
+    term: { en: "Git Rebase", zh: "Git 变基" },
+    definition: {
+      en: "A git operation that rewrites commit history by applying commits from one branch onto the tip of another, creating a linear history without merge commits.",
+      zh: "一种 Git 操作，通过将一个分支的提交应用到另一个分支的顶端来重写提交历史，创建没有合并提交的线性历史。",
+    },
+    longDescription: {
+      en: `Rebasing is one of two primary ways to integrate changes from one branch into another (the other being merging). When you rebase, git takes the commits from your current branch, temporarily sets them aside, fast-forwards to the target branch's tip, then reapplies each commit on top. The result is a linear history that reads as if each change was authored sequentially against the latest code.
+
+Interactive rebase (git rebase -i) is the more powerful form. It opens an editor where you can reorder, drop, squash, fixup, edit, or split commits. This is the primary tool for cleaning up a feature branch's history before merging — turning a series of WIP checkpoints into a coherent set of atomic commits.
+
+A critical rule of rebasing: never rebase commits that have been pushed to a shared branch. Rebasing creates new commit hashes, so anyone who has pulled the old version will experience duplicate commits and merge conflicts. The safe workflow is to rebase local work before pushing, and use merge or rebase + force-push only on branches you own exclusively.`,
+      zh: `变基是将变更从一个分支集成到另一个分支的两种主要方式之一（另一种是合并）。当你变基时，git 会获取当前分支的提交，暂时将它们放在一边，快进到目标分支的顶端，然后逐个重新应用每个提交。结果是一个线性历史，看起来就像每个变更都是针对最新代码顺序编写的。
+
+交互式变基（git rebase -i）是更强大的形式。它会打开一个编辑器，你可以在其中重新排序、删除、压缩、修复、编辑或拆分提交。这是在合并前清理功能分支历史的主要工具——将一系列 WIP 检查点转变为连贯的原子提交集。
+
+变基的关键规则：永远不要变基已推送到共享分支的提交。变基会创建新的提交哈希，因此任何拉取了旧版本的人都会遇到重复提交和合并冲突。安全的工作流是在推送前变基本地工作，并且只在你独占的分支上使用变基加强制推送。`,
+    },
+    examples: [
+      "git rebase main  # rebase current branch onto main",
+      "git rebase -i HEAD~5  # interactively rebase last 5 commits",
+      "git rebase --abort  # abort the rebase in progress",
+      "git rebase --continue  # continue after resolving conflicts",
+      "git rebase --onto main feature-branch  # rebase from feature-branch onto main",
+    ],
+    howGitAgentHelps: {
+      en: "git-agent produces clean, atomic commits from the start, so interactive rebasing for cleanup is rarely needed. When you do need to rebase, the conventional commit messages git-agent generates make the rebase todo list self-explanatory — each commit's purpose is clear at a glance.",
+      zh: "git-agent 从一开始就生成干净的原子提交，因此很少需要交互式变基来清理。当你确实需要变基时，git-agent 生成的约定式提交信息使变基待办列表一目了然——每个提交的目的清晰可见。",
+    },
+    relatedLinks: [
+      {
+        label: { en: "Atomic commits", zh: "原子提交" },
+        href: "/glossary/atomic-commits",
+      },
+      {
+        label: { en: "Squash commits", zh: "压缩提交" },
+        href: "/glossary/squash-commits",
+      },
+      {
+        label: { en: "Git merge conflict", zh: "Git 合并冲突" },
+        href: "/glossary/git-merge-conflict",
+      },
+    ],
+    faq: [
+      {
+        question: {
+          en: "What is the difference between rebase and merge?",
+          zh: "变基和合并有什么区别？",
+        },
+        answer: {
+          en: "Merge creates a new merge commit that ties together two branch histories, preserving the exact timeline of when each commit was made. Rebase rewrites history by applying commits linearly on top of the target branch, creating a cleaner log but losing the original chronological context.",
+          zh: "合并创建一个新的合并提交，将两个分支历史连接在一起，保留每个提交的确切时间线。变基通过将提交线性应用到目标分支顶端来重写历史，创建更清晰的日志但丢失了原始的时间顺序上下文。",
+        },
+      },
+      {
+        question: {
+          en: "Why should I not rebase a shared branch?",
+          zh: "为什么不应该变基共享分支？",
+        },
+        answer: {
+          en: "Rebasing changes commit hashes. If others have based work on the old commits, they will have duplicate commits and merge conflicts when they pull. The golden rule is: only rebase commits that exist locally on your own branch.",
+          zh: "变基会更改提交哈希。如果其他人基于旧提交进行了工作，他们在拉取时会出现重复提交和合并冲突。黄金法则是：只变基本地存在且属于你自己的分支上的提交。",
+        },
+      },
+      {
+        question: {
+          en: "Does git-agent use rebase internally?",
+          zh: "git-agent 内部使用变基吗？",
+        },
+        answer: {
+          en: "No. git-agent works at commit time, not after the fact. It splits staged changes into atomic commits using git's staging mechanism rather than rewriting history with rebase.",
+          zh: "不。git-agent 在提交时工作，而不是事后。它使用 git 的暂存机制将暂存变更拆分为原子提交，而不是使用变基重写历史。",
+        },
+      },
+    ],
+  },
+  {
+    slug: "git-cherry-pick",
+    term: { en: "Git Cherry-pick", zh: "Git Cherry-pick" },
+    definition: {
+      en: "A git command that applies the changes introduced by one or more existing commits from any branch onto the current HEAD, creating a new commit with the same changes but a different hash.",
+      zh: "一种 Git 命令，将一个或多个现有提交（来自任何分支）引入的变更应用到当前 HEAD，创建一个具有相同变更但不同哈希的新提交。",
+    },
+    longDescription: {
+      en: `Cherry-picking is the surgical alternative to merging or rebasing entire branches. Instead of bringing every commit from a branch, exactly one commit is selected and its changes are applied to the current position. This is invaluable for hotfix backporting, where a fix committed on the main branch needs to be applied to a release branch without bringing the intervening feature commits.
+
+The command takes a commit hash and replays the diff of that commit against the current HEAD. If the diff applies cleanly, a new commit with the same author and message (by default) is created. If conflicts arise, they are resolved the same way as merge conflicts.
+
+Cherry-picking copies changes rather than moving them. The original commit remains in its source branch. This means cherry-picking the same commit to multiple branches creates multiple copies of the change, each with a different hash. For tracking purposes, git cherry-pick automatically appends the original commit hash to the cherry-picked message.`,
+      zh: `Cherry-pick 是合并或变基整个分支的手术刀替代方案。它不是从分支中引入每个提交，而是精确选择一个提交，将其变更应用到当前位置。这对于热修复反向移植非常宝贵——主分支上提交的修复需要应用到发布分支，而不引入中间的功能提交。
+
+该命令接受一个提交哈希，并将该提交的 diff 重新应用到当前 HEAD。如果 diff 干净地应用，则会创建一个具有相同作者和消息（默认情况下）的新提交。如果出现冲突，则与合并冲突相同的方式解决。
+
+Cherry-pick 复制变更而不是移动它们。原始提交仍然保留在其源分支中。这意味着将同一提交 cherry-pick 到多个分支会创建该变更的多个副本，每个副本具有不同的哈希。为了追踪目的，git cherry-pick 会自动将原始提交哈希附加到 cherry-pick 的消息中。`,
+    },
+    examples: [
+      "git cherry-pick abc1234  # apply commit abc1234 to current HEAD",
+      "git cherry-pick abc1234..def5678  # apply a range of commits",
+      "git cherry-pick -n abc1234  # apply changes without committing (--no-commit)",
+      "git cherry-pick --continue  # continue after resolving conflicts",
+      "git cherry-pick --abort  # abort the cherry-pick in progress",
+    ],
+    howGitAgentHelps: {
+      en: "git-agent's consistent commit format makes cherry-pick source selection easier: each commit's subject line clearly states what it does, so you can identify the right commit to cherry-pick without reading the full diff. The structured messages also help downstream tools track cherry-picked commits across release branches.",
+      zh: "git-agent 一致的提交格式使 cherry-pick 源选择更容易：每个提交的主题行清楚地说明了其作用，因此无需阅读完整 diff 就能识别要 cherry-pick 的正确提交。结构化的消息还有助于下游工具跨发布分支追踪 cherry-pick 的提交。",
+    },
+    relatedLinks: [
+      {
+        label: { en: "Git rebase", zh: "Git 变基" },
+        href: "/glossary/git-rebase",
+      },
+      {
+        label: { en: "Git merge conflict", zh: "Git 合并冲突" },
+        href: "/glossary/git-merge-conflict",
+      },
+      {
+        label: { en: "Conventional Commits", zh: "约定式提交" },
+        href: "/glossary/conventional-commits",
+      },
+    ],
+    faq: [
+      {
+        question: {
+          en: "Can cherry-picking introduce merge conflicts?",
+          zh: "Cherry-pick 会引入合并冲突吗？",
+        },
+        answer: {
+          en: "Yes. If the context around the cherry-picked changes differs between the source and target branches, conflicts can arise. They are resolved identically to merge conflict resolution.",
+          zh: "会的。如果 cherry-pick 的变更周围的上下文在源分支和目标分支之间不同，就会出现冲突。它们的解决方式与合并冲突解决完全相同。",
+        },
+      },
+      {
+        question: {
+          en: "Does git-agent support cherry-picking?",
+          zh: "git-agent 支持 cherry-pick 吗？",
+        },
+        answer: {
+          en: "git-agent focuses on commit authoring, not cherry-pick execution. However, the well-structured commits it produces make cherry-pick selection easier because each commit's scope and purpose are immediately clear from its message.",
+          zh: "git-agent 专注于提交撰写，而不是 cherry-pick 执行。然而，它生成的结构良好的提交使 cherry-pick 选择更容易，因为每个提交的范围和目的从其消息中立即清晰可见。",
+        },
+      },
+      {
+        question: {
+          en: "What is the difference between cherry-pick and rebase --onto?",
+          zh: "Cherry-pick 和 rebase --onto 有什么区别？",
+        },
+        answer: {
+          en: "rebase --onto replays a range of commits onto a different base, used for transplanting entire sequences. cherry-pick is for individual commits. Rebase also preserves the original commit order, while cherry-pick applies commits in the order you specify them.",
+          zh: "rebase --onto 将一系列提交重放到不同的基础上，用于移植整个序列。Cherry-pick 用于单个提交。变基还保留原始提交顺序，而 cherry-pick 按你指定的顺序应用提交。",
+        },
+      },
+    ],
+  },
+  {
+    slug: "git-merge-conflict",
+    term: { en: "Git Merge Conflict", zh: "Git 合并冲突" },
+    definition: {
+      en: "A situation where git cannot automatically reconcile two divergent changes to the same part of a file, requiring manual resolution by the developer.",
+      zh: "当 Git 无法自动协调同一文件相同部分的两个不同变更时出现的情况，需要开发者手动解决。",
+    },
+    longDescription: {
+      en: `Merge conflicts occur when two branches modify the same line of a file differently, or when one branch deletes a file while the other modifies it. Git marks the conflicting region in the file with conflict markers (<<<<<<<, =======, >>>>>>>) showing both versions, and the developer must edit the file to produce the correct final state before staging and committing the resolution.
+
+Conflict resolution is a manual, context-sensitive process. The developer examines both versions, considers the intent of each change, and produces a merged result that satisfies both purposes. This may involve choosing one side, combining elements from both, or writing entirely new code. Tools like mergetool (vimdiff, meld, Beyond Compare) provide three-way merge views showing the base, local, and remote versions.
+
+The frequency of merge conflicts is a measure of team coordination and code architecture. Well-modularised codebases where teams work on distinct files experience fewer conflicts. Frequent conflicts in the same files often indicate poor separation of concerns or insufficient communication about ongoing work.`,
+      zh: `当两个分支以不同方式修改文件的同一行，或者一个分支删除文件而另一个分支修改它时，就会发生合并冲突。Git 用冲突标记（<<<<<<<、=======、>>>>>>>）在文件中标记冲突区域，显示两个版本，开发者必须编辑文件以产生正确的最终状态，然后暂存并提交解决方案。
+
+冲突解决是一个手动的、上下文敏感的过程。开发者检查两个版本，考虑每个变更的意图，并产生满足两者目的的合并结果。这可能涉及选择一方、组合两者的元素或编写全新的代码。像 mergetool（vimdiff、meld、Beyond Compare）这样的工具提供三向合并视图，显示基础版本、本地版本和远程版本。
+
+合并冲突的频率是团队协调和代码架构的衡量标准。模块化良好的代码库中，团队在各自不同的文件上工作，冲突较少。同一文件中的频繁冲突通常表明关注点分离不足或对正在进行的工作沟通不够。`,
+    },
+    examples: [
+      "# Conflict markers in a file",
+      "<<<<<<< HEAD",
+      "const TIMEOUT = 5000;",
+      "=======",
+      "const TIMEOUT = 30000;",
+      ">>>>>>> feature/timeout-config",
+      "git merge --abort  # abort the merge and return to pre-merge state",
+      "git diff --name-only --diff-filter=U  # list unmerged files",
+      "git mergetool  # launch the configured merge tool",
+    ],
+    howGitAgentHelps: {
+      en: "git-agent reduces merge conflicts by producing atomic commits that are scoped to specific files and logical changes. Smaller, focused commits are less likely to touch the same lines as other work, and when conflicts do occur, the clear commit messages help you understand the intent of each side's change.",
+      zh: "git-agent 通过生成范围限定在特定文件和逻辑变更的原子提交来减少合并冲突。更小、更专注的提交不太可能触及与其他工作相同的行，而当冲突确实发生时，清晰的提交消息帮助你理解每一方变更的意图。",
+    },
+    relatedLinks: [
+      {
+        label: { en: "Git rebase", zh: "Git 变基" },
+        href: "/glossary/git-rebase",
+      },
+      {
+        label: { en: "Atomic commits", zh: "原子提交" },
+        href: "/glossary/atomic-commits",
+      },
+      {
+        label: { en: "Git cherry-pick", zh: "Git cherry-pick" },
+        href: "/glossary/git-cherry-pick",
+      },
+    ],
+    faq: [
+      {
+        question: {
+          en: "Can git-agent resolve merge conflicts automatically?",
+          zh: "git-agent 能自动解决合并冲突吗？",
+        },
+        answer: {
+          en: "No. git-agent is a commit authoring tool, not a merge conflict resolver. Merge conflicts require human judgment about the intent of each change. However, git-agent's detailed commit messages provide valuable context for making those decisions.",
+          zh: "不能。git-agent 是一个提交撰写工具，而不是合并冲突解决工具。合并冲突需要人对每个变更的意图进行判断。不过，git-agent 详细的提交信息为做出这些决策提供了有价值的上下文。",
+        },
+      },
+      {
+        question: {
+          en: "What is the best strategy to avoid merge conflicts?",
+          zh: "避免合并冲突的最佳策略是什么？",
+        },
+        answer: {
+          en: "Frequent integration with the target branch, small focused commits, modular code architecture, and clear team communication. Rebasing feature branches on main before opening PRs also reduces conflicts at merge time.",
+          zh: "频繁与目标分支集成、小而专注的提交、模块化代码架构以及清晰的团队沟通。在打开 PR 前将功能分支变基到 main 也能减少合并时的冲突。",
+        },
+      },
+      {
+        question: {
+          en: "What is the difference between a merge conflict and a rebase conflict?",
+          zh: "合并冲突和变基冲突有什么区别？",
+        },
+        answer: {
+          en: "The conflict resolution process is the same (edit the markers, stage, continue). The difference is that a merge conflict happens once at the merge commit, while a rebase conflict can happen multiple times as each commit is reapplied individually.",
+          zh: "冲突解决过程相同（编辑标记、暂存、继续）。区别在于合并冲突在合并提交时发生一次，而变基冲突可能在每个提交被重新应用时多次发生。",
+        },
+      },
+    ],
+  },
+  {
+    slug: "git-stash",
+    term: { en: "Git Stash", zh: "Git 暂存" },
+    definition: {
+      en: "A git feature that temporarily shelves uncommitted changes (both staged and unstaged) so you can work on something else, then reapply them later.",
+      zh: "一种 Git 功能，临时搁置未提交的变更（包括暂存和未暂存的），以便处理其他工作，然后再重新应用它们。",
+    },
+    longDescription: {
+      en: `Git stash records the current state of the working directory and index in a stack-like data structure, then reverts them to the clean HEAD state. This is useful when you need to switch branches urgently (e.g., to fix a production bug) but have uncommitted work in progress that is not ready to commit.
+
+Changes are saved to a stash stack. You can have multiple stashes, each identified by a reference like stash@{0}, stash@{1}, etc. Each stash entry optionally includes a message (git stash push -m "message") for identification. The most recent stash is always stash@{0}.
+
+Common operations include git stash push (save changes), git stash pop (apply and remove the top stash), git stash apply (apply without removing), git stash list (view all stashes), and git stash drop (remove a specific stash). Stashing only tracks tracked files by default; untracked files require the --include-untracked flag, and ignored files require --all.`,
+      zh: `Git stash 将工作目录和索引的当前状态记录在类似栈的数据结构中，然后将它们恢复到干净的 HEAD 状态。这在需要紧急切换分支（例如修复生产错误）但正在进行的工作尚未准备好提交时非常有用。
+
+变更保存到 stash 栈中。你可以有多个 stash，每个由 stash@{0}、stash@{1} 等引用标识。每个 stash 条目可选地包含一条消息（git stash push -m "message"）用于识别。最新的 stash 总是 stash@{0}。
+
+常见操作包括 git stash push（保存变更）、git stash pop（应用并移除顶部 stash）、git stash apply（应用但不移除）、git stash list（查看所有 stash）和 git stash drop（移除特定 stash）。默认情况下，stash 只跟踪已跟踪的文件；未跟踪的文件需要 --include-untracked 标志，忽略的文件需要 --all。`,
+    },
+    examples: [
+      "git stash push -m 'WIP: refactoring auth middleware'",
+      "git stash pop  # apply and remove the latest stash",
+      "git stash list  # list all stashes",
+      "git stash show stash@{1}  # show diff of a specific stash",
+      "git stash branch new-feature stash@{0}  # create a branch from a stash",
+    ],
+    howGitAgentHelps: {
+      en: "git-agent encourages committing early and often by making commit creation fast and low-effort. Instead of stashing work-in-progress to switch context, you can let git-agent create a meaningful atomic commit from your current changes, reducing the need for stashes and the risk of forgetting about them.",
+      zh: "git-agent 通过使提交创建快速且低努力来鼓励尽早和频繁提交。你可以让 git-agent 从当前变更创建一个有意义的原子提交，而不是 stash 进行中的工作以切换上下文，从而减少 stash 的需求以及忘记 stash 的风险。",
+    },
+    relatedLinks: [
+      {
+        label: { en: "Atomic commits", zh: "原子提交" },
+        href: "/glossary/atomic-commits",
+      },
+      {
+        label: { en: "Commit splitting", zh: "提交拆分" },
+        href: "/glossary/commit-splitting",
+      },
+      {
+        label: { en: "Git worktree", zh: "Git worktree" },
+        href: "/glossary/git-worktree",
+      },
+    ],
+    faq: [
+      {
+        question: {
+          en: "What is the difference between git stash pop and git stash apply?",
+          zh: "git stash pop 和 git stash apply 有什么区别？",
+        },
+        answer: {
+          en: "pop applies the stash and removes it from the stack. apply applies the stash but keeps it in the stack, allowing you to apply the same stashed changes to multiple branches.",
+          zh: "pop 应用 stash 并将其从栈中移除。apply 应用 stash 但将其保留在栈中，允许你将相同的 stash 变更应用到多个分支。",
+        },
+      },
+      {
+        question: {
+          en: "Can I recover a dropped stash?",
+          zh: "可以恢复已删除的 stash 吗？",
+        },
+        answer: {
+          en: "A dropped stash can be recovered if you know its commit hash. Each stash is a commit object in git. Use git fsck --lost-found or git reflog to find the orphaned commit, then git cherry-pick or git stash apply with the commit hash.",
+          zh: "如果你知道其提交哈希，可以恢复已删除的 stash。每个 stash 是 git 中的一个提交对象。使用 git fsck --lost-found 或 git reflog 找到孤立的提交，然后使用 git cherry-pick 或 git stash apply 加上提交哈希。",
+        },
+      },
+      {
+        question: {
+          en: "Does git-agent stash changes before splitting?",
+          zh: "git-agent 在拆分前会 stash 变更吗？",
+        },
+        answer: {
+          en: "No. git-agent works directly with the staged diff. It does not stash anything. The commit splitting process operates on whatever changes are currently staged, leaving unstaged work untouched.",
+          zh: "不会。git-agent 直接处理暂存的 diff。它不会 stash 任何内容。提交拆分过程对当前暂存的任何变更进行操作，不触及未暂存的工作。",
+        },
+      },
+    ],
+  },
+  {
+    slug: "git-bisect",
+    term: { en: "Git Bisect", zh: "Git 二分查找" },
+    definition: {
+      en: "A git command that uses binary search to find the specific commit that introduced a bug, by repeatedly halving the range of suspect commits.",
+      zh: "一种 Git 命令，使用二分搜索来查找引入错误的特定提交，通过反复缩小可疑提交的范围。",
+    },
+    longDescription: {
+      en: `Git bisect is one of the most powerful debugging tools in version control. You mark a known-good commit and a known-bad commit, and git uses binary search to narrow down the commit that first introduced the bug. In each step, git checks out a commit in the middle of the range, and you mark it as good or bad after testing. With N commits in the range, bisect finds the culprit in log2(N) steps — finding a bug among 1000 commits takes about 10 steps.
+
+The process can be automated with git bisect run, which takes a script or command that exits with 0 (good) or non-zero (bad). This is especially powerful with a comprehensive test suite: git bisect run npm test will automatically find the commit that broke the build.
+
+The effectiveness of bisect depends directly on commit quality. A series of atomic commits with clear, single-purpose changes makes bisect precise: the bad commit will cleanly isolate the change that introduced the bug. A large "mega-commit" that mixed multiple changes will be identified as the culprit even if only one of its changes caused the bug, forcing you to debug within the commit.`,
+      zh: `Git bisect 是版本控制中最强大的调试工具之一。你标记一个已知好的提交和一个已知坏的提交，git 使用二分搜索来缩小首次引入错误的提交范围。在每一步中，git 检出一个中间范围的提交，你测试后将其标记为好或坏。对于 N 个提交的范围，bisect 在 log2(N) 步内找到罪魁祸首——在 1000 个提交中查找一个错误大约需要 10 步。
+
+该过程可以通过 git bisect run 自动化，它接受一个脚本或命令，以 0（好）或非零（坏）退出。这对于拥有全面测试套件的项目尤为强大：git bisect run npm test 将自动找到破坏构建的提交。
+
+Bisect 的有效性直接取决于提交质量。一系列具有清晰、单一目的变更的原子提交使 bisect 精确：坏的提交将干净地隔离引入错误的变更。而混合了多个变更的大型"大提交"将被识别为罪魁祸首，即使只有其中一个变更导致了错误，迫使你在提交内部进行调试。`,
+    },
+    examples: [
+      "git bisect start  # begin a bisect session",
+      "git bisect good abc1234  # mark a known-good commit",
+      "git bisect bad HEAD  # mark the current commit as bad",
+      "git bisect bad  # mark the current checkout as containing the bug",
+      "git bisect run npm test  # automate bisect with a test script",
+    ],
+    howGitAgentHelps: {
+      en: "git-agent's atomic commits dramatically improve bisect precision. Because each commit contains exactly one logical change, when bisect identifies a commit as the bug-introducer, you know the exact change responsible. No more digging through mega-commits to find which change broke things.",
+      zh: "git-agent 的原子提交极大地提高了 bisect 的精度。因为每个提交只包含一个逻辑变更，当 bisect 识别出一个提交是引入错误者时，你就知道确切负责的变更。不再需要在大提交中挖掘以找出哪个变更破坏了东西。",
+    },
+    relatedLinks: [
+      {
+        label: { en: "Atomic commits", zh: "原子提交" },
+        href: "/glossary/atomic-commits",
+      },
+      {
+        label: { en: "Git reflog", zh: "Git reflog" },
+        href: "/glossary/git-reflog",
+      },
+      {
+        label: { en: "Git rebase", zh: "Git 变基" },
+        href: "/glossary/git-rebase",
+      },
+    ],
+    faq: [
+      {
+        question: {
+          en: "Can bisect find a bug across merge commits?",
+          zh: "Bisect 能跨合并提交找到错误吗？",
+        },
+        answer: {
+          en: "Yes, though merges can complicate the search. git bisect can skip merge commits that are not easily testable. Use git bisect skip to skip a commit that cannot be tested (e.g., due to build failures unrelated to the bug).",
+          zh: "可以，尽管合并可能使搜索复杂化。git bisect 可以跳过不容易测试的合并提交。使用 git bisect skip 跳过无法测试的提交（例如，由于与错误无关的构建失败）。",
+        },
+      },
+      {
+        question: {
+          en: "How many steps does bisect take for 5000 commits?",
+          zh: "对于 5000 个提交，bisect 需要多少步？",
+        },
+        answer: {
+          en: "Approximately 13 steps. Bisect halves the range each time, so it takes ceil(log2(N)) steps. For 5000 commits, log2(5000) ≈ 12.3, so 13 steps at most.",
+          zh: "大约 13 步。Bisect 每次将范围减半，因此需要 ceil(log2(N)) 步。对于 5000 个提交，log2(5000) ≈ 12.3，所以最多 13 步。",
+        },
+      },
+      {
+        question: {
+          en: "Does git-agent integrate with git bisect?",
+          zh: "git-agent 与 git bisect 集成吗？",
+        },
+        answer: {
+          en: "git-agent is a commit authoring tool, not a bisect tool. It produces the kind of high-quality atomic commits that make bisect most effective. The actual bisect workflow is done with standard git bisect commands.",
+          zh: "git-agent 是一个提交撰写工具，而不是 bisect 工具。它生成使 bisect 最有效的高质量原子提交。实际的 bisect 工作流使用标准 git bisect 命令完成。",
+        },
+      },
+    ],
+  },
+  {
+    slug: "git-reflog",
+    term: { en: "Git Reflog", zh: "Git Reflog" },
+    definition: {
+      en: "A reference log that records every movement of HEAD in the local repository, providing a safety net to recover lost commits and undo history-altering operations.",
+      zh: "一个引用日志，记录本地仓库中 HEAD 的每次移动，为恢复丢失的提交和撤销历史修改操作提供安全网。",
+    },
+    longDescription: {
+      en: `The reflog (reference log) is git's safety net. Every time HEAD changes — commits, checkouts, rebases, merges, resets, cherry-picks, stashes — an entry is written to the reflog. This means that even if you "lose" a commit (e.g., by doing a hard reset or rebase that discarded commits), you can find it in the reflog and recover it.
+
+The reflog is local-only. It is never pushed to remotes and is not shared with other developers. Entries expire by default after 90 days for reachable commits and 30 days for unreachable ones. You can view the reflog with git reflog, which shows each entry's position (HEAD@{N}), the commit hash, and the action that created it.
+
+Common recovery scenarios made possible by reflog include: recovering after a hard reset (git reset --hard HEAD@{1}), undoing a rebase that went wrong (git reset --hard ORIG_HEAD or finding the pre-rebase commit in reflog), and restoring a dropped stash. The reflog is the first place to check when something went missing in git.`,
+      zh: `Reflog（引用日志）是 git 的安全网。每次 HEAD 发生变化——提交、检出新分支、变基、合并、重置、cherry-pick、stash——都会在 reflog 中写入一条记录。这意味着即使你"丢失"了一个提交（例如通过硬重置或丢弃提交的变基），你也可以在 reflog 中找到它并恢复。
+
+Reflog 是本地唯一的。它永远不会推送到远程，也不会与其他开发者共享。默认情况下，可达提交的条目在 90 天后过期，不可达提交的条目在 30 天后过期。你可以使用 git reflog 查看 reflog，它显示每个条目的位置（HEAD@{N}）、提交哈希以及创建它的操作。
+
+Reflog 支持的常见恢复场景包括：硬重置后恢复（git reset --hard HEAD@{1}）、撤销出错的变基（git reset --hard ORIG_HEAD 或在 reflog 中找到变基前的提交），以及恢复已删除的 stash。当你发现 git 中的东西丢失时，reflog 是第一个要检查的地方。`,
+    },
+    examples: [
+      "git reflog  # show the full reflog for HEAD",
+      "git reflog show main  # show reflog for a specific branch",
+      "git reset --hard HEAD@{2}  # reset to the state from 2 moves ago",
+      "git reflog expire --expire=now --all  # manually expire old entries",
+      "git checkout HEAD@{5}  # check out the state from 5 moves ago",
+    ],
+    howGitAgentHelps: {
+      en: "git-agent's conventional commit messages make reflog entries self-documenting. When you scan git reflog, each entry shows the commit message, so you can immediately identify which state you need to recover even without cross-referencing hashes against the main log.",
+      zh: "git-agent 的约定式提交信息使 reflog 条目具有自文档性。当你扫描 git reflog 时，每个条目都显示提交信息，因此即使不将哈希与主日志交叉引用，也能立即识别需要恢复的状态。",
+    },
+    relatedLinks: [
+      {
+        label: { en: "Git bisect", zh: "Git 二分查找" },
+        href: "/glossary/git-bisect",
+      },
+      {
+        label: { en: "Git rebase", zh: "Git 变基" },
+        href: "/glossary/git-rebase",
+      },
+      {
+        label: { en: "Git stash", zh: "Git 暂存" },
+        href: "/glossary/git-stash",
+      },
+    ],
+    faq: [
+      {
+        question: {
+          en: "Can I recover a commit I made yesterday that I accidentally hard-reset?",
+          zh: "我可以恢复昨天不小心硬重置的提交吗？",
+        },
+        answer: {
+          en: "Almost certainly yes. Run git reflog and look for the commit message or the state before the reset. The commit will have an entry like HEAD@{N} that you can reset or cherry-pick from.",
+          zh: "几乎肯定可以。运行 git reflog 并查找重置前的提交信息或状态。该提交会有一个类似 HEAD@{N} 的条目，你可以从中重置或 cherry-pick。",
+        },
+      },
+      {
+        question: {
+          en: "Is the reflog shared with remote repositories?",
+          zh: "Reflog 会与远程仓库共享吗？",
+        },
+        answer: {
+          en: "No. The reflog is strictly local to your repository and is never pushed or fetched. Each developer has their own reflog tracking only their local operations.",
+          zh: "不会。Reflog 严格限于本地仓库，永不推送或获取。每个开发者都有自己的 reflog，只跟踪他们的本地操作。",
+        },
+      },
+      {
+        question: {
+          en: "How long do reflog entries last?",
+          zh: "Reflog 条目可以保留多久？",
+        },
+        answer: {
+          en: "Default expiry is 90 days for commits reachable from a branch or tag, and 30 days for unreachable commits. These values are configurable via gc.reflogExpire and gc.reflogExpireUnreachable.",
+          zh: "默认情况下，从分支或标签可达的提交为 90 天，不可达的提交为 30 天。这些值可通过 gc.reflogExpire 和 gc.reflogExpireUnreachable 配置。",
+        },
+      },
+    ],
+  },
+  {
+    slug: "git-worktree",
+    term: { en: "Git Worktree", zh: "Git Worktree" },
+    definition: {
+      en: "A git feature that allows multiple working directories, each checked out to a different branch, from a single repository, enabling parallel work without stashing or cloning.",
+      zh: "一种 Git 功能，允许从单个仓库创建多个工作目录，每个目录检出到不同的分支，实现无需 stash 或克隆的并行工作。",
+    },
+    longDescription: {
+      en: `Git worktrees solve the problem of needing to work on two branches simultaneously. Instead of stashing changes, cloning the repository again, or using throwaway merges, you add a worktree: a new working directory linked to the same repository, checked out to a different branch. Each worktree has its own working directory and index, but shares the repository's object store and refs.
+
+The main benefit is context switching without overhead. You can have a main worktree on the main branch, a feature branch worktree for active development, and a hotfix worktree for urgent fixes — all side by side, all building independently, without any stashing or commit discarding. Each worktree is just a directory like ../project-hotfix.
+
+Worktrees are managed with git worktree add <path> <branch>. Each worktree is recorded in the repository's .git/worktrees directory. When a worktree is no longer needed, git worktree remove <path> cleans it up. A common workflow is to use worktrees for code review: git worktree add ../project-review <pr-branch> creates a side-by-side directory to review a PR branch without disturbing your current work.`,
+      zh: `Git worktree 解决了需要同时在两个分支上工作的问题。你无需 stash 变更、再次克隆仓库或使用临时合并，而是添加一个 worktree：一个链接到同一仓库的新工作目录，检出到不同的分支。每个 worktree 有自己的工作目录和索引，但共享仓库的对象存储和引用。
+
+主要好处是无开销的上下文切换。你可以有一个 main 分支的主 worktree、一个用于活跃开发的功能分支 worktree，以及一个用于紧急修复的 hotfix worktree——全部并排存在，独立构建，无需任何 stash 或丢弃提交。每个 worktree 只是一个像 ../project-hotfix 这样的目录。
+
+Worktree 使用 git worktree add <path> <branch> 管理。每个 worktree 记录在仓库的 .git/worktrees 目录中。当不再需要 worktree 时，git worktree remove <path> 将其清理。一个常见的工作流是使用 worktree 进行代码审查：git worktree add ../project-review <pr-branch> 创建一个并排目录来审查 PR 分支，而不干扰你当前的工作。`,
+    },
+    examples: [
+      "git worktree add ../hotfix fix/urgent-login-crash",
+      "git worktree add -b new-feature ../feature  # create with new branch",
+      "git worktree list  # list all linked worktrees",
+      "git worktree remove ../hotfix  # remove a worktree",
+      "git worktree prune  # clean up stale worktree references",
+    ],
+    howGitAgentHelps: {
+      en: "git-agent's fast commit workflow complements worktrees nicely. When you finish work in a worktree, git-agent creates atomic commits with conventional messages, keeping each worktree's branch history clean. The consistent commit format also makes it easy to track which worktree produced which commits.",
+      zh: "git-agent 的快速提交工作流与 worktree 很好地互补。当你在 worktree 中完成工作时，git-agent 创建带有约定式信息的原子提交，保持每个 worktree 的分支历史干净。一致的提交格式也使得追踪哪个 worktree 产生了哪些提交变得容易。",
+    },
+    relatedLinks: [
+      {
+        label: { en: "Git stash", zh: "Git 暂存" },
+        href: "/glossary/git-stash",
+      },
+      {
+        label: { en: "Git rebase", zh: "Git 变基" },
+        href: "/glossary/git-rebase",
+      },
+      {
+        label: { en: "Git merge conflict", zh: "Git 合并冲突" },
+        href: "/glossary/git-merge-conflict",
+      },
+    ],
+    faq: [
+      {
+        question: {
+          en: "Can I have worktrees on the same branch?",
+          zh: "可以在同一个分支上有多个 worktree 吗？",
+        },
+        answer: {
+          en: "No, each worktree must be on a different branch. Git enforces this to prevent conflicts. If you need parallel work on the same branch, use git stash or create a temporary branch from the current state.",
+          zh: "不能，每个 worktree 必须在不同的分支上。Git 强制执行此规则以防止冲突。如果你需要在同一分支上进行并行工作，请使用 git stash 或从当前状态创建临时分支。",
+        },
+      },
+      {
+        question: {
+          en: "Do worktrees use additional disk space?",
+          zh: "Worktree 会使用额外的磁盘空间吗？",
+        },
+        answer: {
+          en: "Each worktree has its own working directory and git index, but they share the repository's object store. This means the actual commit data is not duplicated — only the checked-out files are stored separately, which is the same as having a separate clone.",
+          zh: "每个 worktree 有自己的工作目录和 git 索引，但它们共享仓库的对象存储。这意味着实际的提交数据不会重复——只有检出的文件被单独存储，这与拥有单独的克隆相同。",
+        },
+      },
+      {
+        question: {
+          en: "Can I run git-agent in a worktree?",
+          zh: "我可以在 worktree 中运行 git-agent 吗？",
+        },
+        answer: {
+          en: "Yes. Each worktree is a full working directory with its own staged state. git-agent works identically in any worktree — it reads the staged diff, plans commits, and executes them within the worktree's branch context.",
+          zh: "可以。每个 worktree 是一个完整的工作目录，有自己的暂存状态。git-agent 在任何 worktree 中都同样工作——它读取暂存的 diff，规划提交，并在 worktree 的分支上下文中执行它们。",
+        },
+      },
+    ],
+  },
+  {
+    slug: "git-flow",
+    term: { en: "Git Flow", zh: "Git Flow" },
+    definition: {
+      en: "A branching model that defines a strict set of branch types (main, develop, feature, release, hotfix) and rules for how and when branches are created, merged, and deleted.",
+      zh: "一种分支模型，定义了一组严格的分支类型（main、develop、feature、release、hotfix）以及分支创建、合并和删除的规则。",
+    },
+    longDescription: {
+      en: `Git Flow, popularised by Vincent Driessen in 2010, is a prescriptive branching strategy. The model defines two long-lived branches — main (production-ready code) and develop (integration branch for features) — and three supporting branch types: feature branches (branched from develop, merged back to develop), release branches (branched from develop for release preparation, merged to both main and develop), and hotfix branches (branched from main for emergency fixes, merged to both main and develop).
+
+The model enforces strict rules about which branch merges where. Feature branches are never merged directly to main. Release branches are created when develop reaches a release-ready state, allowing last-minute bug fixes without blocking new feature development. Hotfix branches allow critical production fixes to bypass the release pipeline entirely.
+
+Git Flow was widely adopted in the 2010s and remains popular in projects with scheduled releases and formal release cycles. However, it has been criticised for its complexity compared to simpler models like trunk-based development, especially for teams practicing continuous delivery. The overhead of maintaining multiple long-lived branches and the discipline required for correct merges leads many modern teams to prefer simpler strategies.`,
+      zh: `Git Flow 由 Vincent Driessen 于 2010 年推广，是一种规定性的分支策略。该模型定义了两种长期分支——main（生产就绪代码）和 develop（功能集成分支）——以及三种辅助分支类型：feature 分支（从 develop 分支，合并回 develop）、release 分支（从 develop 分支进行发布准备，合并到 main 和 develop）和 hotfix 分支（从 main 分支进行紧急修复，合并到 main 和 develop）。
+
+该模型强制执行关于哪个分支合并到哪里的严格规则。Feature 分支从不直接合并到 main。当 develop 达到发布就绪状态时创建 release 分支，允许最后一刻的错误修复而不阻塞新功能开发。Hotfix 分支允许关键的生产修复完全绕过发布管道。
+
+Git Flow 在 2010 年代被广泛采用，在具有计划发布和正式发布周期的项目中仍然流行。然而，与更简单的模型（如主干开发）相比，它因其复杂性而受到批评，特别是对于实践持续交付的团队。维护多个长期分支的开销以及正确合并所需的纪律使许多现代团队倾向于更简单的策略。`,
+    },
+    examples: [
+      "git flow feature start user-profile  # start a new feature branch",
+      "git flow feature finish user-profile  # merge feature back to develop",
+      "git flow release start v1.2.0  # start a release branch",
+      "git flow hotfix start 1.2.1  # start a hotfix from main",
+      "git flow hotfix finish 1.2.1  # merge hotfix to main and develop",
+    ],
+    howGitAgentHelps: {
+      en: "git-agent works with any branching model, including Git Flow. Its atomic commits and conventional messages ensure that regardless of the branch topology, each commit carries a clear intent. When release and hotfix merges happen, the commit history remains readable and useful for changelog generation.",
+      zh: "git-agent 适用于任何分支模型，包括 Git Flow。其原子提交和约定式信息确保无论分支拓扑如何，每个提交都带有明确的意图。当 release 和 hotfix 合并发生时，提交历史保持可读且对变更日志生成有用。",
+    },
+    relatedLinks: [
+      {
+        label: { en: "Trunk-based development", zh: "主干开发" },
+        href: "/glossary/trunk-based-development",
+      },
+      {
+        label: { en: "Atomic commits", zh: "原子提交" },
+        href: "/glossary/atomic-commits",
+      },
+      {
+        label: { en: "Conventional Commits", zh: "约定式提交" },
+        href: "/glossary/conventional-commits",
+      },
+    ],
+    faq: [
+      {
+        question: {
+          en: "Is Git Flow still recommended for modern projects?",
+          zh: "现代项目还推荐使用 Git Flow 吗？",
+        },
+        answer: {
+          en: "It depends on the release model. For projects with scheduled releases and formal QA cycles, Git Flow's structure is beneficial. For continuous delivery teams deploying multiple times per day, trunk-based development or GitHub Flow is simpler and more efficient.",
+          zh: "取决于发布模型。对于有计划发布和正式 QA 周期的项目，Git Flow 的结构是有益的。对于每天部署多次的持续交付团队，主干开发或 GitHub Flow 更简单高效。",
+        },
+      },
+      {
+        question: {
+          en: "What is the difference between Git Flow and GitHub Flow?",
+          zh: "Git Flow 和 GitHub Flow 有什么区别？",
+        },
+        answer: {
+          en: "GitHub Flow is simpler: it uses only a main branch and feature branches. Feature branches are merged to main via pull requests and deployed immediately. There is no develop or release branch. GitHub Flow is designed for continuous deployment.",
+          zh: "GitHub Flow 更简单：它只使用 main 分支和 feature 分支。Feature 分支通过拉取请求合并到 main 并立即部署。没有 develop 或 release 分支。GitHub Flow 专为持续部署设计。",
+        },
+      },
+      {
+        question: {
+          en: "Can git-agent automatically determine the correct branch type?",
+          zh: "git-agent 能自动确定正确的分支类型吗？",
+        },
+        answer: {
+          en: "git-agent does not manage branches. It operates on whatever branch you are currently on. The commit message type (feat, fix, etc.) reflects the change content, not the branch name, though git-agent can optionally reference the branch name in the commit scope.",
+          zh: "git-agent 不管理分支。它在你当前所在的分支上操作。提交消息类型（feat、fix 等）反映变更内容，而不是分支名称，不过 git-agent 可以选择在提交范围中引用分支名称。",
+        },
+      },
+    ],
+  },
+  {
+    slug: "trunk-based-development",
+    term: { en: "Trunk-Based Development", zh: "主干开发" },
+    definition: {
+      en: "A version control branching model where developers integrate small, frequent changes directly into a single shared main branch (trunk), with short-lived feature branches and minimal branching complexity.",
+      zh: "一种版本控制分支模型，开发者将小而频繁的变更直接集成到单个共享主分支（主干）中，使用短期存在的功能分支，具有最小的分支复杂性。",
+    },
+    longDescription: {
+      en: `Trunk-based development (TBD) is a branching strategy that prioritises continuous integration over branch isolation. Developers work on short-lived feature branches (typically lasting less than a day) or commit directly to the main branch (the trunk). The core principle is that no branch should live long enough to diverge significantly from the trunk, keeping merge conflicts small and rare.
+
+The model is strongly associated with continuous integration and continuous delivery (CI/CD). Teams practicing TBD typically integrate their changes to the trunk multiple times per day, with automated builds and tests running on each integration. This catches integration issues early, when they are cheapest to fix. The recommended practice is to keep unpushed work under 2 hours of development time.
+
+TBD contrasts with Git Flow, where feature branches can live for weeks and integration happens in batches. Research (by DORA/Accelerate) shows that TBD practices correlate with higher delivery performance — lower lead times, higher deployment frequency, and lower change failure rates. The key requirement is strong CI/CD automation and a culture of small, incremental changes.`,
+      zh: `主干开发（TBD）是一种优先考虑持续集成而非分支隔离的分支策略。开发者在短期存在的功能分支上工作（通常持续不到一天），或直接提交到主分支（主干）。核心原则是任何分支都不应留存足够长的时间以与主干显著偏离，保持合并冲突小而罕见。
+
+该模型与持续集成和持续交付（CI/CD）密切相关。实践 TBD 的团队通常每天多次将变更集成到主干，每次集成都运行自动化构建和测试。这能在问题最易修复时尽早发现集成问题。建议做法是保持未推送的工作不超过 2 小时的开发时间。
+
+TBD 与 Git Flow 形成对比，后者的功能分支可以持续数周，集成以批处理方式进行。研究（DORA/Accelerate）表明，TBD 实践与更高的交付性能相关——更短的交付周期、更高的部署频率和更低的变更失败率。关键要求是强大的 CI/CD 自动化和小型增量变更的文化。`,
+    },
+    examples: [
+      "# Commit directly to main after a short local test",
+      "git commit -m 'fix(button): correct hover state color contrast'",
+      "# Short-lived feature branch, merged within hours",
+      "git checkout -b fix/input-validation",
+      "git commit -m 'fix(form): add email format validation on blur'",
+      "git checkout main && git merge fix/input-validation",
+      "git push",
+    ],
+    howGitAgentHelps: {
+      en: "git-agent is an ideal companion for trunk-based development. Its ability to quickly create atomic commits with meaningful messages encourages the small, frequent commits that TBD requires. The automated commit splitting also reduces the friction of preparing clean history for direct-to-main integration.",
+      zh: "git-agent 是主干开发的理想伴侣。它快速创建带有有意义信息的原子提交的能力鼓励了 TBD 所需的小型、频繁提交。自动化的提交拆分也减少了为直接集成到 main 准备干净历史的摩擦。",
+    },
+    relatedLinks: [
+      {
+        label: { en: "Git Flow", zh: "Git Flow" },
+        href: "/glossary/git-flow",
+      },
+      {
+        label: { en: "Atomic commits", zh: "原子提交" },
+        href: "/glossary/atomic-commits",
+      },
+      {
+        label: { en: "Commit splitting", zh: "提交拆分" },
+        href: "/glossary/commit-splitting",
+      },
+    ],
+    faq: [
+      {
+        question: {
+          en: "Does trunk-based development mean I cannot use feature branches?",
+          zh: "主干开发意味着我不能使用功能分支吗？",
+        },
+        answer: {
+          en: "No, short-lived feature branches are part of TBD. The key is that branches should be short (hours, not days or weeks) and integrate frequently. Even a few hours of work on a branch is fine as long as you merge back to trunk the same day.",
+          zh: "不是，短期存在的功能分支是 TBD 的一部分。关键是分支应该是短期的（几小时，不是几天或几周）并频繁集成。即使在分支上工作几小时也没问题，只要当天合并回主干即可。",
+        },
+      },
+      {
+        question: {
+          en: "How does trunk-based development work with code review?",
+          zh: "主干开发如何与代码审查配合？",
+        },
+        answer: {
+          en: "Code review works the same — through pull requests on short-lived branches. The difference is that the branches are smaller and more frequent, making reviews easier because each PR contains fewer changes. Reviewers can give feedback on a 50-line PR much faster than a 500-line one.",
+          zh: "代码审查工作方式相同——通过短期存在分支上的拉取请求。区别在于分支更小、更频繁，使审查更容易，因为每个 PR 包含更少的变更。审查者在一个 50 行的 PR 上给出反馈比 500 行的快得多。",
+        },
+      },
+      {
+        question: {
+          en: "Is trunk-based development suitable for all projects?",
+          zh: "主干开发适用于所有项目吗？",
+        },
+        answer: {
+          en: "TBD works best for teams with strong CI/CD automation, comprehensive test coverage, and a culture of incremental development. Projects with regulatory requirements, formal release gates, or large distributed teams may benefit from the more structured Git Flow approach.",
+          zh: "TBD 最适合拥有强大 CI/CD 自动化、全面测试覆盖和增量开发文化的团队。具有监管要求、正式发布门禁或大型分布式团队的项目可能受益于更结构化的 Git Flow 方法。",
+        },
+      },
+    ],
+  },
+  {
+    slug: "gpg-signing",
+    term: { en: "GPG Signing", zh: "GPG 签名" },
+    definition: {
+      en: "A cryptographic method to sign git commits and tags with a GPG key, verifying the identity of the author and ensuring the commit content has not been tampered with.",
+      zh: "一种使用 GPG 密钥对 git 提交和标签进行签名的加密方法，验证作者身份并确保提交内容未被篡改。",
+    },
+    longDescription: {
+      en: `GPG (GNU Privacy Guard) signing gives git commits a cryptographic seal of authenticity. When you sign a commit, git creates a digital signature using your private GPG key and attaches it to the commit object. Others can verify the signature using your public key, confirming that the commit was made by you and has not been altered since signing.
+
+Git supports two signing mechanisms: GPG (the default) and SSH (via git config gpg.format ssh, available since Git 2.34). Both serve the same purpose. GPG is the more established option, while SSH signing uses the same keys you already use for SSH authentication, simplifying key management.
+
+To sign commits, you need a GPG key pair, and you must configure git with your signing key (git config --global user.signingkey <key-id>). Then git commit -S signs the commit, or git config --global commit.gpgsign true makes signing automatic. On GitHub, verified commits display a "Verified" badge next to the commit, and repository settings can require signed commits for protected branches.`,
+      zh: `GPG（GNU Privacy Guard）签名给 git 提交提供了加密的真实性证明。当你签署提交时，git 使用你的私钥创建数字签名并将其附加到提交对象上。其他人可以使用你的公钥验证签名，确认提交是由你创建且签署后未被修改。
+
+Git 支持两种签名机制：GPG（默认）和 SSH（通过 git config gpg.format ssh，自 Git 2.34 起可用）。两者目的相同。GPG 是更成熟的选择，而 SSH 签名使用你已经用于 SSH 认证的相同密钥，简化了密钥管理。
+
+要签署提交，你需要一个 GPG 密钥对，并且必须配置 git 使用你的签名密钥（git config --global user.signingkey <key-id>）。然后 git commit -S 签署提交，或者 git config --global commit.gpgsign true 使签名自动生效。在 GitHub 上，已验证的提交在提交旁边显示"Verified"徽章，并且仓库设置可以为受保护分支要求已签名的提交。`,
+    },
+    examples: [
+      "git commit -S -m 'feat(auth): add OAuth2 PKCE flow'  # sign a single commit",
+      "git config --global commit.gpgsign true  # auto-sign all commits",
+      "git config --global user.signingkey ABCDEF1234567890  # set signing key",
+      "git tag -s v1.0.0 -m 'v1.0.0 stable release'  # sign a tag",
+      "git log --show-signature  # verify signatures in commit log",
+    ],
+    howGitAgentHelps: {
+      en: "git-agent respects your git configuration. If you have commit.gpgsign set to true, every commit git-agent creates is automatically signed. The generated commit messages contain the context you need for meaningful signed commits, making your signed history informative and verifiable.",
+      zh: "git-agent 尊重你的 git 配置。如果你已将 commit.gpgsign 设置为 true，git-agent 创建的每个提交都会自动签名。生成的提交信息包含了你进行有意义签名提交所需的上下文，使你的签名历史既有信息量又可验证。",
+    },
+    relatedLinks: [
+      {
+        label: { en: "Conventional Commits", zh: "约定式提交" },
+        href: "/glossary/conventional-commits",
+      },
+      {
+        label: { en: "Commit message format", zh: "提交信息格式" },
+        href: "/glossary/commit-message-format",
+      },
+      {
+        label: { en: "Pre-commit hooks", zh: "pre-commit 钩子" },
+        href: "/glossary/pre-commit-hooks",
+      },
+    ],
+    faq: [
+      {
+        question: {
+          en: "Do I need a GPG key to sign commits?",
+          zh: "签署提交需要 GPG 密钥吗？",
+        },
+        answer: {
+          en: "Yes. You need a GPG key pair (or an SSH key if using SSH signing). Generate one with gpg --full-generate-key, then add the public key to your GitHub/GitLab account and configure git with your signing key.",
+          zh: "是的。你需要一个 GPG 密钥对（如果使用 SSH 签名则需要 SSH 密钥）。使用 gpg --full-generate-key 生成一个，然后将公钥添加到你的 GitHub/GitLab 帐户并配置 git 使用你的签名密钥。",
+        },
+      },
+      {
+        question: {
+          en: "Does git-agent create signed commits automatically?",
+          zh: "git-agent 会自动创建签名提交吗？",
+        },
+        answer: {
+          en: "git-agent runs git commit internally. If you have commit.gpgsign = true in your git config, the commit will be signed automatically. git-agent does not add or remove signing — it respects your existing git configuration.",
+          zh: "git-agent 在内部运行 git commit。如果你的 git 配置中有 commit.gpgsign = true，提交将自动签名。git-agent 不会添加或移除签名——它尊重你现有的 git 配置。",
+        },
+      },
+      {
+        question: {
+          en: "What is the difference between GPG signing and SSH signing?",
+          zh: "GPG 签名和 SSH 签名有什么区别？",
+        },
+        answer: {
+          en: "Both produce verified commits. GPG is the traditional approach with its own key infrastructure. SSH signing uses the same keys you already use for SSH — no separate key management. SSH signing is simpler but requires Git 2.34+ and is less universally supported by older tools.",
+          zh: "两者都产生已验证的提交。GPG 是传统方法，有自己的密钥基础设施。SSH 签名使用你已经用于 SSH 的相同密钥——无需单独的密钥管理。SSH 签名更简单，但需要 Git 2.34+ 并且对旧工具的支持较不普遍。",
+        },
+      },
+    ],
+  },
 ];
 
 export function findGlossaryTerm(slug: string): GlossaryEntry | undefined {

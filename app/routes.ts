@@ -22,4 +22,12 @@ export default [
 	// Playbook 4: Templates — /templates/[type]
 	route("templates", "routes/templates._index.tsx"),
 	route("templates/:type", "routes/templates.$type.tsx"),
+
+	// Playbook 5: Integrations — /integrations/[slug]
+	route("integrations", "routes/integrations._index.tsx"),
+	route("integrations/:slug", "routes/integrations.$slug.tsx"),
+
+	// Playbook 6: Use Cases — /use-cases/[slug]
+	route("use-cases", "routes/use-cases._index.tsx"),
+	route("use-cases/:slug", "routes/use-cases.$slug.tsx"),
 ] satisfies RouteConfig;

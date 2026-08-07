@@ -62,6 +62,10 @@ export interface Translations {
 	exploreGlossaryDesc: string;
 	exploreTemplatesName: string;
 	exploreTemplatesDesc: string;
+	exploreIntegrationsName: string;
+	exploreIntegrationsDesc: string;
+	exploreUseCasesName: string;
+	exploreUseCasesDesc: string;
 
 	// Home footer
 	homeFooterMadeByPrefix: string;
@@ -73,6 +77,8 @@ export interface Translations {
 	pseoFooterNavComparisons: string;
 	pseoFooterNavGlossary: string;
 	pseoFooterNavTemplates: string;
+	pseoFooterNavIntegrations: string;
+	pseoFooterNavUseCases: string;
 
 	// pSEO comparison table
 	pseoComparisonFeature: string;
@@ -104,6 +110,19 @@ export interface Translations {
 	pseoRelated: string;
 	pseoFaq: string;
 	pseoCommitTemplateSuffix: string;
+
+	// pSEO integrations
+	pseoIntegrationsHubTitle: string;
+	pseoIntegrationsHubSubtitle: string;
+	pseoIntegrationsSectionBenefits: string;
+	pseoIntegrationsSectionSetupSteps: string;
+
+	// pSEO use cases
+	pseoUseCasesHubTitle: string;
+	pseoUseCasesHubSubtitle: string;
+	pseoUseCasesSectionChallenge: string;
+	pseoUseCasesSectionSolution: string;
+	pseoUseCasesSectionSteps: string;
 }
 
 export interface Flag {
@@ -219,6 +238,10 @@ export const translations: Record<Language, Translations> = {
 		exploreGlossaryDesc: "Git workflow concepts",
 		exploreTemplatesName: "templates",
 		exploreTemplatesDesc: "feat, fix, refactor...",
+			exploreIntegrationsName: "integrations",
+			exploreIntegrationsDesc: "CI/CD, hook managers",
+			exploreUseCasesName: "use cases",
+			exploreUseCasesDesc: "monorepo, CI/CD, OSS",
 
 		homeFooterMadeByPrefix: "Made by ",
 		homeFooterMadeBySuffix: "",
@@ -229,6 +252,8 @@ export const translations: Record<Language, Translations> = {
 		pseoFooterNavComparisons: "Comparisons",
 		pseoFooterNavGlossary: "Glossary",
 		pseoFooterNavTemplates: "Templates",
+			pseoFooterNavIntegrations: "Integrations",
+			pseoFooterNavUseCases: "Use Cases",
 
 		pseoComparisonFeature: "Feature",
 
@@ -261,6 +286,21 @@ export const translations: Record<Language, Translations> = {
 		pseoRelated: "related",
 		pseoFaq: "FAQ",
 		pseoCommitTemplateSuffix: "commit template",
+
+			// pSEO integrations
+			pseoIntegrationsHubTitle: "Integrations",
+			pseoIntegrationsHubSubtitle:
+				"How git-agent works with popular developer tools — CI/CD, hook managers, and release automation.",
+			pseoIntegrationsSectionBenefits: "Benefits",
+			pseoIntegrationsSectionSetupSteps: "Setup steps",
+
+			// pSEO use cases
+			pseoUseCasesHubTitle: "Use Cases",
+			pseoUseCasesHubSubtitle:
+				"Specific scenarios where git-agent shines — monorepo management, CI/CD automation, open source contributions, and more.",
+			pseoUseCasesSectionChallenge: "The challenge",
+			pseoUseCasesSectionSolution: "The solution",
+			pseoUseCasesSectionSteps: "Implementation steps",
 
 		// Command detail
 		back: "← back",
@@ -534,6 +574,10 @@ export const translations: Record<Language, Translations> = {
 		exploreGlossaryDesc: "Git 工作流概念",
 		exploreTemplatesName: "提交模板",
 		exploreTemplatesDesc: "feat、fix、refactor...",
+			exploreIntegrationsName: "集成",
+			exploreIntegrationsDesc: "CI/CD、钩子管理器",
+			exploreUseCasesName: "使用场景",
+			exploreUseCasesDesc: "monorepo、CI/CD、开源",
 
 		homeFooterMadeByPrefix: "由 ",
 		homeFooterMadeBySuffix: " 制作",
@@ -544,6 +588,8 @@ export const translations: Record<Language, Translations> = {
 		pseoFooterNavComparisons: "对比",
 		pseoFooterNavGlossary: "术语表",
 		pseoFooterNavTemplates: "模板",
+			pseoFooterNavIntegrations: "集成",
+			pseoFooterNavUseCases: "使用场景",
 
 		pseoComparisonFeature: "功能",
 
@@ -575,6 +621,19 @@ export const translations: Record<Language, Translations> = {
 		pseoRelated: "相关",
 		pseoFaq: "常见问题",
 		pseoCommitTemplateSuffix: "提交模板",
+
+			// pSEO integrations
+			pseoIntegrationsHubTitle: "集成",
+			pseoIntegrationsHubSubtitle: "git-agent 如何与流行的开发者工具配合使用——CI/CD、钩子管理器和发布自动化。",
+			pseoIntegrationsSectionBenefits: "优势",
+			pseoIntegrationsSectionSetupSteps: "设置步骤",
+
+			// pSEO use cases
+			pseoUseCasesHubTitle: "使用场景",
+			pseoUseCasesHubSubtitle: "git-agent 擅长的具体场景——monorepo 管理、CI/CD 自动化、开源贡献等。",
+			pseoUseCasesSectionChallenge: "挑战",
+			pseoUseCasesSectionSolution: "解决方案",
+			pseoUseCasesSectionSteps: "实施步骤",
 
 		// Command detail
 		back: "← 返回",

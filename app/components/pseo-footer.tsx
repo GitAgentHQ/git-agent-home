@@ -33,6 +33,12 @@ export function PseoFooter() {
 				<Link to="/templates" className="pseo-footer-nav-link">
 					{t.pseoFooterNavTemplates}
 				</Link>
+				<Link to="/integrations" className="pseo-footer-nav-link">
+					{t.pseoFooterNavIntegrations}
+				</Link>
+				<Link to="/use-cases" className="pseo-footer-nav-link">
+					{t.pseoFooterNavUseCases}
+				</Link>
 			</nav>
 		</div>
 	);
