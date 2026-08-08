@@ -18,9 +18,9 @@ export default function UseCasesIndex() {
 	const { language, t } = useLanguage();
 
 	return (
-		<PseoLayout breadcrumb="use-cases" backHref="/">
+		<PseoLayout breadcrumb={t.pseoCrumbUseCases} backHref="/">
 			<header className="command-hero">
-				<code className="command-label">git-agent use cases</code>
+				<code className="command-label">{t.pseoEyebrowUseCases}</code>
 				<h1 className="command-heading">{t.pseoUseCasesHubTitle}</h1>
 				<p className="section-body">{t.pseoUseCasesHubSubtitle}</p>
 			</header>

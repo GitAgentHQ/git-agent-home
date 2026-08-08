@@ -1,13 +1,43 @@
 export type Language = "en" | "zh";
 
 export interface Translations {
+	// Global
+	skipToContent: string;
+
 	// Home view
 	homeTitle: string;
 	homeSubtitle: string;
 	homeInstallHint: string;
 	homeInstallCopyLine: string;
+	homeInstallAlt: string;
+	proofOpenSource: string;
+	proofStripLabel: string;
+	viewOnGitHub: string;
+	errorFallbackTitle: string;
+	errorFallbackBody: string;
+	notFoundBody: string;
+	pseoCrumbFor: string;
+	pseoCrumbGlossary: string;
+	pseoCrumbTemplates: string;
+	pseoCrumbIntegrations: string;
+	pseoCrumbUseCases: string;
+	pseoCrumbVs: string;
+	pseoEyebrowFor: string;
+	pseoEyebrowGlossary: string;
+	pseoEyebrowTemplates: string;
+	pseoEyebrowIntegrations: string;
+	pseoEyebrowUseCases: string;
+	pseoEyebrowVs: string;
+	pseoEyebrowIntegration: string;
+	pseoEyebrowUseCase: string;
+	pseoEyebrowCommitType: string;
+	pseoEyebrowComparison: string;
+	proofFreeGateway: string;
+	proofOffline: string;
+	proofMeasured: string;
 	copy: string;
 	copied: string;
+	copyCodeLabel: string;
 	viewDetails: string;
 	graphPitchTitle: string;
 	graphPitchBody: string;
@@ -73,6 +103,7 @@ export interface Translations {
 
 	// pSEO footer
 	pseoFooterCtaHeading: string;
+	pseoFooterNavLabel: string;
 	pseoFooterNavLanguages: string;
 	pseoFooterNavComparisons: string;
 	pseoFooterNavGlossary: string;
@@ -82,6 +113,8 @@ export interface Translations {
 
 	// pSEO comparison table
 	pseoComparisonFeature: string;
+	pseoComparisonYes: string;
+	pseoComparisonNo: string;
 
 	// pSEO hub index pages
 	pseoForHubTitle: string;
@@ -147,14 +180,43 @@ export interface CommandData {
 
 export const translations: Record<Language, Translations> = {
 	en: {
+		// Global
+		skipToContent: "Skip to content",
 		// Home view
 		homeTitle: "git-agent",
 		homeSubtitle:
 			"AI Git assistant: atomic commits, conventional messages, and a queryable code graph — so agents edit with context, not blind. Free shared gateway, zero config.",
-		homeInstallHint: "Copy the line below and paste it into any coding agent.",
+		homeInstallHint: "Copy the line below and paste it into any coding agent:",
 		homeInstallCopyLine: "Install git-agent — follow https://git-agent.dev/install.md",
+		homeInstallAlt: "or run it yourself with brew install gitagenthq/tap/git-agent",
+		proofOpenSource: "open source",
+		proofFreeGateway: "free shared gateway",
+		proofOffline: "offline co-change graph",
+		proofMeasured: "cost measured from real usage",
+		proofStripLabel: "Why trust git-agent",
+		viewOnGitHub: "View on GitHub",
+		errorFallbackTitle: "Oops!",
+		errorFallbackBody: "An unexpected error occurred.",
+		notFoundBody: "The requested page could not be found.",
+		pseoCrumbFor: "for",
+		pseoCrumbGlossary: "glossary",
+		pseoCrumbTemplates: "templates",
+		pseoCrumbIntegrations: "integrations",
+		pseoCrumbUseCases: "use-cases",
+		pseoCrumbVs: "vs",
+		pseoEyebrowFor: "git-agent for",
+		pseoEyebrowGlossary: "glossary",
+		pseoEyebrowTemplates: "commit templates",
+		pseoEyebrowIntegrations: "git-agent integrations",
+		pseoEyebrowUseCases: "git-agent use cases",
+		pseoEyebrowVs: "git-agent vs",
+		pseoEyebrowIntegration: "integration",
+		pseoEyebrowUseCase: "use case",
+		pseoEyebrowCommitType: "commit type",
+		pseoEyebrowComparison: "comparison",
 		copy: "Copy",
 		copied: "Copied",
+		copyCodeLabel: "Copy code",
 		viewDetails: "View details →",
 		graphPitchTitle: "An agent that knows your code",
 		graphPitchBody:
@@ -226,7 +288,7 @@ export const translations: Record<Language, Translations> = {
 		pricingTitle: "Why git-agent",
 		pricingSubtitle: "cost per 1,000 commits",
 		pricingNote:
-			"~4,200 input + ~400 output tokens per commit. From measured usage. Source: provider pricing pages, Mar 2026.",
+			"~4,200 input + ~400 output tokens per commit. From measured usage. Source: provider pricing pages, Aug 2026.",
 
 		// Home explore
 		exploreTitle: "explore",
@@ -248,6 +310,7 @@ export const translations: Record<Language, Translations> = {
 
 		// pSEO footer
 		pseoFooterCtaHeading: "Get started free",
+		pseoFooterNavLabel: "Explore",
 		pseoFooterNavLanguages: "Languages",
 		pseoFooterNavComparisons: "Comparisons",
 		pseoFooterNavGlossary: "Glossary",
@@ -256,6 +319,8 @@ export const translations: Record<Language, Translations> = {
 			pseoFooterNavUseCases: "Use Cases",
 
 		pseoComparisonFeature: "Feature",
+		pseoComparisonYes: "Yes",
+		pseoComparisonNo: "No",
 
 		pseoForHubTitle: "Browse by language or framework",
 		pseoForHubSubtitle:
@@ -483,14 +548,43 @@ export const translations: Record<Language, Translations> = {
 		},
 	},
 	zh: {
+		// Global
+		skipToContent: "跳到内容",
 		// Home view
 		homeTitle: "git-agent",
 		homeSubtitle:
 			"AI Git 助手：原子提交、规范消息，外加可查询的代码图谱——让智能体带上下文编辑，而非盲目改码。免费共享网关，零配置。",
 		homeInstallHint: "复制下方整行，粘贴到任意编程助手即可。",
 		homeInstallCopyLine: "安装 git-agent — 请按 https://git-agent.dev/install.md 中的指引操作",
+		homeInstallAlt: "或自己运行 brew install gitagenthq/tap/git-agent",
+		proofOpenSource: "开源",
+		proofFreeGateway: "免费共享网关",
+		proofOffline: "离线共变图谱",
+		proofMeasured: "成本基于真实用量实测",
+		proofStripLabel: "为什么信任 git-agent",
+		viewOnGitHub: "在 GitHub 上查看",
+		errorFallbackTitle: "出错了！",
+		errorFallbackBody: "发生了意外错误。",
+		notFoundBody: "请求的页面不存在。",
+		pseoCrumbFor: "适用",
+		pseoCrumbGlossary: "术语表",
+		pseoCrumbTemplates: "模板",
+		pseoCrumbIntegrations: "集成",
+		pseoCrumbUseCases: "用例",
+		pseoCrumbVs: "对比",
+		pseoEyebrowFor: "git-agent 适用",
+		pseoEyebrowGlossary: "术语表",
+		pseoEyebrowTemplates: "提交模板",
+		pseoEyebrowIntegrations: "git-agent 集成",
+		pseoEyebrowUseCases: "git-agent 用例",
+		pseoEyebrowVs: "git-agent 对比",
+		pseoEyebrowIntegration: "集成",
+		pseoEyebrowUseCase: "用例",
+		pseoEyebrowCommitType: "提交类型",
+		pseoEyebrowComparison: "对比",
 		copy: "复制",
 		copied: "已复制",
+		copyCodeLabel: "复制代码",
 		viewDetails: "查看详情 →",
 		graphPitchTitle: "一个了解你代码的智能体",
 		graphPitchBody:
@@ -562,7 +656,7 @@ export const translations: Record<Language, Translations> = {
 		pricingTitle: "为什么选择 git-agent",
 		pricingSubtitle: "每 1000 次提交的费用",
 		pricingNote:
-			"每次提交约 4,200 输入 + 400 输出 token。来自实测用量。来源：各厂商定价页，2026 年 3 月。",
+			"每次提交约 4,200 输入 + 400 输出 token。来自实测用量。来源：各厂商定价页，2026 年 8 月。",
 
 		// Home explore
 		exploreTitle: "探索",
@@ -584,6 +678,7 @@ export const translations: Record<Language, Translations> = {
 
 		// pSEO footer
 		pseoFooterCtaHeading: "免费开始",
+		pseoFooterNavLabel: "探索",
 		pseoFooterNavLanguages: "语言",
 		pseoFooterNavComparisons: "对比",
 		pseoFooterNavGlossary: "术语表",
@@ -592,6 +687,8 @@ export const translations: Record<Language, Translations> = {
 			pseoFooterNavUseCases: "使用场景",
 
 		pseoComparisonFeature: "功能",
+		pseoComparisonYes: "支持",
+		pseoComparisonNo: "不支持",
 
 		pseoForHubTitle: "按语言或框架浏览",
 		pseoForHubSubtitle:

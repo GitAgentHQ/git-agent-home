@@ -20,7 +20,7 @@ export function PseoFooter() {
 					github.com/GitAgentHQ/git-agent-cli
 				</a>
 			</div>
-			<nav className="pseo-footer-nav">
+			<nav className="pseo-footer-nav" aria-label={t.pseoFooterNavLabel}>
 				<Link to="/for" className="pseo-footer-nav-link">
 					{t.pseoFooterNavLanguages}
 				</Link>

@@ -38,9 +38,9 @@ export default function IntegrationDetail() {
 	const crossLinks = entry.relatedLinks;
 
 	return (
-		<PseoLayout breadcrumb={`integrations / ${entry.slug}`} backHref="/integrations">
+		<PseoLayout breadcrumb={`${t.pseoCrumbIntegrations} / ${entry.slug}`} backHref="/integrations">
 			<header className="command-hero">
-				<code className="command-label">integration</code>
+				<code className="command-label">{t.pseoEyebrowIntegration}</code>
 				<h1 className="command-heading">{entry.tagline[language]}</h1>
 				<p className="section-body">{renderInlineDocText(entry.description[language])}</p>
 			</header>

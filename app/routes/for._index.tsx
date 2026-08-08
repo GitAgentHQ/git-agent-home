@@ -18,9 +18,9 @@ export default function ForIndex() {
 	const { language, t } = useLanguage();
 
 	return (
-		<PseoLayout breadcrumb="for" backHref="/">
+		<PseoLayout breadcrumb={t.pseoCrumbFor} backHref="/">
 			<header className="command-hero">
-				<code className="command-label">git-agent for</code>
+				<code className="command-label">{t.pseoEyebrowFor}</code>
 				<h1 className="command-heading">{t.pseoForHubTitle}</h1>
 				<p className="section-body">{t.pseoForHubSubtitle}</p>
 			</header>

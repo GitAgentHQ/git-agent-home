@@ -40,10 +40,15 @@ export function CodeBlock({ code, label, copyable = false, copyText }: CodeBlock
 						type="button"
 						className="code-block-copy"
 						onClick={handleCopy}
-						aria-live="polite"
+						aria-label={t.copyCodeLabel ?? "Copy code"}
 					>
 						{copied ? t.copied : t.copy}
 					</button>
+				)}
+				{copyable && (
+					<span className="code-block-copy-status" role="status">
+						{copied ? t.copied : ""}
+					</span>
 				)}
 			</div>
 		</div>

@@ -36,7 +36,7 @@ export function HubGrid({
 	const reduced = useAccessibleMotion();
 
 	return (
-		<div className="hub-grid">
+		<ul className="hub-grid">
 			{entries.map((entry) => {
 				const label =
 					labelKey === "name"
@@ -45,25 +45,25 @@ export function HubGrid({
 				const desc = entry[descKey]?.[currentLang];
 
 				return (
-					<MotionLink
-						key={entry.slug}
-						to={`${basePath}/${entry.slug}`}
-						className="hub-card"
-						whileHover={
-							reduced
-								? undefined
-								: {
-										y: -4,
-										boxShadow: "0 14px 44px rgba(0, 0, 0, 0.6)",
-										transition: { duration: 0.28, ease: motionEase },
-									}
-						}
-					>
-						{label && <span className="hub-card-name">{label}</span>}
-						{desc && <span className="hub-card-desc">{desc}</span>}
-					</MotionLink>
+					<li key={entry.slug} className="hub-grid-item">
+						<MotionLink
+							to={`${basePath}/${entry.slug}`}
+							className="hub-card"
+							whileHover={
+								reduced
+									? undefined
+									: {
+											y: -4,
+											transition: { duration: 0.28, ease: motionEase },
+										}
+							}
+						>
+							{label && <span className="hub-card-name">{label}</span>}
+							{desc && <span className="hub-card-desc">{desc}</span>}
+						</MotionLink>
+					</li>
 				);
 			})}
-		</div>
+		</ul>
 	);
 }

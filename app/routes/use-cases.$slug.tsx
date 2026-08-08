@@ -38,9 +38,9 @@ export default function UseCaseDetail() {
 	const crossLinks = entry.relatedLinks;
 
 	return (
-		<PseoLayout breadcrumb={`use-cases / ${entry.slug}`} backHref="/use-cases">
+		<PseoLayout breadcrumb={`${t.pseoCrumbUseCases} / ${entry.slug}`} backHref="/use-cases">
 			<header className="command-hero">
-				<code className="command-label">use case</code>
+				<code className="command-label">{t.pseoEyebrowUseCase}</code>
 				<h1 className="command-heading">{entry.tagline[language]}</h1>
 				<p className="section-body">{renderInlineDocText(entry.description[language])}</p>
 			</header>

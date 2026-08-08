@@ -18,9 +18,9 @@ export default function GlossaryIndex() {
 	const { language, t } = useLanguage();
 
 	return (
-		<PseoLayout breadcrumb="glossary" backHref="/">
+		<PseoLayout breadcrumb={t.pseoCrumbGlossary} backHref="/">
 			<header className="command-hero">
-				<code className="command-label">glossary</code>
+				<code className="command-label">{t.pseoEyebrowGlossary}</code>
 				<h1 className="command-heading">{t.pseoGlossaryHubTitle}</h1>
 				<p className="section-body">{t.pseoGlossaryHubSubtitle}</p>
 			</header>

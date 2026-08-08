@@ -18,9 +18,9 @@ export default function TemplatesIndex() {
 	const { language, t } = useLanguage();
 
 	return (
-		<PseoLayout breadcrumb="templates" backHref="/">
+		<PseoLayout breadcrumb={t.pseoCrumbTemplates} backHref="/">
 			<header className="command-hero">
-				<code className="command-label">commit templates</code>
+				<code className="command-label">{t.pseoEyebrowTemplates}</code>
 				<h1 className="command-heading">{t.pseoTemplatesHubTitle}</h1>
 				<p className="section-body">{t.pseoTemplatesHubSubtitle}</p>
 			</header>

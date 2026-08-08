@@ -18,9 +18,9 @@ export default function IntegrationsIndex() {
 	const { language, t } = useLanguage();
 
 	return (
-		<PseoLayout breadcrumb="integrations" backHref="/">
+		<PseoLayout breadcrumb={t.pseoCrumbIntegrations} backHref="/">
 			<header className="command-hero">
-				<code className="command-label">git-agent integrations</code>
+				<code className="command-label">{t.pseoEyebrowIntegrations}</code>
 				<h1 className="command-heading">{t.pseoIntegrationsHubTitle}</h1>
 				<p className="section-body">{t.pseoIntegrationsHubSubtitle}</p>
 			</header>

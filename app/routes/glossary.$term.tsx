@@ -36,11 +36,11 @@ export default function GlossaryTerm() {
 
 	return (
 		<PseoLayout
-			breadcrumb={`glossary / ${entry.slug}`}
+			breadcrumb={`${t.pseoCrumbGlossary} / ${entry.slug}`}
 			backHref="/glossary"
 		>
 			<header className="command-hero">
-				<code className="command-label">glossary</code>
+				<code className="command-label">{t.pseoEyebrowGlossary}</code>
 				<h1 className="command-heading">{entry.term[language]}</h1>
 				<p className="section-body">{renderInlineDocText(entry.definition[language])}</p>
 			</header>

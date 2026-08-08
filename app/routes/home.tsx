@@ -1,6 +1,6 @@
-import { useState } from "react";
 import { AnimatePresence } from "motion/react";
 import type { MetaFunction } from "react-router";
+import { useSearchParams } from "react-router";
 import { HomeView } from "../components/home-view";
 import { CommandDetail } from "../components/command-detail";
 import { buildMeta } from "../lib/meta";
@@ -19,55 +19,55 @@ export const meta: MetaFunction = () =>
 
 type View = "home" | "init" | "commit" | "related" | "status" | "skills" | "config";
 
+const VIEWS: View[] = ["init", "commit", "related", "status", "skills", "config"];
+
+function isView(v: string | null): v is View {
+	return v !== null && (v === "home" || (VIEWS as string[]).includes(v));
+}
+
 export default function Home() {
-	const [view, setView] = useState<View>("home");
+	const [searchParams, setSearchParams] = useSearchParams();
 	const { t } = useLanguage();
+
+	const raw = searchParams.get("cmd");
+	const view: View = isView(raw) ? raw : "home";
+
+	const open = (cmd: View) => {
+		const next = new URLSearchParams(searchParams);
+		const lang = next.get("lang");
+		next.delete("cmd");
+		if (cmd !== "home") {
+			next.set("cmd", cmd);
+		}
+		if (lang) {
+			next.set("lang", lang);
+		}
+		// Keep `cmd`/`lang` in the URL so back-button, deep-link, and
+		// language state all survive navigation.
+		setSearchParams(next, { replace: cmd === "home" });
+	};
 
 	return (
 		<div className="page">
 			<AnimatePresence mode="wait" initial={true}>
-				{view === "home" && <HomeView key="home" onSelect={setView} />}
+				{view === "home" && <HomeView key="home" onSelect={open} />}
 				{view === "init" && (
-					<CommandDetail
-						key="init"
-						{...t.initData}
-						onBack={() => setView("home")}
-					/>
+					<CommandDetail key="init" {...t.initData} onBack={() => open("home")} />
 				)}
 				{view === "commit" && (
-					<CommandDetail
-						key="commit"
-						{...t.commitData}
-						onBack={() => setView("home")}
-					/>
+					<CommandDetail key="commit" {...t.commitData} onBack={() => open("home")} />
 				)}
 				{view === "related" && (
-					<CommandDetail
-						key="related"
-						{...t.relatedData}
-						onBack={() => setView("home")}
-					/>
+					<CommandDetail key="related" {...t.relatedData} onBack={() => open("home")} />
 				)}
 				{view === "status" && (
-					<CommandDetail
-						key="status"
-						{...t.statusData}
-						onBack={() => setView("home")}
-					/>
+					<CommandDetail key="status" {...t.statusData} onBack={() => open("home")} />
 				)}
 				{view === "skills" && (
-					<CommandDetail
-						key="skills"
-						{...t.skillsData}
-						onBack={() => setView("home")}
-					/>
+					<CommandDetail key="skills" {...t.skillsData} onBack={() => open("home")} />
 				)}
 				{view === "config" && (
-					<CommandDetail
-						key="config"
-						{...t.configData}
-						onBack={() => setView("home")}
-					/>
+					<CommandDetail key="config" {...t.configData} onBack={() => open("home")} />
 				)}
 			</AnimatePresence>
 		</div>

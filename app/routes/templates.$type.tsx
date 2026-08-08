@@ -36,11 +36,11 @@ export default function TemplatesType() {
 
 	return (
 		<PseoLayout
-			breadcrumb={`templates / ${entry.slug}`}
+			breadcrumb={`${t.pseoCrumbTemplates} / ${entry.slug}`}
 			backHref="/templates"
 		>
 			<header className="command-hero">
-				<code className="command-label">commit type</code>
+				<code className="command-label">{t.pseoEyebrowCommitType}</code>
 				<h1 className="command-heading">
 					<span className="command-heading-type">{entry.type[language]}</span>{" "}
 					{t.pseoCommitTemplateSuffix}

@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import { useReducedMotion } from "motion/react";
 
 /** Ease-out quint — matches `--ease-out-quint` in app.css */
@@ -21,3 +22,30 @@ export function motionDuration(baseSeconds: number): number {
 export function useAccessibleMotion(): boolean {
 	return useReducedMotion() === true;
 }
+
+export interface TimedRevealOptions {
+	/** Delay (in scaled seconds) before the element reveals, e.g. after the title types out. */
+	delay?: number;
+}
+
+/**
+ * Deterministic time-based reveal: fires after `delay` (scaled by motionDuration)
+ * regardless of scroll position. Matches the 'title types out, then everything
+ * gradually appears' choreography — content is never left hidden (no blank gaps),
+ * and reduced-motion users see everything immediately.
+ */
+export function useTimedReveal(options?: TimedRevealOptions) {
+	const reduced = useAccessibleMotion();
+	const [shown, setShown] = useState(reduced);
+
+	useEffect(() => {
+		if (reduced) return;
+		const delayMs = motionDuration(options?.delay ?? 0.8) * 1000;
+		const t = window.setTimeout(() => setShown(true), delayMs);
+		return () => window.clearTimeout(t);
+	}, [reduced, options?.delay]);
+
+	return { shown };
+}
+
+

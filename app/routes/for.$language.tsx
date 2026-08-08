@@ -41,11 +41,11 @@ export default function ForLanguage() {
 
 	return (
 		<PseoLayout
-			breadcrumb={`for / ${entry.slug}`}
+			breadcrumb={`${t.pseoCrumbFor} / ${entry.slug}`}
 			backHref="/for"
 		>
 			<header className="command-hero">
-				<code className="command-label">git-agent for {entry.language[language]}</code>
+				<code className="command-label">{t.pseoEyebrowFor} {entry.language[language]}</code>
 				<h1 className="command-heading">{entry.tagline[language]}</h1>
 				<p className="section-body">{renderInlineDocText(entry.description[language])}</p>
 			</header>

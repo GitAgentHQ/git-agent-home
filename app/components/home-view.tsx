@@ -2,7 +2,7 @@ import { Link } from "react-router";
 import { motion } from "motion/react";
 import type { ReactNode } from "react";
 
-import { motionDuration, motionEase, useAccessibleMotion } from "../utils/motion-prefs";
+import { motionDuration, motionEase, useAccessibleMotion, useTimedReveal } from "../utils/motion-prefs";
 import { renderInlineDocText } from "../utils/inline-doc-text";
 
 const MotionLink = motion.create(Link);
@@ -10,10 +10,12 @@ import { CodeBlock } from "./code-block";
 import { Barcode } from "./barcode";
 import type { BarConfig } from "./barcode";
 import { DotsCircle, DotsNoiseFilter, DotsSquare } from "./pattern";
+import { CoChangeGraph } from "./cochange-graph";
 import { HomeFooter } from "./home-footer";
 import { LangSwitch } from "./lang-switch";
+import { ProofStrip } from "./proof-strip";
 import { useLanguage } from "../contexts/language-context";
-import { GITHUB_URL } from "../lib/constants";
+import { GITHUB_URL, INSTALL_URL } from "../lib/constants";
 
 const COLOR_WHITE_75 = "rgba(255, 255, 255, 0.75)";
 const COLOR_WHITE_18 = "rgba(255, 255, 255, 0.18)";
@@ -117,21 +119,30 @@ const BARS_CONFIG: BarConfig[] = [
 
 // Cost for 1,000 commits at ~4,200 input + ~400 output tokens each.
 // Based on actual usage data (255 commits, 1.17M tokens, $0.33 with Gemini 3.1 Flash Lite).
-// Bar widths relative to Claude Opus 4.5 ($24.46 = 100%).
+// Bar widths relative to Claude Fable 5 ($62.00 = 100%). Source: provider pricing pages, Aug 2026.
 const PRICING_ROWS = [
-	{ name: "Claude Opus 4.5",       cost: "$24.46", bar: 100 },
-	{ name: "Claude Sonnet 4.6",     cost: "$14.67", bar: 60  },
-	{ name: "GPT-5.4",               cost: "$12.89", bar: 53  },
-	{ name: "Gemini 3.1 Pro",        cost: "$10.31", bar: 42  },
-	{ name: "Gemini 3.1 Flash Lite", cost: "$1.29",  bar: 5   },
+	{ name: "Claude Fable 5",     cost: "$62.00", bar: 100 },
+	{ name: "Claude Opus 5",      cost: "$31.00", bar: 50  },
+	{ name: "Claude Sonnet 5",    cost: "$18.60", bar: 30  },
+	{ name: "GPT-5.6 (sol)",      cost: "$33.00", bar: 53  },
+	{ name: "Gemini 3.6 Flash",   cost: "$9.30",  bar: 15  },
 ];
 
 function PricingCompare() {
 	const { t } = useLanguage();
 	const reduced = useAccessibleMotion();
+	const { shown } = useTimedReveal({ delay: 1.4 });
 
 	return (
-		<div className="pricing-compare">
+		<motion.section
+			className="pricing-compare"
+			initial={reduced ? false : { opacity: 0, y: 12 }}
+			animate={shown ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
+			transition={{
+				duration: reduced ? 0 : motionDuration(0.5),
+				ease: motionEase,
+			}}
+		>
 			<h2 className="pricing-compare-title">{t.pricingTitle}</h2>
 			<div className="pricing-compare-header">{t.pricingSubtitle}</div>
 			<div className="pricing-compare-list">
@@ -142,12 +153,7 @@ function PricingCompare() {
 							<motion.div
 								className="pricing-compare-bar"
 								initial={reduced ? false : { scaleX: 0 }}
-								{...(reduced
-									? { animate: { scaleX: bar / 100 } }
-									: {
-											whileInView: { scaleX: bar / 100 },
-											viewport: { once: true, margin: "-40px" },
-										})}
+								animate={reduced || shown ? { scaleX: bar / 100 } : { scaleX: 0 }}
 								transition={{
 									duration: reduced ? 0 : motionDuration(1.25),
 									ease: motionEase,
@@ -165,17 +171,50 @@ function PricingCompare() {
 				</div>
 			</div>
 			<p className="pricing-compare-note">{t.pricingNote}</p>
-		</div>
+		</motion.section>
 	);
 }
 
 function GraphPitch() {
 	const { t } = useLanguage();
+	const reduced = useAccessibleMotion();
+	const { shown } = useTimedReveal({ delay: 1.0 });
+
 	return (
-		<section className="graph-pitch">
-			<h2 className="graph-pitch-title">{t.graphPitchTitle}</h2>
-			<p className="graph-pitch-body">{renderInlineDocText(t.graphPitchBody)}</p>
-		</section>
+		<motion.section
+			className="graph-pitch"
+			initial={reduced ? false : { opacity: 0, y: 12 }}
+			animate={shown ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
+			transition={{
+				duration: reduced ? 0 : motionDuration(0.5),
+				ease: motionEase,
+			}}
+		>
+			<motion.h2
+				className="graph-pitch-title"
+				initial={reduced ? false : { opacity: 0, y: 12 }}
+				animate={shown ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
+				transition={{
+					duration: reduced ? 0 : motionDuration(0.5),
+					ease: motionEase,
+				}}
+			>
+				{t.graphPitchTitle}
+			</motion.h2>
+			<motion.p
+				className="graph-pitch-body"
+				initial={reduced ? false : { opacity: 0, y: 10 }}
+				animate={shown ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+				transition={{
+					duration: reduced ? 0 : motionDuration(0.5),
+					ease: motionEase,
+					delay: reduced ? 0 : motionDuration(0.08),
+				}}
+			>
+				{renderInlineDocText(t.graphPitchBody)}
+			</motion.p>
+			<CoChangeGraph />
+		</motion.section>
 	);
 }
 
@@ -190,11 +229,12 @@ const entryGridContainer = {
 };
 
 const entryGridItem = {
-	hidden: { opacity: 0, y: 14 },
+	hidden: { opacity: 0, y: 18, rotate: -0.6 },
 	visible: {
 		opacity: 1,
 		y: 0,
-		transition: { duration: motionDuration(0.45), ease: motionEase },
+		rotate: 0,
+		transition: { duration: motionDuration(0.5), ease: motionEase },
 	},
 };
 
@@ -206,32 +246,101 @@ const exploreStagger = {
 };
 
 const exploreItem = {
-	hidden: { opacity: 0, y: 10 },
+	hidden: { opacity: 0, x: 16 },
 	visible: {
 		opacity: 1,
-		y: 0,
-		transition: { duration: motionDuration(0.4), ease: motionEase },
+		x: 0,
+		transition: { duration: motionDuration(0.42), ease: motionEase },
 	},
 };
 
 function InstallCopyBlock() {
 	const { t } = useLanguage();
+	const reduced = useAccessibleMotion();
 
 	return (
-		<div className="home-install">
+		<motion.div
+			className="home-install"
+			initial={reduced ? false : { opacity: 0, y: 12 }}
+			animate={{ opacity: 1, y: 0 }}
+			transition={{
+				duration: reduced ? 0 : motionDuration(0.55),
+				ease: motionEase,
+				delay: reduced ? 0 : motionDuration(0.66),
+			}}
+		>
 			<p className="home-install-hint">{t.homeInstallHint}</p>
 			<CodeBlock code={t.homeInstallCopyLine} copyable />
-		</div>
+			<a className="home-install-alt" href={INSTALL_URL}>
+				{t.homeInstallAlt}
+			</a>
+		</motion.div>
+	);
+}
+
+/**
+ * Terminal-boot title: a `$` prompt, then the product name types out
+ * char-by-char with a blinking block caret that stays after typing finishes.
+ * One authored focal moment — respects reduced-motion (renders full title,
+ * no typing, caret hidden).
+ */
+function HeroTitle() {
+	const { t } = useLanguage();
+	const reduced = useAccessibleMotion();
+	const title = t.homeTitle;
+	const chars = title.split("");
+
+	if (reduced) {
+		return (
+			<h1 className="home-title">
+				<span className="home-title-prompt" aria-hidden="true">
+					$
+				</span>
+				{title}
+			</h1>
+		);
+	}
+
+	return (
+		<motion.h1
+			className="home-title"
+			initial={{ opacity: 0, y: 16 }}
+			animate={{ opacity: 1, y: 0 }}
+			transition={{ duration: motionDuration(0.4), ease: motionEase }}
+		>
+			<span className="home-title-prompt" aria-hidden="true">
+				$
+			</span>
+			{chars.map((ch, i) => (
+				<motion.span
+					key={i}
+					className="home-title-char"
+					aria-hidden="true"
+					initial={{ opacity: 0 }}
+					animate={{ opacity: 1 }}
+					transition={{
+						duration: 0.01,
+						delay: i * motionDuration(0.055),
+					}}
+				>
+					{ch}
+				</motion.span>
+			))}
+			<span className="home-title-caret" aria-hidden="true" />
+			<span className="home-title-sr">{title}</span>
+		</motion.h1>
 	);
 }
 
 export function HomeView({ onSelect }: HomeViewProps) {
 	const { t } = useLanguage();
 	const reduced = useAccessibleMotion();
+	const { shown: gridShown } = useTimedReveal({ delay: 1.8 });
 
 	return (
-		<motion.div
+		<motion.main
 			className="home-view"
+			id="main-content"
 			initial={reduced ? false : { opacity: 0, y: 16 }}
 			animate={{
 				opacity: 1,
@@ -253,7 +362,7 @@ export function HomeView({ onSelect }: HomeViewProps) {
 						target="_blank"
 						rel="noopener noreferrer"
 						className="home-nav-link"
-						aria-label="View on GitHub"
+						aria-label={t.viewOnGitHub}
 						whileHover={reduced ? undefined : { color: COLOR_WHITE_75 }}
 						transition={{ duration: 0.28, ease: motionEase }}
 					>
@@ -265,16 +374,30 @@ export function HomeView({ onSelect }: HomeViewProps) {
 				</div>
 			</nav>
 			<header className="home-header">
-				<h1 className="home-title">{t.homeTitle}</h1>
-				<p className="home-subtitle">{t.homeSubtitle}</p>
+				<HeroTitle />
+				<motion.p
+					className="home-subtitle"
+					initial={reduced ? false : { opacity: 0, y: 12 }}
+					animate={{ opacity: 1, y: 0 }}
+					transition={{
+						duration: reduced ? 0 : motionDuration(0.55),
+						ease: motionEase,
+						delay: reduced ? 0 : motionDuration(0.58),
+					}}
+				>
+					{t.homeSubtitle}
+				</motion.p>
 				<InstallCopyBlock />
 			</header>
+			<ProofStrip />
+			<GraphPitch />
+			<PricingCompare />
 
 			<motion.div
 				className="entry-grid"
 				variants={reduced ? undefined : entryGridContainer}
 				initial={reduced ? false : "hidden"}
-				animate={reduced ? false : "visible"}
+				animate={reduced || gridShown ? "visible" : "hidden"}
 			>
 				<motion.div
 					className="entry-grid-cell"
@@ -373,18 +496,16 @@ export function HomeView({ onSelect }: HomeViewProps) {
 					/>
 				</motion.div>
 			</motion.div>
-
-			<GraphPitch />
-			<PricingCompare />
 			<ExploreSection />
 			<HomeFooter />
-		</motion.div>
+		</motion.main>
 	);
 }
 
 function ExploreSection() {
 	const { t } = useLanguage();
 	const reduced = useAccessibleMotion();
+	const { shown } = useTimedReveal({ delay: 2.2 });
 
 	const cards = [
 		{
@@ -442,7 +563,7 @@ function ExploreSection() {
 
 	return (
 		<div className="explore-section">
-			<p className="explore-title">{t.exploreTitle}</p>
+			<h2 className="explore-title">{t.exploreTitle}</h2>
 			{reduced ? (
 				<div className="explore-grid">{exploreLinks}</div>
 			) : (
@@ -450,8 +571,7 @@ function ExploreSection() {
 					className="explore-grid"
 					variants={exploreStagger}
 					initial="hidden"
-					whileInView="visible"
-					viewport={{ once: true, margin: "-20px" }}
+					animate={shown ? "visible" : "hidden"}
 				>
 					{exploreLinks}
 				</motion.div>

@@ -38,11 +38,11 @@ export default function VsCompetitor() {
 
 	return (
 		<PseoLayout
-			breadcrumb={`vs / ${entry.slug}`}
+			breadcrumb={`${t.pseoCrumbVs} / ${entry.slug}`}
 			backHref="/vs"
 		>
 			<header className="command-hero">
-				<code className="command-label">comparison</code>
+				<code className="command-label">{t.pseoEyebrowComparison}</code>
 				<h1 className="command-heading">{entry.tagline[language]}</h1>
 				<p className="section-body">{renderInlineDocText(entry.competitorDescription[language])}</p>
 			</header>

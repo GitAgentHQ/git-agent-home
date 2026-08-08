@@ -91,14 +91,7 @@ export function DotsNoiseFilter() {
 						numOctaves="2"
 						seed="11"
 						result="noise"
-					>
-						<animate
-							attributeName="baseFrequency"
-							dur="9s"
-							values="0.018;0.042;0.018"
-							repeatCount="indefinite"
-						/>
-					</feTurbulence>
+					/>
 					<feDisplacementMap
 						in="SourceGraphic"
 						in2="noise"
@@ -122,14 +115,7 @@ export function DotsNoiseFilter() {
 						numOctaves="3"
 						seed="4"
 						result="noise"
-					>
-						<animate
-							attributeName="baseFrequency"
-							dur="5s"
-							values="0.05;0.09;0.05"
-							repeatCount="indefinite"
-						/>
-					</feTurbulence>
+					/>
 					<feDisplacementMap
 						in="SourceGraphic"
 						in2="noise"

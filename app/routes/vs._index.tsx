@@ -18,9 +18,9 @@ export default function VsIndex() {
 	const { language, t } = useLanguage();
 
 	return (
-		<PseoLayout breadcrumb="vs" backHref="/">
+		<PseoLayout breadcrumb={t.pseoCrumbVs} backHref="/">
 			<header className="command-hero">
-				<code className="command-label">git-agent vs</code>
+				<code className="command-label">{t.pseoEyebrowVs}</code>
 				<h1 className="command-heading">{t.pseoVsHubTitle}</h1>
 				<p className="section-body">{t.pseoVsHubSubtitle}</p>
 			</header>
