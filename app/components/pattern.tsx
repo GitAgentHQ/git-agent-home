@@ -1,52 +1,158 @@
-import { motion, useReducedMotion } from "motion/react";
-import type { ReactElement } from "react";
+import type { CSSProperties, ReactNode } from "react";
 
-/** Logical coordinate space for dot fields (matches prior CSS box size). */
+/** Logical coordinate space for the reusable command-card dot fields. */
 const DOT_FIELD_SIZE = 220;
 const DOT_STEP = 16;
 const DOT_R_MAX = 3;
 const DOT_R_MIN = 1.12;
-/**
- * Inner share of the radius (0→dMax): dots stay at full size for a solid-looking core;
- * only the outer ring tapers toward DOT_R_MIN.
- */
 const DOT_SOLID_CORE_FRACTION = 0.66;
-/** Normalized distance to circular edge from center (half of field). */
 const D_MAX_CIRCLE = DOT_FIELD_SIZE / 2;
-/** Normalized distance to square corner from center. */
 const D_MAX_SQUARE = (DOT_FIELD_SIZE / 2) * Math.SQRT2;
 
-function buildRadialDotElements(dMax: number): ReactElement[] {
-	const cx = DOT_FIELD_SIZE / 2;
-	const cy = DOT_FIELD_SIZE / 2;
-	const coreEnd = dMax * DOT_SOLID_CORE_FRACTION;
-	const fadeSpan = Math.max(dMax - coreEnd, 1e-6);
-	const out: ReactElement[] = [];
-	for (let y = DOT_STEP / 2; y < DOT_FIELD_SIZE; y += DOT_STEP) {
-		for (let x = DOT_STEP / 2; x < DOT_FIELD_SIZE; x += DOT_STEP) {
-			const d = Math.hypot(x - cx, y - cy);
-			let r: number;
-			if (d <= coreEnd) {
-				r = DOT_R_MAX;
-			} else {
-				const t = Math.min(1, (d - coreEnd) / fadeSpan);
-				/* Ease-out in the outer band only */
-				r = DOT_R_MIN + (DOT_R_MAX - DOT_R_MIN) * (1 - t) * (1 - t);
-			}
-			out.push(
-				<circle key={`${x}-${y}`} cx={x} cy={y} r={r} fill="currentColor" />,
-			);
-		}
-	}
-	return out;
+export type EntryPatternMotion =
+	| "init"
+	| "commit"
+	| "related"
+	| "status"
+	| "skills"
+	| "config";
+
+export type EntryPatternShape =
+	| "seed"
+	| "ledger"
+	| "diamond"
+	| "capsule"
+	| "hexagon"
+	| "chamfer";
+
+interface Dot {
+	key: string;
+	x: number;
+	y: number;
+	radius: number;
+	row: number;
+	column: number;
+	distance: number;
 }
 
-/** Dots shrink toward circular boundary (init card, circle-masked square variant). */
-const RADIAL_DOTS_CIRCLE = buildRadialDotElements(D_MAX_CIRCLE);
-/** Dots shrink toward square corners (commit card, rounded square). */
-const RADIAL_DOTS_SQUARE = buildRadialDotElements(D_MAX_SQUARE);
+interface DotGroup {
+	key: number;
+	dots: Dot[];
+}
 
-function DotFieldSvg({ children }: { children: React.ReactNode }) {
+interface AnimatedDotGroup extends DotGroup {
+	style: DotGroupStyle;
+}
+
+interface DotGroupStyle extends CSSProperties {
+	"--pattern-delay": string;
+	"--pattern-shift-x"?: string;
+	"--pattern-shift-y"?: string;
+}
+
+function buildRadialDots(dMax: number): Dot[] {
+	const center = DOT_FIELD_SIZE / 2;
+	const coreEnd = dMax * DOT_SOLID_CORE_FRACTION;
+	const fadeSpan = Math.max(dMax - coreEnd, 1e-6);
+	const dots: Dot[] = [];
+
+	for (let y = DOT_STEP / 2, row = 0; y < DOT_FIELD_SIZE; y += DOT_STEP, row += 1) {
+		for (let x = DOT_STEP / 2, column = 0; x < DOT_FIELD_SIZE; x += DOT_STEP, column += 1) {
+			const distance = Math.hypot(x - center, y - center);
+			const taper = Math.min(1, Math.max(0, (distance - coreEnd) / fadeSpan));
+			const radius =
+				distance <= coreEnd
+					? DOT_R_MAX
+					: DOT_R_MIN + (DOT_R_MAX - DOT_R_MIN) * (1 - taper) * (1 - taper);
+
+			dots.push({
+				key: `${x}-${y}`,
+				x,
+				y,
+				radius,
+				row,
+				column,
+				distance,
+			});
+		}
+	}
+
+	return dots;
+}
+
+function groupDots(dots: Dot[], getKey: (dot: Dot) => number): DotGroup[] {
+	const groups = new Map<number, Dot[]>();
+
+	for (const dot of dots) {
+		const key = getKey(dot);
+		const group = groups.get(key);
+
+		if (group) {
+			group.push(dot);
+		} else {
+			groups.set(key, [dot]);
+		}
+	}
+
+	return [...groups.entries()]
+		.sort(([left], [right]) => left - right)
+		.map(([key, groupedDots]) => ({ key, dots: groupedDots }));
+}
+
+function withTiming(
+	groups: DotGroup[],
+	getStyle: (group: DotGroup) => DotGroupStyle,
+): AnimatedDotGroup[] {
+	return groups.map((group) => ({ ...group, style: getStyle(group) }));
+}
+
+function getMotionGroups(dots: Dot[], motion: EntryPatternMotion): AnimatedDotGroup[] {
+	switch (motion) {
+		case "init":
+			return withTiming(
+				groupDots(dots, (dot) => Math.min(5, Math.floor(dot.distance / 20))),
+				(group) => ({ "--pattern-delay": `${group.key * 46}ms` }),
+			);
+		case "commit":
+			return withTiming(
+				groupDots(dots, (dot) => dot.row),
+				(group) => ({ "--pattern-delay": `${group.key * 24}ms` }),
+			);
+		case "related":
+			return withTiming(
+				groupDots(dots, (dot) => Math.floor((dot.row + dot.column) / 2)),
+				(group) => ({ "--pattern-delay": `${group.key * 32}ms` }),
+			);
+		case "status":
+			return withTiming(
+				groupDots(dots, (dot) => Math.min(3, Math.floor(dot.distance / 34))),
+				(group) => ({ "--pattern-delay": `${group.key * 48}ms` }),
+			);
+		case "skills":
+			return withTiming(
+				groupDots(dots, (dot) => dot.column),
+				(group) => ({ "--pattern-delay": `${group.key * 24}ms` }),
+			);
+		case "config":
+			return withTiming(
+				groupDots(dots, (dot) => (dot.row % 2) * 2 + (dot.column % 2)),
+				(group) => ({
+					"--pattern-delay": `${group.key * 54}ms`,
+					"--pattern-shift-x": `${group.key % 2 === 0 ? -8 : 8}px`,
+					"--pattern-shift-y": `${group.key < 2 ? -6 : 6}px`,
+				}),
+			);
+	}
+}
+
+const RADIAL_DOTS_CIRCLE = buildRadialDots(D_MAX_CIRCLE);
+const RADIAL_DOTS_SQUARE = buildRadialDots(D_MAX_SQUARE);
+
+function getDotsForShape(shape: EntryPatternShape): Dot[] {
+	return shape === "seed" || shape === "capsule" ? RADIAL_DOTS_CIRCLE : RADIAL_DOTS_SQUARE;
+}
+
+function DotFieldSvg({ children }: { children: ReactNode }) {
 	return (
 		<svg
 			className="pattern-dots-svg"
@@ -61,165 +167,35 @@ function DotFieldSvg({ children }: { children: React.ReactNode }) {
 	);
 }
 
-interface DotsSquareProps {
-	rounded?: boolean;
-	circle?: boolean;
+interface DotFieldProps {
+	shape: EntryPatternShape;
+	dots: Dot[];
+	motion: EntryPatternMotion;
 }
 
-export function DotsNoiseFilter() {
-	return (
-		<svg
-			className="pattern-filter-svg"
-			width="0"
-			height="0"
-			aria-hidden="true"
-			focusable="false"
-		>
-			<defs>
-				{/* Circle: slow large-scale warp — amplifies the outward dissolve */}
-				<filter
-					id="dots-displace-circle"
-					x="-12%"
-					y="-12%"
-					width="124%"
-					height="124%"
-					colorInterpolationFilters="sRGB"
-				>
-					<feTurbulence
-						type="turbulence"
-						baseFrequency="0.025"
-						numOctaves="2"
-						seed="11"
-						result="noise"
-					/>
-					<feDisplacementMap
-						in="SourceGraphic"
-						in2="noise"
-						scale="10"
-						xChannelSelector="R"
-						yChannelSelector="G"
-					/>
-				</filter>
-				{/* Square: faster fine-grain turbulence — gives the pulse a shimmering texture */}
-				<filter
-					id="dots-displace-square"
-					x="-8%"
-					y="-8%"
-					width="116%"
-					height="116%"
-					colorInterpolationFilters="sRGB"
-				>
-					<feTurbulence
-						type="fractalNoise"
-						baseFrequency="0.065"
-						numOctaves="3"
-						seed="4"
-						result="noise"
-					/>
-					<feDisplacementMap
-						in="SourceGraphic"
-						in2="noise"
-						scale="5"
-						xChannelSelector="R"
-						yChannelSelector="G"
-					/>
-				</filter>
-			</defs>
-		</svg>
-	);
-}
-
-export function DotsCircle() {
-	const reduced = useReducedMotion();
-	if (reduced) {
-		return (
-			<div className="pattern-dots-circle" aria-hidden="true">
-				<DotFieldSvg>{RADIAL_DOTS_CIRCLE}</DotFieldSvg>
-			</div>
-		);
-	}
+function DotField({ shape, dots, motion }: DotFieldProps) {
+	const groups = getMotionGroups(dots, motion);
 
 	return (
-		<motion.div
-			className="pattern-dots-circle"
-			aria-hidden="true"
-			transition={{
-				filter: { duration: 0 },
-				opacity: { duration: 0.3, ease: [0.22, 1, 0.36, 1] },
-			}}
-			variants={{
-				hover: {
-					filter: "url(#dots-displace-circle)",
-					opacity: [1, 0.28, 1],
-					transition: {
-						filter: { duration: 0 },
-						opacity: { duration: 8, ease: [0.4, 0, 0.6, 1], repeat: Infinity, times: [0, 0.55, 1] },
-					},
-				},
-			}}
-		>
+		<div className={`pattern-dots pattern-dots--${shape}`} data-pattern-motion={motion} aria-hidden="true">
 			<DotFieldSvg>
-				<motion.g
-					style={{ transformOrigin: "110px 110px" }}
-					variants={{
-						hover: {
-							scale: [1, 1.12, 1],
-							transition: {
-								duration: 8,
-								ease: [0.4, 0, 0.6, 1],
-								repeat: Infinity,
-								times: [0, 0.55, 1],
-							},
-						},
-					}}
-				>
-					{RADIAL_DOTS_CIRCLE}
-				</motion.g>
+				{groups.map((group) => (
+					<g className="pattern-dot-group" key={group.key} style={group.style}>
+						{group.dots.map((dot) => (
+							<circle key={dot.key} cx={dot.x} cy={dot.y} r={dot.radius} fill="currentColor" />
+						))}
+					</g>
+				))}
 			</DotFieldSvg>
-		</motion.div>
+		</div>
 	);
 }
 
-export function DotsSquare({ rounded, circle }: DotsSquareProps) {
-	const reduced = useReducedMotion();
-	let className = "pattern-dots-square";
-	if (circle) className = "pattern-dots-square-circle";
-	else if (rounded) className = "pattern-dots-square-rounded";
-
-	const dots = circle ? RADIAL_DOTS_CIRCLE : RADIAL_DOTS_SQUARE;
-
-	if (reduced) {
-		return (
-			<div className={className} aria-hidden="true">
-				<DotFieldSvg>{dots}</DotFieldSvg>
-			</div>
-		);
-	}
-
-	return (
-		<motion.div
-			className={className}
-			aria-hidden="true"
-			transition={{
-				filter: { duration: 0 },
-				scale: { duration: 0.3, ease: [0.22, 1, 0.36, 1] },
-				opacity: { duration: 0.3, ease: [0.22, 1, 0.36, 1] },
-			}}
-			variants={{
-				hover: {
-					filter: "url(#dots-displace-square)",
-					scale: [1, 1.08, 1],
-					opacity: [1, 0.75, 1],
-					transition: {
-						filter: { duration: 0 },
-						scale: { duration: 7.6, ease: [0.22, 1, 0.36, 1], repeat: Infinity, times: [0, 0.3, 1] },
-						opacity: { duration: 7.6, ease: [0.22, 1, 0.36, 1], repeat: Infinity, times: [0, 0.3, 1] },
-					},
-				},
-			}}
-		>
-			<DotFieldSvg>{dots}</DotFieldSvg>
-		</motion.div>
-	);
+interface DotsPatternProps {
+	motion: EntryPatternMotion;
+	shape: EntryPatternShape;
 }
 
+export function DotsPattern({ motion, shape }: DotsPatternProps) {
+	return <DotField shape={shape} dots={getDotsForShape(shape)} motion={motion} />;
+}

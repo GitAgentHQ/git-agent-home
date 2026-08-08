@@ -417,6 +417,12 @@ a:focus-visible {
 	stroke-linecap: round;
 }
 
+.cochange-edge-trace {
+	stroke: #111;
+	stroke-width: 2;
+	stroke-linecap: round;
+}
+
 .cochange-hub-outer {
 	fill: none;
 	stroke: #111;
@@ -426,6 +432,12 @@ a:focus-visible {
 
 .cochange-hub-inner {
 	fill: #111;
+}
+
+.cochange-hub-emit {
+	fill: none;
+	stroke: #111;
+	stroke-width: 1;
 }
 
 .cochange-hub-badge-bg {
@@ -448,7 +460,7 @@ a:focus-visible {
 	letter-spacing: 0.1em;
 }
 
-.cochange-pulse {
+.cochange-signal {
 	fill: #111;
 }
 
@@ -716,12 +728,6 @@ a:focus-visible {
 	display: flex;
 	justify-content: center;
 	margin: 20px 0;
-}
-
-/* Commit card: square dot pattern slightly under the init card circle (220px) */
-.entry-card-graphic .pattern-dots-square {
-	width: 184px;
-	height: 184px;
 }
 
 .entry-card-divider {
@@ -1032,13 +1038,6 @@ a:focus-visible {
 }
 
 /* ---- Patterns ---- */
-.pattern-filter-svg {
-	position: absolute;
-	width: 0;
-	height: 0;
-	overflow: hidden;
-	pointer-events: none;
-}
 
 .pattern-dots-svg {
 	display: block;
@@ -1046,23 +1045,170 @@ a:focus-visible {
 	height: 100%;
 }
 
-.pattern-dots-circle {
+.pattern-dots {
 	width: 220px;
 	height: 220px;
-	border-radius: 50%;
 	overflow: hidden;
 }
 
-.pattern-dots-square {
-	width: 220px;
-	height: 220px;
+.pattern-dots--seed {
+	-webkit-clip-path: circle(48% at 50% 50%);
+	clip-path: circle(48% at 50% 50%);
 }
 
-.pattern-dots-square-rounded {
-	width: 220px;
-	height: 220px;
-	border-radius: 14px;
-	overflow: hidden;
+.pattern-dots--ledger {
+	-webkit-clip-path: inset(20% 0 round 3px);
+	clip-path: inset(20% 0 round 3px);
+}
+
+.pattern-dots--diamond {
+	-webkit-clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+	clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+}
+
+.pattern-dots--capsule {
+	-webkit-clip-path: ellipse(48% 34% at 50% 50%);
+	clip-path: ellipse(48% 34% at 50% 50%);
+}
+
+.pattern-dots--hexagon {
+	-webkit-clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%);
+	clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%);
+}
+
+.pattern-dots--chamfer {
+	-webkit-clip-path: polygon(12% 0, 88% 0, 100% 12%, 100% 88%, 88% 100%, 12% 100%, 0 88%, 0 12%);
+	clip-path: polygon(12% 0, 88% 0, 100% 12%, 100% 88%, 88% 100%, 12% 100%, 0 88%, 0 12%);
+}
+
+.pattern-dot-group {
+	transform-box: fill-box;
+	transform-origin: center;
+}
+
+/* Each command reshapes its own existing dots; no extra graphic layers are added. */
+@media (prefers-reduced-motion: no-preference) {
+	.entry-card[data-entry-motion="init"]:is(:hover, :focus-visible) .pattern-dot-group {
+		animation: entry-init-bloom 420ms var(--pattern-delay) cubic-bezier(0.16, 1, 0.3, 1) both;
+	}
+
+	.entry-card[data-entry-motion="commit"]:is(:hover, :focus-visible) .pattern-dot-group {
+		animation: entry-commit-rows 360ms var(--pattern-delay) cubic-bezier(0.16, 1, 0.3, 1) both;
+	}
+
+	.entry-card[data-entry-motion="related"]:is(:hover, :focus-visible) .pattern-dot-group {
+		animation: entry-related-wave 420ms var(--pattern-delay) cubic-bezier(0.16, 1, 0.3, 1) both;
+	}
+
+	.entry-card[data-entry-motion="status"]:is(:hover, :focus-visible) .pattern-dot-group {
+		animation: entry-status-pulse 520ms var(--pattern-delay) cubic-bezier(0.16, 1, 0.3, 1) both;
+	}
+
+	.entry-card[data-entry-motion="skills"]:is(:hover, :focus-visible) .pattern-dot-group {
+		animation: entry-skills-columns 340ms var(--pattern-delay) cubic-bezier(0.16, 1, 0.3, 1) both;
+	}
+
+	.entry-card[data-entry-motion="config"]:is(:hover, :focus-visible) .pattern-dot-group {
+		animation: entry-config-snap 420ms var(--pattern-delay) cubic-bezier(0.16, 1, 0.3, 1) both;
+	}
+}
+
+@keyframes entry-init-bloom {
+	0% {
+		opacity: 0.44;
+		transform: scale(0.72);
+	}
+	68% {
+		opacity: 1;
+		transform: scale(1.035);
+	}
+	100% {
+		opacity: 1;
+		transform: scale(1);
+	}
+}
+
+@keyframes entry-commit-rows {
+	0% {
+		opacity: 0.48;
+		transform: translateY(-10px) scaleY(0.88);
+	}
+	68% {
+		opacity: 1;
+		transform: translateY(1px) scaleY(1.01);
+	}
+	100% {
+		opacity: 1;
+		transform: translateY(0) scaleY(1);
+	}
+}
+
+@keyframes entry-related-wave {
+	0% {
+		opacity: 0.38;
+		transform: translate(-10px, 7px) scale(0.96);
+	}
+	70% {
+		opacity: 1;
+		transform: translate(2px, -1px) scale(1.01);
+	}
+	100% {
+		opacity: 1;
+		transform: translate(0) scale(1);
+	}
+}
+
+@keyframes entry-status-pulse {
+	0% {
+		opacity: 0.52;
+		transform: scale(0.82);
+	}
+	22% {
+		opacity: 1;
+		transform: scale(1.1);
+	}
+	42% {
+		opacity: 0.9;
+		transform: scale(0.98);
+	}
+	61% {
+		opacity: 1;
+		transform: scale(1.05);
+	}
+	100% {
+		opacity: 1;
+		transform: scale(1);
+	}
+}
+
+@keyframes entry-skills-columns {
+	0% {
+		opacity: 0.32;
+		transform: translateX(-10px) scaleX(0.78);
+	}
+	74% {
+		opacity: 1;
+		transform: translateX(1px) scaleX(1.01);
+	}
+	100% {
+		opacity: 1;
+		transform: translateX(0) scaleX(1);
+	}
+}
+
+@keyframes entry-config-snap {
+	0% {
+		opacity: 0.48;
+		transform: translate(var(--pattern-shift-x), var(--pattern-shift-y));
+	}
+	72% {
+		opacity: 1;
+		transform: translate(1px, -1px);
+	}
+	100% {
+		opacity: 1;
+		transform: translate(0);
+	}
 }
 
 /* ---- Barcode ---- */
@@ -1078,14 +1224,6 @@ a:focus-visible {
 	flex-shrink: 0;
 	background: rgba(0, 0, 0, 0.34);
 	border-radius: 0.5px;
-}
-
-/* ---- Dots square circle variant ---- */
-.pattern-dots-square-circle {
-	width: 220px;
-	height: 220px;
-	border-radius: 50%;
-	overflow: hidden;
 }
 
 /* ---- Code block (unified) ---- */

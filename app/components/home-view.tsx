@@ -9,7 +9,8 @@ const MotionLink = motion.create(Link);
 import { CodeBlock } from "./code-block";
 import { Barcode } from "./barcode";
 import type { BarConfig } from "./barcode";
-import { DotsCircle, DotsNoiseFilter, DotsSquare } from "./pattern";
+import { DotsPattern } from "./pattern";
+import type { EntryPatternMotion } from "./pattern";
 import { CoChangeGraph } from "./cochange-graph";
 import { HomeFooter } from "./home-footer";
 import { LangSwitch } from "./lang-switch";
@@ -353,7 +354,6 @@ export function HomeView({ onSelect }: HomeViewProps) {
 				transition: { duration: reduced ? 0 : motionDuration(0.28), ease: motionEase },
 			}}
 		>
-			<DotsNoiseFilter />
 			<nav className="home-nav">
 				<div className="home-nav-spacer" />
 				<div className="home-nav-actions">
@@ -408,7 +408,8 @@ export function HomeView({ onSelect }: HomeViewProps) {
 						title={t.initTitle}
 						description={t.initDescription}
 						features={t.initFeatures}
-						pattern={<DotsCircle />}
+						pattern={<DotsPattern motion="init" shape="seed" />}
+						graphicMotion="init"
 						bars={BARS_INIT}
 						serial="GA-001"
 						onClick={() => onSelect("init")}
@@ -424,7 +425,8 @@ export function HomeView({ onSelect }: HomeViewProps) {
 						title={t.commitTitle}
 						description={t.commitDescription}
 						features={t.commitFeatures}
-						pattern={<DotsSquare />}
+						pattern={<DotsPattern motion="commit" shape="ledger" />}
+						graphicMotion="commit"
 						bars={BARS_COMMIT}
 						serial="GA-002"
 						onClick={() => onSelect("commit")}
@@ -440,7 +442,8 @@ export function HomeView({ onSelect }: HomeViewProps) {
 						title={t.relatedTitle}
 						description={t.relatedDescription}
 						features={t.relatedFeatures}
-						pattern={<DotsSquare rounded />}
+						pattern={<DotsPattern motion="related" shape="diamond" />}
+						graphicMotion="related"
 						bars={BARS_RELATED}
 						serial="GA-003"
 						onClick={() => onSelect("related")}
@@ -456,7 +459,8 @@ export function HomeView({ onSelect }: HomeViewProps) {
 						title={t.statusTitle}
 						description={t.statusDescription}
 						features={t.statusFeatures}
-						pattern={<DotsSquare circle />}
+						pattern={<DotsPattern motion="status" shape="capsule" />}
+						graphicMotion="status"
 						bars={BARS_STATUS}
 						serial="GA-004"
 						onClick={() => onSelect("status")}
@@ -472,7 +476,8 @@ export function HomeView({ onSelect }: HomeViewProps) {
 						title={t.skillsTitle}
 						description={t.skillsDescription}
 						features={t.skillsFeatures}
-						pattern={<DotsCircle />}
+						pattern={<DotsPattern motion="skills" shape="hexagon" />}
+						graphicMotion="skills"
 						bars={BARS_SKILLS}
 						serial="GA-005"
 						onClick={() => onSelect("skills")}
@@ -488,7 +493,8 @@ export function HomeView({ onSelect }: HomeViewProps) {
 						title={t.configTitle}
 						description={t.configDescription}
 						features={t.configFeatures}
-						pattern={<DotsSquare />}
+						pattern={<DotsPattern motion="config" shape="chamfer" />}
+						graphicMotion="config"
 						bars={BARS_CONFIG}
 						serial="GA-006"
 						onClick={() => onSelect("config")}
@@ -586,6 +592,7 @@ interface EntryCardProps {
 	description: string;
 	features: string[];
 	pattern: ReactNode;
+	graphicMotion: EntryPatternMotion;
 	bars: BarConfig[];
 	serial: string;
 	onClick: () => void;
@@ -598,6 +605,7 @@ function EntryCard({
 	description,
 	features,
 	pattern,
+	graphicMotion,
 	bars,
 	serial,
 	onClick,
@@ -609,7 +617,9 @@ function EntryCard({
 		<motion.button
 			type="button"
 			className="entry-card"
+			data-entry-motion={graphicMotion}
 			whileHover={reducedMotion ? undefined : "hover"}
+			whileFocus={reducedMotion ? undefined : "hover"}
 			variants={{
 				hover: {
 					boxShadow: SHADOW_CARD_HOVER,

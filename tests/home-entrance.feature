@@ -13,3 +13,32 @@ Feature: Homepage entrance choreography
     And the "An agent that knows your code" cream graph surface is not visible
     When the title has finished typing
     Then the graph surface fades in as one progressive page section
+
+  Scenario: The co-change graph reads one relationship at a time
+    Given the graph is visible and motion is enabled
+    When git-agent scans the code history
+    Then one signal travels from the hub file to one coupled file
+    And each file name and coupling score scrolls into place after its signal arrives
+    And the next relationship waits until the first signal has finished
+    And the completed graph stays still with all relationship data visible
+    And reduced-motion visitors see the same static graph without a loop
+
+  Scenario: Each command card expresses its own operation
+    Given a visitor hovers or keyboard-focuses a command card with motion enabled
+    When the card graphic acknowledges the interaction
+    Then init's dots bloom outward from the repository core
+    And commit's dot rows settle into an atomic stack
+    And related's diagonal dot bands carry a coupling wave
+    And status's central dots perform a finite health pulse
+    And skills's dot columns resolve from left to right
+    And config's offset dot cells snap into alignment
+    And init is cropped as a circular seed
+    And commit uses a horizontal ledger block
+    And related is cropped as a diamond
+    And status uses a capsule
+    And skills uses a hexagonal index
+    And config uses a chamfered square
+    And each exterior contour is a clip of the existing dots
+    And the graphic adds no rings, lines, labels, or other overlay elements
+    And every card sequence finishes without an infinite loop
+    And reduced-motion visitors see the same static card graphics
