@@ -1,0 +1,157 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-07T13:20:00Z",
+  "title": "Design System: git-agent",
+  "extensions": {
+    "colorMeta": {
+      "bg": { "role": "neutral", "displayName": "Near Black Desk", "canonical": "#050505", "tonalRamp": ["#050505", "#0d0d0d", "#161616", "#1f1f1f", "#2a2a2a", "#3a3a3a", "#555555", "#888888"] },
+      "card-surface": { "role": "neutral", "displayName": "Cream Paper", "canonical": "#f0ede6", "tonalRamp": ["#f0ede6", "#e8e4db", "#dfdbd0", "#d7d2c5", "#cec9ba", "#c6c0af", "#bdb7a4", "#b5ae99"] },
+      "ink": { "role": "neutral", "displayName": "Rich Ink", "canonical": "#111111", "tonalRamp": ["#111111", "#1a1a1a", "#2e2e2e", "#444444", "#5a5a5a", "#707070", "#999999", "#bbbbbb"] },
+      "ink-secondary": { "role": "neutral", "displayName": "Faded Ink", "canonical": "rgba(0, 0, 0, 0.55)", "tonalRamp": ["rgba(0,0,0,0.85)", "rgba(0,0,0,0.72)", "rgba(0,0,0,0.55)", "rgba(0,0,0,0.42)", "rgba(0,0,0,0.32)", "rgba(0,0,0,0.24)", "rgba(0,0,0,0.16)", "rgba(0,0,0,0.08)"] },
+      "ink-tertiary": { "role": "neutral", "displayName": "Pale Ink", "canonical": "rgba(0, 0, 0, 0.35)", "tonalRamp": ["rgba(0,0,0,0.70)", "rgba(0,0,0,0.55)", "rgba(0,0,0,0.35)", "rgba(0,0,0,0.25)", "rgba(0,0,0,0.18)", "rgba(0,0,0,0.12)", "rgba(0,0,0,0.08)", "rgba(0,0,0,0.04)"] },
+      "code-bg": { "role": "neutral", "displayName": "Code Slate", "canonical": "#0d0d0d", "tonalRamp": ["#0d0d0d", "#141414", "#1c1c1c", "#262626", "#333333", "#444444", "#666666", "#999999"] },
+      "heading": { "role": "neutral", "displayName": "Bright White", "canonical": "#ffffff", "tonalRamp": ["#ffffff", "#e6e6e6", "#cccccc", "#b3b3b3", "#999999", "#808080", "#666666", "#4d4d4d"] },
+      "positive": { "role": "primary", "displayName": "Positive Green", "canonical": "#2a7a4b", "tonalRamp": ["#0d3d22", "#145a32", "#1e6e3f", "#2a7a4b", "#3a8e5c", "#56a475", "#7cbf95", "#a8d9b9"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Product name 'git-agent' on homepage. Appears once per page." },
+      "heading": { "displayName": "Heading", "purpose": "Section titles, pricing comparison titles, command detail headings." },
+      "card-title": { "displayName": "Card Title", "purpose": "Two-line entry card titles on the homepage. Only 700-weight sans in the system." },
+      "graph-title": { "displayName": "Graph Title", "purpose": "Graph pitch section title." },
+      "body": { "displayName": "Body", "purpose": "Paragraphs, descriptions, feature text. Max line length 65–70ch." },
+      "label": { "displayName": "Label", "purpose": "Feature list items, card descriptions, small text." },
+      "mono-label": { "displayName": "Mono Label", "purpose": "Command names, serial numbers, breadcrumbs, code labels, navigation. Often uppercase." }
+    },
+    "shadows": [
+      { "name": "card-rest", "value": "0 2px 12px rgba(0, 0, 0, 0.45)", "purpose": "Resting shadow for entry cards and section cards. Tight edge shadow, not a lift." },
+      { "name": "card-hover", "value": "0 14px 44px rgba(0, 0, 0, 0.6)", "purpose": "Hover shadow for entry cards. Deeper and wider, paired with translateY lift." },
+      { "name": "hub-card-rest", "value": "0 2px 8px rgba(0, 0, 0, 0.35)", "purpose": "Resting shadow for smaller hub cards in pSEO grids." }
+    ],
+    "motion": [
+      { "name": "ease-out-quart", "value": "cubic-bezier(0.25, 1, 0.5, 1)", "purpose": "General easing for component transitions." },
+      { "name": "ease-out-quint", "value": "cubic-bezier(0.22, 1, 0.36, 1)", "purpose": "Default easing for page transitions and coordinated content sequences." },
+      { "name": "ease-out-expo", "value": "cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Fast-entrance easing for micro-interactions." },
+      { "name": "motion-time-scale", "value": "1.5", "purpose": "Global multiplier for page transition durations. Micro-interactions (hover 0.28s) stay outside this scale." },
+      { "name": "page-enter", "value": "0.45s", "purpose": "Opacity + y offset entrance for page-level route transitions (scaled by MOTION_TIME_SCALE)." },
+      { "name": "page-exit", "value": "0.28s", "purpose": "Faster opacity + y offset exit for page-level route transitions." },
+      { "name": "hover-interaction", "value": "0.28s", "purpose": "Hover state transitions for buttons and interactive elements. Not scaled." },
+      { "name": "pattern-lines-drift", "value": "36s linear infinite", "purpose": "Slow drift animation for the lines pattern decorative circle." },
+      { "name": "dot-turbulence-circle", "value": "9s", "purpose": "Duration of the SVG turbulence baseFrequency animation cycle for circular dot fields." },
+      { "name": "dot-turbulence-square", "value": "5s", "purpose": "Duration of the SVG turbulence baseFrequency animation cycle for square dot fields." },
+      { "name": "card-hover-pulse", "value": "8s", "purpose": "Duration of the full opacity + scale pulse cycle on card hover." }
+    ],
+    "breakpoints": [
+      { "name": "xs", "value": "400px", "purpose": "Home view padding reduction." },
+      { "name": "narrow", "value": "440px", "purpose": "Hub grid collapses to 1 column." },
+      { "name": "compact", "value": "560px", "purpose": "Comparison table collapses to stacked layout. Flag rows go single column." },
+      { "name": "mobile", "value": "600px", "purpose": "Command content padding reduction. Two-col layout collapses." },
+      { "name": "medium", "value": "640px", "purpose": "Install code block wraps text." },
+      { "name": "tablet", "value": "680px", "purpose": "Entry grid collapses to 1 column. Explore grid to 2 columns. Ticket grid to 1 column." },
+      { "name": "small", "value": "700px", "purpose": "Hub grid collapses to 2 columns. Flag rows narrow." },
+      { "name": "wide", "value": "1100px", "purpose": "Ticket grid collapses from 3 to 2 columns." }
+    ]
+  },
+  "components": [
+    {
+      "name": "Navigation Button",
+      "kind": "button",
+      "refersTo": "button-nav",
+      "description": "Back and navigation buttons in sticky nav bars. Tactile, bordered, mono label.",
+      "html": "<button class=\"ds-btn-nav\">← BACK</button>",
+      "css": ".ds-btn-nav { background: none; border: 1px solid rgba(255, 255, 255, 0.22); border-radius: 3px; color: rgba(255, 255, 255, 0.68); font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 0.6875rem; letter-spacing: 0.03em; padding: 5px 10px; min-height: 44px; min-width: 44px; cursor: pointer; display: inline-flex; align-items: center; transition: border-color 0.28s cubic-bezier(0.22, 1, 0.36, 1), color 0.28s cubic-bezier(0.22, 1, 0.36, 1); } .ds-btn-nav:hover { border-color: rgba(255, 255, 255, 0.55); color: #ffffff; } .ds-btn-nav:focus-visible { outline: 2px solid rgba(255, 255, 255, 0.55); outline-offset: 2px; }"
+    },
+    {
+      "name": "Entry Card",
+      "kind": "card",
+      "refersTo": "card-entry",
+      "description": "Homepage command cards. Cream surface with noise texture, dot pattern graphic, barcode footer.",
+      "html": "<div class=\"ds-entry-card\">\n  <div class=\"ds-entry-card-header\">\n    <span class=\"ds-entry-card-cmd\">COMMIT</span>\n    <span class=\"ds-entry-card-serial\">GA-002</span>\n  </div>\n  <div class=\"ds-entry-card-title\">\n    <span>Split changes into</span>\n    <span>atomic commits</span>\n  </div>\n  <p class=\"ds-entry-card-desc\">Generate conventional commit messages from your staged or unstaged changes.</p>\n  <ul class=\"ds-entry-card-features\">\n    <li>Plans atomic commit groups from diffs</li>\n    <li>Generates conventional commit messages</li>\n    <li>Validates against commit hooks</li>\n  </ul>\n  <div class=\"ds-entry-card-divider\"></div>\n  <div class=\"ds-entry-card-footer\">\n    <span class=\"ds-entry-card-cta\">VIEW COMMAND →</span>\n    <div class=\"ds-barcode\">\n      <div style=\"width:3px;height:26px;background:rgba(0,0,0,0.34);border-radius:0.5px\"></div>\n      <div style=\"width:3px;height:22px;background:rgba(0,0,0,0.34);border-radius:0.5px\"></div>\n      <div style=\"width:3px;height:28px;background:rgba(0,0,0,0.34);border-radius:0.5px\"></div>\n      <div style=\"width:3px;height:24px;background:rgba(0,0,0,0.34);border-radius:0.5px\"></div>\n      <div style=\"width:3px;height:30px;background:rgba(0,0,0,0.34);border-radius:0.5px\"></div>\n      <div style=\"width:2px;height:22px;background:rgba(0,0,0,0.34);border-radius:0.5px\"></div>\n      <div style=\"width:3px;height:28px;background:rgba(0,0,0,0.34);border-radius:0.5px\"></div>\n      <div style=\"width:3px;height:24px;background:rgba(0,0,0,0.34);border-radius:0.5px\"></div>\n      <div style=\"width:2px;height:30px;background:rgba(0,0,0,0.34);border-radius:0.5px\"></div>\n      <div style=\"width:3px;height:22px;background:rgba(0,0,0,0.34);border-radius:0.5px\"></div>\n      <div style=\"width:3px;height:26px;background:rgba(0,0,0,0.34);border-radius:0.5px\"></div>\n      <div style=\"width:2px;height:28px;background:rgba(0,0,0,0.34);border-radius:0.5px\"></div>\n    </div>\n  </div>\n</div>",
+      "css": ".ds-entry-card { background: #f0ede6; background-image: url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E\"); background-blend-mode: multiply; border-radius: 3px; padding: 24px 24px 20px; box-shadow: 0 2px 12px rgba(0, 0, 0, 0.45); display: flex; flex-direction: column; min-width: 0; cursor: pointer; transition: box-shadow 0.28s cubic-bezier(0.22, 1, 0.36, 1); } .ds-entry-card:hover { box-shadow: 0 14px 44px rgba(0, 0, 0, 0.6); } .ds-entry-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; } .ds-entry-card-cmd { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 0.6875rem; font-weight: 500; letter-spacing: 0.07em; text-transform: uppercase; color: rgba(0, 0, 0, 0.35); } .ds-entry-card-serial { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 0.625rem; color: rgba(0, 0, 0, 0.35); letter-spacing: 0.06em; } .ds-entry-card-title { font-size: clamp(1.25rem, 2.85vw, 2rem); font-weight: 700; letter-spacing: -0.03em; line-height: 1.05; color: #111111; margin-bottom: 16px; } .ds-entry-card-desc { font-family: 'IBM Plex Sans', 'Helvetica Neue', sans-serif; font-size: 1rem; line-height: 1.6; color: rgba(0, 0, 0, 0.48); margin: 0 0 18px; } .ds-entry-card-features { list-style: none; padding: 0; margin: 0 0 auto; display: flex; flex-direction: column; gap: 11px; } .ds-entry-card-features li { font-family: 'IBM Plex Sans', 'Helvetica Neue', sans-serif; font-size: 0.8125rem; line-height: 1.55; letter-spacing: 0.01em; color: rgba(0, 0, 0, 0.35); display: flex; align-items: flex-start; gap: 10px; } .ds-entry-card-features li::before { content: ''; flex-shrink: 0; width: 5px; height: 5px; margin-top: 0.48em; border-radius: 50%; background: #111111; opacity: 0.28; } .ds-entry-card-divider { height: 1px; margin: 16px 0; background-image: repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.2) 0, rgba(0, 0, 0, 0.2) 5px, transparent 5px, transparent 10px); } .ds-entry-card-footer { display: flex; justify-content: space-between; align-items: center; } .ds-entry-card-cta { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 0.6875rem; font-weight: 500; letter-spacing: 0.05em; color: rgba(0, 0, 0, 0.35); } .ds-barcode { display: flex; align-items: flex-end; gap: 1px; height: 32px; opacity: 0.92; }"
+    },
+    {
+      "name": "Section Card",
+      "kind": "card",
+      "refersTo": "card-section",
+      "description": "Content sections inside command detail and pSEO pages. Cream surface with noise texture.",
+      "html": "<div class=\"ds-section-card\">\n  <span class=\"ds-section-label\">USAGE</span>\n  <p class=\"ds-section-body\">Describe your changes with --intent and git-agent will plan and commit them.</p>\n</div>",
+      "css": ".ds-section-card { background: #f0ede6; background-image: url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E\"); background-blend-mode: multiply; border-radius: 3px; padding: 22px 26px; box-shadow: 0 2px 12px rgba(0, 0, 0, 0.45); } .ds-section-label { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 0.625rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(0, 0, 0, 0.35); display: block; margin-bottom: 16px; } .ds-section-body { font-family: 'IBM Plex Sans', 'Helvetica Neue', sans-serif; font-size: 1rem; line-height: 1.65; color: rgba(0, 0, 0, 0.55); margin: 0; }"
+    },
+    {
+      "name": "Code Block",
+      "kind": "custom",
+      "refersTo": "code-block",
+      "description": "Install commands and code snippets. Dark slate surface with mono text and copy button.",
+      "html": "<div class=\"ds-code-block\">\n  <span class=\"ds-code-block-label\">INSTALL</span>\n  <div class=\"ds-code-block-body\">\n    <code class=\"ds-code-block-code\">brew install gitagenthq/tap/git-agent</code>\n    <button class=\"ds-code-block-copy\">COPY</button>\n  </div>\n</div>",
+      "css": ".ds-code-block { display: flex; flex-direction: column; gap: 6px; } .ds-code-block-label { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 0.625rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255, 255, 255, 0.40); } .ds-code-block-body { background: #0d0d0d; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 4px; padding: 11px 16px; display: flex; align-items: center; gap: 10px; overflow-x: auto; max-width: 100%; } .ds-code-block-code { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 0.8125rem; color: rgba(255, 255, 255, 0.78); letter-spacing: 0.02em; white-space: pre; flex: 1; min-width: 0; } .ds-code-block-copy { flex-shrink: 0; display: inline-flex; justify-content: center; align-items: center; min-width: 5.75rem; background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 4px; color: rgba(255, 255, 255, 0.72); font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 0.6875rem; font-weight: 500; padding: 4px 14px; cursor: pointer; letter-spacing: 0.04em; transition: background 0.28s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.28s cubic-bezier(0.22, 1, 0.36, 1), color 0.28s cubic-bezier(0.22, 1, 0.36, 1); } .ds-code-block-copy:hover { background: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.26); color: rgba(255, 255, 255, 0.88); } .ds-code-block-copy:focus-visible { outline: 2px solid rgba(255, 255, 255, 0.55); outline-offset: 2px; }"
+    },
+    {
+      "name": "Hub Card",
+      "kind": "card",
+      "refersTo": "card-hub",
+      "description": "Small cards in pSEO index grids. Cream surface, mono name, sans description.",
+      "html": "<a class=\"ds-hub-card\" href=\"#\">\n  <span class=\"ds-hub-card-name\">TypeScript</span>\n  <span class=\"ds-hub-card-desc\">Conventional commits for TypeScript projects</span>\n</a>",
+      "css": ".ds-hub-card { background: #f0ede6; background-image: url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E\"); background-blend-mode: multiply; border-radius: 3px; padding: 18px 20px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35); display: flex; flex-direction: column; gap: 6px; text-decoration: none; transition: box-shadow 0.28s cubic-bezier(0.22, 1, 0.36, 1); } .ds-hub-card:hover { box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5); } .ds-hub-card-name { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.04em; color: #111111; } .ds-hub-card-desc { font-family: 'IBM Plex Sans', 'Helvetica Neue', sans-serif; font-size: 0.8125rem; line-height: 1.5; color: rgba(0, 0, 0, 0.55); }"
+    },
+    {
+      "name": "Explore Card",
+      "kind": "card",
+      "refersTo": "explore-card",
+      "description": "Footer explore section links. Dark card with subtle border, mono name, sans description.",
+      "html": "<a class=\"ds-explore-card\" href=\"#\">\n  <span class=\"ds-explore-card-name\">GLOSSARY</span>\n  <span class=\"ds-explore-card-desc\">Key terms and concepts</span>\n</a>",
+      "css": ".ds-explore-card { background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 3px; padding: 14px 16px; display: flex; flex-direction: column; gap: 4px; text-decoration: none; transition: background 0.28s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.28s cubic-bezier(0.22, 1, 0.36, 1); } .ds-explore-card:hover { background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.16); } .ds-explore-card-name { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 0.6875rem; font-weight: 700; color: rgba(255, 255, 255, 0.68); letter-spacing: 0.04em; } .ds-explore-card-desc { font-family: 'IBM Plex Sans', 'Helvetica Neue', sans-serif; font-size: 0.8125rem; color: rgba(255, 255, 255, 0.35); line-height: 1.5; }"
+    },
+    {
+      "name": "Comparison Table Row",
+      "kind": "custom",
+      "refersTo": "comparison-table",
+      "description": "Feature comparison rows in pSEO pages. Grid layout with mono labels and yes/no indicators.",
+      "html": "<div class=\"ds-comp-row\">\n  <span class=\"ds-comp-feature\">Atomic commit splitting</span>\n  <div class=\"ds-comp-metric\">\n    <span class=\"ds-comp-cell ds-comp-cell--yes\">YES</span>\n  </div>\n  <div class=\"ds-comp-metric\">\n    <span class=\"ds-comp-cell ds-comp-cell--no\">NO</span>\n  </div>\n</div>",
+      "css": ".ds-comp-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 88px) minmax(0, 1fr); gap: 12px; align-items: start; padding: 12px 0; border-bottom: 1px solid rgba(0, 0, 0, 0.15); } .ds-comp-row:last-child { border-bottom: none; padding-bottom: 0; } .ds-comp-feature { font-family: 'IBM Plex Sans', 'Helvetica Neue', sans-serif; font-size: 1rem; line-height: 1.5; color: #111111; } .ds-comp-metric { display: flex; flex-direction: column; align-items: flex-end; text-align: right; } .ds-comp-cell { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 0.6875rem; line-height: 1.45; text-align: right; } .ds-comp-cell--yes { color: #2a7a4b; } .ds-comp-cell--no { color: rgba(0, 0, 0, 0.35); }"
+    },
+    {
+      "name": "Sticky Nav Bar",
+      "kind": "nav",
+      "refersTo": "navigation",
+      "description": "Sticky top navigation bar. Dark background, back button, mono breadcrumb.",
+      "html": "<nav class=\"ds-nav\">\n  <button class=\"ds-btn-nav\">← BACK</button>\n  <code class=\"ds-nav-breadcrumb\">/COMMIT</code>\n</nav>",
+      "css": ".ds-nav { display: flex; align-items: center; gap: 16px; padding: 18px 40px; border-bottom: 1px solid rgba(255, 255, 255, 0.06); position: sticky; top: 0; background: #050505; z-index: 10; } .ds-btn-nav { background: none; border: 1px solid rgba(255, 255, 255, 0.22); border-radius: 3px; color: rgba(255, 255, 255, 0.68); font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 0.6875rem; letter-spacing: 0.03em; padding: 5px 10px; min-height: 44px; min-width: 44px; cursor: pointer; display: inline-flex; align-items: center; transition: border-color 0.28s cubic-bezier(0.22, 1, 0.36, 1), color 0.28s cubic-bezier(0.22, 1, 0.36, 1); } .ds-btn-nav:hover { border-color: rgba(255, 255, 255, 0.55); color: #ffffff; } .ds-nav-breadcrumb { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 0.6875rem; color: rgba(255, 255, 255, 0.45); letter-spacing: 0.04em; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Terminal Printer",
+    "overview": "git-agent's visual identity draws from the material culture of the terminal and the printed page. The near-black background is the desk surface; cream cards are paper output from a terminal printer — barcode receipts, index cards, technical documentation sheets. The design lives in the friction between the digital and the physical: SVG noise texture adds paper grain, barcode graphics are functional decorations, and IBM Plex Mono typesets everything with the precision of a line printer.\n\nThe system is resolutely monochrome — a single cream surface against a dark ground — with no secondary palette. Warmth and texture come from the paper grain, dot fields, and subtle animated glow gradients on decorative patterns. The mode is Persuade: the visitor decides and acts; the design is the product. Every element earns its place by helping the visitor understand what git-agent is and why it matters.",
+    "keyCharacteristics": [
+      "Monochrome palette with a single cream card surface",
+      "IBM Plex Mono as the voice of the product (headings, labels, code); IBM Plex Sans for body",
+      "Paper grain (noise texture) on all card surfaces",
+      "SVG dot patterns that taper radially, with animated turbulence displacement",
+      "Barcode visual language as a recurring decorative motif",
+      "Dark background exclusively — no light mode",
+      "Subtle shadow layering: cards as paper on a desk, not floating elements",
+      "All motion respects prefers-reduced-motion"
+    ],
+    "rules": [
+      { "name": "The One Surface Rule", "body": "Cream cards are the only non-background surface. Never introduce a second card color, a tinted surface, or a gradient background for content containers. The relationship is always: dark background → cream paper.", "section": "colors" },
+      { "name": "The 10% Chroma Rule", "body": "Chromatic color (the blue and orange glow gradients) is confined to the decorative pattern lines circle, which occupies ≤5% of any screen. Its rarity is the point — the rest of the system is monochrome.", "section": "colors" },
+      { "name": "The Mono Voice Rule", "body": "The product speaks in IBM Plex Mono. Headings, the product name, command names, labels, navigation, serial numbers, and code are all mono. Sans is reserved for explanatory prose only. If it's a label or a name, it's mono.", "section": "typography" },
+      { "name": "The Flat-By-Default Rule", "body": "Surfaces are flat at rest. Shadows are thin and tight — enough to separate layers, not to float them. Elevation changes only appear on interactive hover states.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do use the cream card surface (#f0ede6) with noise texture for all content containers. The single surface is the system's signature.",
+      "Do set headings, command names, labels, and navigation in IBM Plex Mono. The mono voice is the product's identity.",
+      "Do keep the dark background (#050505) as the dominant surface. It is the desk.",
+      "Do use the 3px radius consistently — it is the system's corner DNA.",
+      "Do respect prefers-reduced-motion — all animations must degrade gracefully.",
+      "Do use the paper-on-desk shadow vocabulary: tight shadows that separate, not lift."
+    ],
+    "donts": [
+      "Don't introduce a second card color, tinted surfaces, or gradient backgrounds for content containers. One surface is the rule.",
+      "Don't use chromatic color outside the decorative pattern glow gradients. The system is monochrome.",
+      "Don't use IBM Plex Sans for labels, headings, or command names. Sans is for explanatory prose only.",
+      "Don't add large rounded corners — 3px is the standard; 4px is the maximum for code blocks.",
+      "Don't create floating, heavily shadowed elements. Cards are paper on a desk, not panels in space.",
+      "Don't add form fields, inputs, or search bars without establishing a new component pattern for them.",
+      "Don't introduce a light mode. The system is exclusively dark."
+    ]
+  }
+}

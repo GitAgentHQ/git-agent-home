@@ -28,8 +28,19 @@ Local secrets go in `.dev.vars` (Cloudflare's local env file). Never commit `.de
 
 - All programmatic SEO routes (`for/`, `vs/`, `glossary/`, `templates/`) must use `pseo-layout.tsx` as their layout wrapper.
 - Route transitions use `AnimatePresence` from `motion/react` — maintain this pattern for new routes.
-- All user-facing strings must go through `LanguageProvider` context (`app/contexts/language-context.tsx`), not hardcoded.
+- All user-facing strings must go through `LanguageProvider` context (`app/contexts/language-context.tsx`), not hardcoded — including the skip link, dynamic `<html lang>` (via `HtmlLang` in `root.tsx`), and all a11y labels (`aria-label`, `alt`).
 - `verbatimModuleSyntax: true` in tsconfig — use `import type` for type-only imports.
+
+## Accessibility (audited 20/20, 2026-08-07)
+
+The design system is documented in `DESIGN.md` (authoritative) with a machine-readable sidecar in `.impeccable/design.json`. The full a11y audit report is in `AUDIT-2026-08-07.md`. These are enforced by the impeccable design hook — run `/impeccable audit` before finalizing UI changes. Non-negotiable rules:
+
+- Every page's root view must be `<motion.main id="main-content">` (never `<motion.div>`) — `<main>` landmark + skip-link target.
+- All interactive elements need a visible `:focus-visible` ring (white on dark surfaces, dark `rgba(0,0,0,0.5)` on cream cards). Do not add new surface types without a corresponding focus-ring rule.
+- Never use `display: none` to hide content that carries meaning for screen readers — use the visually-hidden `clip` technique. The comparison table's `<thead>` is collapsed this way at mobile widths, not removed from the DOM.
+- Semantic tables: use real `<table>/<thead>/<tbody>/<th scope>` elements, not div grids.
+- Decorative elements (barcodes, icons, patterns) get `aria-hidden="true"`.
+- Respect `prefers-reduced-motion` (via `useAccessibleMotion()`) and `prefers-contrast: more` (token overrides in `app/app.css`).
 
 ## TypeScript
 
