@@ -119,7 +119,7 @@ Ask: "Do you want to require every commit to carry an AI model `Co-Authored-By` 
 Ask: "Do you want to initialize git-agent in your current repository now? This generates scopes from your git history and optionally installs a commit-message hook. (yes / no)"
 
 - **yes** — run `git-agent init --scope` and show the user the generated `.git-agent/config.yml`.
-- **no** — skip; the user can run `git-agent init` manually later.
+- **no** — skip; initialization is not a prerequisite. Running the bare `git-agent` command (no subcommand) auto-generates a missing `.gitignore` and missing commit scopes, then stages, plans, and commits autonomously.
 
 ### The co-change graph
 
