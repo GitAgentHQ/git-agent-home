@@ -231,6 +231,7 @@ export const translations: Record<Language, Translations> = {
 			"Built-in empty or conventional (config.yml only)",
 			".gitignore generation",
 			"Merge-safe config updates",
+			"`--force` regeneration of scopes or .gitignore",
 		],
 		commitTitle: ["Generate", "conventional commits"],
 		commitDescription:
@@ -242,6 +243,8 @@ export const translations: Record<Language, Translations> = {
 			"Dry-run preview",
 			"Amend last commit",
 			"Co-author and trailer support",
+			"Model co-author attribution (opt-out)",
+			"Bare `git-agent` runs the flow autonomously",
 		],
 		relatedTitle: ["Find files that", "change together"],
 		relatedDescription:
@@ -383,7 +386,7 @@ export const translations: Record<Language, Translations> = {
 			overview:
 				"Set up `git-agent` in the current repo. With no flags, runs the full setup wizard: ensures a git repo exists (runs `git init` if needed), generates `.gitignore` via AI, generates commit scopes with descriptions from git history via AI, and writes `.git-agent/config.yml` with scopes and `hook: [conventional]`. Each step can also run alone via flags. Existing `.git-agent/config.yml` stays put unless you pass `--force`. Use `git-agent config set hook <value>` to reconfigure hooks. Official release binaries use the free shared gateway with zero config; bring your own key via `~/.config/git-agent/config.yml` when you need it.",
 			flags: [
-				{ name: "--scope", description: "Derive scopes with descriptions from commit history and project layout (`LLM`)" },
+				{ name: "--scope", description: "Derive scopes with descriptions from commit history and project layout (`LLM`). Combine with `--force` to regenerate from the current history." },
 				{ name: "--hook <value>", description: "Hook to configure: `conventional`, `empty`, or a file path (repeatable). Stores in `.git-agent/config.yml`." },
 				{ name: "--gitignore", description: "Generate a `.gitignore` based on project context" },
 				{ name: "--force", description: "Overwrite existing config, hook, and `.gitignore` without merging" },
@@ -429,14 +432,14 @@ export const translations: Record<Language, Translations> = {
 			description: "Generate commits with LLM assistance",
 			usage: "git-agent commit [-o <fmt>] [--dry-run] [--intent <text>] [--amend] [--no-stage] [--co-author <name>] [--trailer <key:value>] [--no-attribution] [--free]",
 			overview:
-				"Stages tracked changes, groups them into up to five atomic commits per run, drafts conventional messages with an `LLM`, validates via `hook` from `config.yml` (`empty`, `conventional`, or custom script), and retries or re-plans when validation fails. Detected file renames are kept atomic: both paths of a move are forced into the same commit group after planning, so git records a rename rather than splitting it into a delete and an add across commits. A preflight guard refuses prompts that exceed the endpoint's input ceiling before the LLM is called — default 1M tokens, raise it with the `max_input_tokens` config key. Official release binaries run against the free shared gateway with no provider flags; bring your own key via `~/.config/git-agent/config.yml` when needed. Pass `-o json` for a structured result — `{dry_run, commits:[{title, message, files, sha, hook_outcome}], committed_count, final_sha}` — instead of human-readable text, so an agent can consume the plan and resulting SHAs.",
+				"Stages tracked changes, groups them into up to five atomic commits per run, drafts conventional messages with an `LLM`, validates via `hook` from `config.yml` (`empty`, `conventional`, or custom script), and retries or re-plans when validation fails. Detected file renames are kept atomic: both paths of a move are forced into the same commit group after planning, so git records a rename rather than splitting it into a delete and an add across commits. A preflight guard refuses prompts that exceed the endpoint's input ceiling before the LLM is called — default 1M tokens, raise it with the `max_input_tokens` config key. Official release binaries run against the free shared gateway with no provider flags; bring your own key via `~/.config/git-agent/config.yml` when needed. Pass `-o json` for a structured result — `{dry_run, commits:[{title, message, files, sha, hook_outcome}], committed_count, final_sha}` — instead of human-readable text, so an agent can consume the plan and resulting SHAs. Running bare `git-agent` with no subcommand drives the same flow autonomously: it first ensures `.gitignore` and commit scopes exist (generating them when missing), then stages, plans, and commits. Commits carry a `Co-Authored-By: Git Agent` trailer by default, and a recognized model is credited as co-author automatically unless `no_model_co_author: true` is set.",
 			flags: [
 				{ name: "-o, --output <fmt>", description: "Output format: `text` (default) or `json`. `-o json` emits `{dry_run, commits:[{title, message, files, sha, hook_outcome}], committed_count, final_sha}` for agents to consume." },
 				{ name: "--dry-run", description: "Print planned commit messages without creating commits" },
 				{ name: "--intent <text>", description: "Free-text hint for how to group changes and phrase messages" },
 				{ name: "--amend", description: "Regenerate and amend the most recent commit message" },
 				{ name: "--no-stage", description: "Skip auto-staging; only commit already-staged changes" },
-				{ name: "--co-author <name>", description: 'Add a co-author trailer, e.g. "Name <email@domain>" (repeatable). Required on every invocation when `require_model_co_author` is set in config.' },
+				{ name: "--co-author <name>", description: 'Add a co-author trailer, e.g. "Name <email@domain>" (repeatable). Required on every invocation when `require_model_co_author` is set in config. The active model is credited automatically when it matches a known provider; disable with `no_model_co_author: true`.' },
 				{ name: "--trailer <value>", description: 'Add an arbitrary git trailer, format "Key: Value" (repeatable)' },
 				{ name: "--no-attribution", description: "Omit the default Git Agent co-author signature" },
 				{ name: "--max-diff-bytes <n>", description: "Maximum diff bytes to send to the model; a byte cap always applies", default: "0 (built-in ~384 KiB)" },
@@ -599,6 +602,7 @@ export const translations: Record<Language, Translations> = {
 			"内置 empty 或 conventional（仅写 config.yml）",
 			".gitignore 生成",
 			"合并时安全的配置更新",
+			"`--force` 重新生成作用域或 .gitignore",
 		],
 		commitTitle: ["生成", "规范提交"],
 		commitDescription:
@@ -610,6 +614,8 @@ export const translations: Record<Language, Translations> = {
 			"预览模式",
 			"修改上次提交",
 			"合著者与 trailer 支持",
+			"模型合著者自动署名（可关闭）",
+			"裸 `git-agent` 自动完成整套流程",
 		],
 		relatedTitle: ["找出会", "一起改动的文件"],
 		relatedDescription:
@@ -748,7 +754,7 @@ export const translations: Record<Language, Translations> = {
 			overview:
 				"在当前仓库启用 `git-agent`。无参数时运行完整向导：确保 git 仓库存在（必要时运行 `git init`）、通过 AI 生成 `.gitignore`、从 git 历史通过 AI 生成带描述的提交作用域，并将作用域和 `hook: [conventional]` 写入 `.git-agent/config.yml`。各步也可单独用参数触发。已有 `.git-agent/config.yml` 会保留，除非加 `--force`。用 `git-agent config set hook <值>` 重新配置 hook。官方发布的二进制默认使用免费共享网关（零配置）；需要时可通过 `~/.config/git-agent/config.yml` 自带密钥。",
 			flags: [
-				{ name: "--scope", description: "根据提交历史与项目布局推导带描述的作用域（`LLM`）" },
+				{ name: "--scope", description: "根据提交历史与项目布局推导带描述的作用域（`LLM`）。结合 `--force` 可从当前历史重新生成。" },
 				{ name: "--hook <值>", description: "要配置的 hook：`conventional`、`empty` 或文件路径（可重复）。存入 `.git-agent/config.yml`。" },
 				{ name: "--gitignore", description: "根据项目上下文生成 `.gitignore`" },
 				{ name: "--force", description: "覆盖现有配置、hook 和 `.gitignore`，不进行合并" },
@@ -794,14 +800,14 @@ export const translations: Record<Language, Translations> = {
 			description: "用 LLM 辅助生成提交",
 			usage: "git-agent commit [-o <格式>] [--dry-run] [--intent <文本>] [--amend] [--no-stage] [--co-author <名称>] [--trailer <键:值>] [--no-attribution] [--free]",
 			overview:
-				"暂存已跟踪的改动，每次运行最多分成五组原子提交，用 `LLM` 起草规范说明，按 `config.yml` 的 `hook` 校验（`empty`、`conventional` 或自定义脚本），失败则重试或重规划。检测到的文件重命名保持原子：规划后移动的两个路径会被强制分到同一提交组，确保 git 记录为重命名，而不是拆成跨提交的删除与新增。调用 LLM 前有预检护栏：总输入会对照端点上限校验（默认 100 万 token，可用 `max_input_tokens` 配置键调高），超限提示词会被拒绝。官方发布的二进制默认不带 `provider` 参数、直连免费共享网关；需要时可通过 `~/.config/git-agent/config.yml` 自带密钥。传入 `-o json` 可得到结构化结果——`{dry_run, commits:[{title, message, files, sha, hook_outcome}], committed_count, final_sha}`——而非人类可读文本，便于智能体消费提交计划与生成的 SHA。",
+				"暂存已跟踪的改动，每次运行最多分成五组原子提交，用 `LLM` 起草规范说明，按 `config.yml` 的 `hook` 校验（`empty`、`conventional` 或自定义脚本），失败则重试或重规划。检测到的文件重命名保持原子：规划后移动的两个路径会被强制分到同一提交组，确保 git 记录为重命名，而不是拆成跨提交的删除与新增。调用 LLM 前有预检护栏：总输入会对照端点上限校验（默认 100 万 token，可用 `max_input_tokens` 配置键调高），超限提示词会被拒绝。官方发布的二进制默认不带 `provider` 参数、直连免费共享网关；需要时可通过 `~/.config/git-agent/config.yml` 自带密钥。传入 `-o json` 可得到结构化结果——`{dry_run, commits:[{title, message, files, sha, hook_outcome}], committed_count, final_sha}`——而非人类可读文本，便于智能体消费提交计划与生成的 SHA。裸运行 `git-agent`（不带子命令）会自主驱动同一流程：先确保 `.gitignore` 与提交作用域存在（缺失则生成），再暂存、规划并提交。默认提交带 `Co-Authored-By: Git Agent` trailer；识别到的模型会自动署名为合著者，除非设置了 `no_model_co_author: true`。",
 			flags: [
 				{ name: "-o, --output <格式>", description: "输出格式：`text`（默认）或 `json`。`-o json` 输出 `{dry_run, commits:[{title, message, files, sha, hook_outcome}], committed_count, final_sha}`，便于智能体消费。" },
 				{ name: "--dry-run", description: "只打印拟定的提交说明，不创建提交" },
 				{ name: "--intent <文本>", description: "自由文本，提示如何分组改动和写说明" },
 				{ name: "--amend", description: "重新生成并修正最近的提交消息" },
 				{ name: "--no-stage", description: "跳过自动暂存；只提交已暂存的更改" },
-				{ name: "--co-author <名称>", description: "添加合著者 trailer，例如 \"Name <email@domain>\"（可重复）。配置中开启 `require_model_co_author` 后，每次调用都必须传。" },
+				{ name: "--co-author <名称>", description: "添加合著者 trailer，例如 \"Name <email@domain>\"（可重复）。配置中开启 `require_model_co_author` 后，每次调用都必须传。可识别模型会自动署名，可用 `no_model_co_author: true` 关闭。" },
 				{ name: "--trailer <值>", description: "添加任意 git trailer，格式为 \"Key: Value\"（可重复）" },
 				{ name: "--no-attribution", description: "不添加默认的合著者签名（Git Agent）" },
 				{ name: "--max-diff-bytes <n>", description: "发送给模型的最大 diff 字节数；字节上限始终生效", default: "0（内置 ~384 KiB）" },
