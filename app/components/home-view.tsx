@@ -7,7 +7,7 @@ import { renderInlineDocText } from "../utils/inline-doc-text";
 
 const MotionLink = motion.create(Link);
 import { CodeBlock } from "./code-block";
-import { Barcode } from "./barcode";
+import { Barcode, barsForTitle } from "./barcode";
 import type { BarConfig } from "./barcode";
 import { DotsPattern } from "./pattern";
 import type { EntryPatternMotion } from "./pattern";
@@ -26,97 +26,6 @@ const SHADOW_CARD_HOVER = "0 14px 44px rgba(0, 0, 0, 0.6)";
 interface HomeViewProps {
 	onSelect: (cmd: "init" | "commit" | "related" | "status" | "skills" | "config") => void;
 }
-
-/* 12 bars + 11×1px gap ≈ 44px; heights 22–30px for a lighter silhouette */
-const BARS_INIT: BarConfig[] = [
-	{ width: 3, height: 26 },
-	{ width: 3, height: 24 },
-	{ width: 3, height: 28 },
-	{ width: 3, height: 22 },
-	{ width: 3, height: 30 },
-	{ width: 3, height: 24 },
-	{ width: 3, height: 26 },
-	{ width: 2, height: 28 },
-	{ width: 3, height: 22 },
-	{ width: 2, height: 30 },
-	{ width: 3, height: 24 },
-	{ width: 2, height: 28 },
-];
-
-const BARS_COMMIT: BarConfig[] = [
-	{ width: 3, height: 26 },
-	{ width: 3, height: 22 },
-	{ width: 3, height: 28 },
-	{ width: 3, height: 24 },
-	{ width: 3, height: 30 },
-	{ width: 2, height: 22 },
-	{ width: 3, height: 28 },
-	{ width: 3, height: 24 },
-	{ width: 2, height: 30 },
-	{ width: 3, height: 22 },
-	{ width: 3, height: 26 },
-	{ width: 2, height: 28 },
-];
-
-const BARS_RELATED: BarConfig[] = [
-	{ width: 2, height: 28 },
-	{ width: 3, height: 24 },
-	{ width: 3, height: 30 },
-	{ width: 2, height: 22 },
-	{ width: 3, height: 26 },
-	{ width: 3, height: 28 },
-	{ width: 2, height: 24 },
-	{ width: 3, height: 30 },
-	{ width: 3, height: 22 },
-	{ width: 2, height: 28 },
-	{ width: 3, height: 26 },
-	{ width: 3, height: 24 },
-];
-
-const BARS_STATUS: BarConfig[] = [
-	{ width: 3, height: 24 },
-	{ width: 2, height: 30 },
-	{ width: 3, height: 22 },
-	{ width: 3, height: 28 },
-	{ width: 2, height: 26 },
-	{ width: 3, height: 24 },
-	{ width: 3, height: 30 },
-	{ width: 2, height: 22 },
-	{ width: 3, height: 28 },
-	{ width: 3, height: 24 },
-	{ width: 2, height: 30 },
-	{ width: 3, height: 26 },
-];
-
-const BARS_SKILLS: BarConfig[] = [
-	{ width: 2, height: 22 },
-	{ width: 3, height: 28 },
-	{ width: 2, height: 24 },
-	{ width: 3, height: 30 },
-	{ width: 3, height: 22 },
-	{ width: 2, height: 26 },
-	{ width: 3, height: 28 },
-	{ width: 2, height: 30 },
-	{ width: 3, height: 24 },
-	{ width: 3, height: 22 },
-	{ width: 2, height: 28 },
-	{ width: 3, height: 26 },
-];
-
-const BARS_CONFIG: BarConfig[] = [
-	{ width: 3, height: 30 },
-	{ width: 2, height: 22 },
-	{ width: 3, height: 26 },
-	{ width: 3, height: 24 },
-	{ width: 2, height: 28 },
-	{ width: 3, height: 22 },
-	{ width: 2, height: 30 },
-	{ width: 3, height: 24 },
-	{ width: 3, height: 28 },
-	{ width: 2, height: 26 },
-	{ width: 3, height: 22 },
-	{ width: 3, height: 30 },
-];
 
 // Cost for 1,000 commits at ~4,200 input + ~400 output tokens each.
 // Based on actual usage data (255 commits, 1.17M tokens, $0.33 with Gemini 3.1 Flash Lite).
@@ -410,7 +319,7 @@ export function HomeView({ onSelect }: HomeViewProps) {
 						features={t.initFeatures}
 						pattern={<DotsPattern motion="init" shape="seed" />}
 						graphicMotion="init"
-						bars={BARS_INIT}
+						bars={barsForTitle(t.initTitle)}
 						serial="GA-001"
 						onClick={() => onSelect("init")}
 						reducedMotion={reduced}
@@ -427,7 +336,7 @@ export function HomeView({ onSelect }: HomeViewProps) {
 						features={t.commitFeatures}
 						pattern={<DotsPattern motion="commit" shape="ledger" />}
 						graphicMotion="commit"
-						bars={BARS_COMMIT}
+						bars={barsForTitle(t.commitTitle)}
 						serial="GA-002"
 						onClick={() => onSelect("commit")}
 						reducedMotion={reduced}
@@ -444,7 +353,7 @@ export function HomeView({ onSelect }: HomeViewProps) {
 						features={t.relatedFeatures}
 						pattern={<DotsPattern motion="related" shape="diamond" />}
 						graphicMotion="related"
-						bars={BARS_RELATED}
+						bars={barsForTitle(t.relatedTitle)}
 						serial="GA-003"
 						onClick={() => onSelect("related")}
 						reducedMotion={reduced}
@@ -461,7 +370,7 @@ export function HomeView({ onSelect }: HomeViewProps) {
 						features={t.statusFeatures}
 						pattern={<DotsPattern motion="status" shape="capsule" />}
 						graphicMotion="status"
-						bars={BARS_STATUS}
+						bars={barsForTitle(t.statusTitle)}
 						serial="GA-004"
 						onClick={() => onSelect("status")}
 						reducedMotion={reduced}
@@ -478,7 +387,7 @@ export function HomeView({ onSelect }: HomeViewProps) {
 						features={t.skillsFeatures}
 						pattern={<DotsPattern motion="skills" shape="hexagon" />}
 						graphicMotion="skills"
-						bars={BARS_SKILLS}
+						bars={barsForTitle(t.skillsTitle)}
 						serial="GA-005"
 						onClick={() => onSelect("skills")}
 						reducedMotion={reduced}
@@ -495,7 +404,7 @@ export function HomeView({ onSelect }: HomeViewProps) {
 						features={t.configFeatures}
 						pattern={<DotsPattern motion="config" shape="chamfer" />}
 						graphicMotion="config"
-						bars={BARS_CONFIG}
+						bars={barsForTitle(t.configTitle)}
 						serial="GA-006"
 						onClick={() => onSelect("config")}
 						reducedMotion={reduced}
