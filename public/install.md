@@ -10,7 +10,7 @@ Run this command to install the git-agent skill into your AI assistant:
 npx skills add https://github.com/GitAgentHQ/git-agent-cli --skill using-git-agent -y -g
 ```
 
-The skill contains the full reference for operating git-agent — commit splitting, hook behavior, provider config, error recovery, and co-change relations (`git-agent related` to see what changes together, `git-agent status` for index health). All subsequent behavior should follow that skill.
+This guide explains how a coding agent hands Git operations to git-agent — autonomous change discovery, staging, atomic splitting, hook behavior, provider config, error recovery, and co-change relations (`git-agent related` to see what changes together, `git-agent status` for index health). The recommended write entry point is the bare `git-agent` command with an intent.
 
 ---
 
@@ -76,7 +76,7 @@ Ask: "Do you want to keep the `Co-Authored-By: Git Agent` trailer in your commit
 
 ### AI model co-author trailer
 
-AI coding assistants such as Claude Code automatically pass a `--co-author` flag when invoking `git-agent commit`, appending a trailer like `Co-Authored-By: Claude <noreply@anthropic.com>` to attribute the model. This is enabled by default.
+AI coding assistants such as Claude Code can pass a `--co-author` flag when invoking git-agent, appending a trailer like `Co-Authored-By: Claude <noreply@anthropic.com>` to attribute the model. This is enabled by default.
 
 Ask: "Do you want to include the AI model's `Co-Authored-By` trailer (e.g. from Claude Code) in your commits? (yes / no)"
 
@@ -112,7 +112,7 @@ Ask: "Do you want to require every commit to carry an AI model `Co-Authored-By` 
   require_model_co_author: true
   ```
 
-  When enabled, every `git-agent commit` invocation must include `--co-author "Model Name <email@allowed-domain>"` (e.g. `--co-author "Claude Opus 4.7 <noreply@anthropic.com>"` or `--co-author "Grok 4.5 <noreply@x.ai>"`). git-agent validates this at the CLI layer and exits with a hint before calling the LLM if it is missing. Only custom / lesser-known providers need `model_co_author_domains: [acme.ai, ...]`. This setting is mutually exclusive with `no_model_co_author: true`.
+  When enabled, every autonomous git-agent invocation must include `--co-author "Model Name <email@allowed-domain>"` (e.g. `--co-author "Claude Opus 4.7 <noreply@anthropic.com>"` or `--co-author "Grok 4.5 <noreply@x.ai>"`). git-agent validates this at the CLI layer and exits with a hint before calling the LLM if it is missing. Only custom / lesser-known providers need `model_co_author_domains: [acme.ai, ...]`. This setting is mutually exclusive with `no_model_co_author: true`.
 
 ### Per-repo initialization
 
@@ -120,6 +120,24 @@ Ask: "Do you want to initialize git-agent in your current repository now? This g
 
 - **yes** — run `git-agent init --scope` and show the user the generated `.git-agent/config.yml`.
 - **no** — skip; initialization is not a prerequisite. Running the bare `git-agent` command (no subcommand) auto-generates a missing `.gitignore` and missing commit scopes, then stages, plans, and commits autonomously.
+
+## The default Git handoff
+
+After the coding agent has finished a unit of work and run its relevant checks, it should hand the repository to git-agent once. The agent creates the intent from the user's request, decisions made during implementation, and verification performed — the user does not need to write a commit message or decide how to stage and split the changes.
+
+Recommended command:
+
+```bash
+git-agent --intent "Implement the requested change, preserve the existing behavior, and record the tests and typecheck that passed."
+```
+
+Use `-o json` when the calling agent needs commit SHAs:
+
+```bash
+git-agent --intent "..." -o json
+```
+
+The bare command owns the default Git workflow: it discovers staged, unstaged, and untracked changes; prepares missing `.gitignore` and scope metadata; plans atomic groups; stages each group; generates and validates messages; commits; and updates the co-change graph. Do not run `git add`, `git commit`, or `git-agent commit` first for the default handoff. `git-agent commit` remains an explicit lower-level command for advanced callers that need its narrower contract.
 
 ### The co-change graph
 
@@ -146,7 +164,7 @@ Ask: "Do you want to set up shell completion for git-agent? (yes / no)"
 
 ## Step 6: Confirm and hand off
 
-Tell the user that git-agent is ready. From this point on, follow the installed skill (`using-git-agent`) for all git-agent operations — committing, and querying co-change relations before edits (`git-agent related`) or checking index health (`git-agent status`).
+Tell the user that git-agent is ready. From this point on, after completing a unit of coding work and its verification, hand the repository to the bare `git-agent --intent "..."` flow. Use `git-agent related` for co-change queries before edits and `git-agent status` for index health.
 
 ---
 
@@ -168,7 +186,7 @@ Then act on the answer:
   ```markdown
   ## git-agent
 
-  Before editing a feature or starting multi-file work in any git repo, run `git-agent related <files...>` to find the files that historically change together with the ones you are touching — the temporal complement to Grep (Grep finds current references; `related` finds what moves together, with the linking commits that explain why). Read those commits to judge each coupling and open the strongly-coupled files before finishing; after editing, `git-agent related <files...> --tests` lists which tests to run. Commit with `git-agent commit --intent "..."` (never hand-write messages; on 401 retry `--free`). `related` and `status` are offline and need no API key; only `commit` and `init --scope` need a provider. Full reference: the `using-git-agent` skill.
+  Before editing a feature or starting multi-file work in any git repo, run `git-agent related <files...>` to find the files that historically change together with the ones you are touching — the temporal complement to Grep (Grep finds current references; `related` finds what moves together, with the linking commits that explain why). Read those commits to judge each coupling and open the strongly-coupled files before finishing; after editing, `git-agent related <files...> --tests` lists which tests to run. After verification, hand Git operations to `git-agent --intent "..."` (never run raw `git add` or `git commit`, and do not make the user write a commit message; use `-o json` when SHAs are needed, retry with `--free` on 401). `related` and `status` are offline and need no API key; only the autonomous write flow and `init --scope` need a provider.
   ```
 
 

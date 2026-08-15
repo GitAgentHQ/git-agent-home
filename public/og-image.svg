@@ -23,7 +23,7 @@
   <text x="96" y="468" font-family="'IBM Plex Sans','Helvetica Neue',Arial,sans-serif" font-size="104" font-weight="700" fill="#f0ede6" letter-spacing="-2">git-agent</text>
 
   <!-- Tagline -->
-  <text x="96" y="528" font-family="'IBM Plex Mono','IBM Plex Sans',monospace" font-size="32" font-weight="400" fill="#9a958a">AI-first Git CLI · conventional commits · atomic splits</text>
+  <text x="96" y="528" font-family="'IBM Plex Mono','IBM Plex Sans',monospace" font-size="32" font-weight="400" fill="#9a958a">AI-first Git execution layer · intent in · clean history out</text>
 
   <!-- Corner label -->
   <text x="1104" y="528" text-anchor="end" font-family="'IBM Plex Mono',monospace" font-size="26" font-weight="500" fill="#6b675e">gitagent.dev</text>
