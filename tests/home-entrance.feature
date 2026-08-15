@@ -1,5 +1,12 @@
 Feature: Homepage entrance choreography
 
+  Scenario: The homepage presents git-agent as the autonomous Git handoff
+    Given a visitor is evaluating how git-agent fits into an agent workflow
+    When the homepage and Git Agent command detail are read
+    Then the primary workflow is the bare `git-agent --intent` command
+    And the copy says git-agent discovers, stages, splits, validates, and commits changes
+    And the copy does not require a manual `git add` step for the default workflow
+
   Scenario: The browser canvas starts in the site color scheme
     Given a visitor opens the homepage from a cold navigation
     When the document head is parsed before external stylesheets
