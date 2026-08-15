@@ -39,8 +39,8 @@ Teams adopting Conventional Commits benefit from a shared vocabulary for change 
       "chore(deps): upgrade express from 4.18.2 to 4.19.2",
     ],
     howGitAgentHelps: {
-      en: "git-agent generates fully-formed Conventional Commits messages automatically from your staged diff. It selects the appropriate type and scope, writes the subject line, and drafts a bullet-point body explaining what changed and a closing paragraph explaining why.",
-      zh: "git-agent 从暂存的 diff 自动生成完整的约定式提交信息。它自动选择适当的类型和范围，撰写主题行，并起草解释变更内容的项目符号正文和解释原因的结尾段落。",
+      en: "git-agent generates fully-formed Conventional Commits messages automatically from your working-tree diff. It discovers and stages the work, selects the appropriate type and scope, writes the subject line, and drafts a body explaining what changed and why.",
+      zh: "git-agent 从工作区 diff 自动生成完整的约定式提交信息。它会发现并暂存改动，自动选择适当的类型和范围，撰写主题行，并起草解释变更内容和原因的正文。"
     },
     relatedLinks: [
       {
@@ -116,8 +116,8 @@ Common violations include "big-bang" commits that mix feature additions, refacto
       "chore(deps): pin lodash to 4.17.21 to resolve CVE-2021-23337",
     ],
     howGitAgentHelps: {
-      en: "git-agent's core feature is atomic commit splitting. When you stage multiple unrelated changes, git-agent analyses the diff, plans logically separate commit groups, then stages and commits each group independently — without any manual git add -p sessions.",
-      zh: "git-agent 的核心功能是原子提交拆分。当你暂存了多个不相关的变更时，git-agent 分析 diff，规划逻辑上独立的提交组，然后独立暂存并提交每个组——无需手动执行 git add -p。",
+      en: "git-agent's core feature is atomic commit splitting. When your working tree contains multiple unrelated changes, git-agent analyses the full diff, plans logically separate commit groups, then stages and commits each group independently — without any manual git add -p sessions.",
+      zh: "git-agent 的核心功能是原子提交拆分。当工作区包含多个不相关的变更时，git-agent 分析完整 diff，规划逻辑上独立的提交组，然后独立暂存并提交每个组——无需手动执行 git add -p。"
     },
     relatedLinks: [
       {
@@ -170,8 +170,8 @@ Common violations include "big-bang" commits that mix feature additions, refacto
     slug: "commit-splitting",
     term: { en: "Commit Splitting", zh: "提交拆分" },
     definition: {
-      en: "The practice of dividing a set of staged changes into multiple discrete commits, each containing one logical unit of work.",
-      zh: "将一组暂存变更划分为多个离散提交的做法，每个提交包含一个逻辑工作单元。",
+      en: "The practice of dividing a working-tree change set into multiple discrete commits, each containing one logical unit of work.",
+      zh: "将一组工作区变更划分为多个离散提交的做法，每个提交包含一个逻辑工作单元。"
     },
     longDescription: {
       en: `Commit splitting is required when a developer has made several independent changes to their working tree and wants to record them as separate, atomic history entries rather than one large commit. The process involves identifying logical groupings in the diff, selectively staging each group, writing a focused commit message, and repeating until all changes are committed.
@@ -189,11 +189,11 @@ Automated commit splitting tools analyse the entire diff first to plan groups, t
       "git add -p  # interactive hunk-by-hunk staging",
       "git add src/auth/  && git commit -m 'feat(auth): ...'",
       "git add src/api/ && git commit -m 'fix(api): ...'",
-      "git-agent commit  # plans and executes all splits automatically",
+      "git-agent --intent \"...\"  # discovers, plans, and executes all splits"
     ],
     howGitAgentHelps: {
-      en: "git-agent automates commit splitting end-to-end. It sends the full staged diff to the LLM to plan atomic groups, then unstages everything, re-stages each group's files and hunks, generates a conventional commit message for that group, validates it against the pre-commit hook, and moves to the next group.",
-      zh: "git-agent 端到端地自动化提交拆分。它将完整的暂存 diff 发送给 LLM 以规划原子组，然后取消暂存所有内容，重新暂存每个组的文件和 hunk，为该组生成约定式提交信息，验证 pre-commit 钩子，然后移至下一组。",
+      en: "git-agent automates commit splitting end-to-end. It sends the full working-tree diff to the LLM to plan atomic groups, then stages each group's files and hunks, generates a conventional commit message for that group, validates it against the configured hook, and moves to the next group.",
+      zh: "git-agent 端到端地自动化提交拆分。它将完整的工作区 diff 发送给 LLM 以规划原子组，然后暂存每个组的文件和 hunk，为该组生成约定式提交信息，验证配置的 hook，然后移至下一组。"
     },
     relatedLinks: [
       {
@@ -226,8 +226,8 @@ Automated commit splitting tools analyse the entire diff first to plan groups, t
           zh: "提交拆分支持部分文件暂存（git add -p hunk）吗？",
         },
         answer: {
-          en: "Yes. git-agent reads the staged diff which reflects whatever was staged — whole files or individual hunks. Hunk-level splits are supported in the planner.",
-          zh: "支持。git-agent 读取暂存的 diff，反映任何已暂存的内容——无论是整个文件还是单个 hunk。规划器支持 hunk 级别的拆分。",
+          en: "Yes. git-agent can work with partial hunks when they are already staged, while the autonomous flow can also discover the rest of the working tree. Hunk-level splits are supported in the planner.",
+          zh: "支持。如果部分 hunk 已经暂存，git-agent 可以直接处理；自主流程也能发现工作区的其他改动。规划器支持 hunk 级别的拆分。"
         },
       },
       {
@@ -728,8 +728,8 @@ The tension between squashing and atomic commits is important to understand. Squ
       "feat(auth): add OAuth2 login flow with PKCE",
     ],
     howGitAgentHelps: {
-      en: "git-agent creates clean, atomic commits from the start, reducing the need to squash. When you use git-agent commit, each logical change is already committed separately with a meaningful message, so the history is ready for review and merge without cleanup.",
-      zh: "git-agent 从一开始就创建干净的原子提交，减少了压缩的需求。当你使用 git-agent commit 时，每个逻辑变更已经单独提交并附有有意义的信息，因此历史记录无需清理即可用于审查和合并。",
+      en: "git-agent creates clean, atomic commits from the start, reducing the need to squash. When you hand completed work to `git-agent --intent \"...\"`, each logical change is already committed separately with a meaningful message, so the history is ready for review and merge without cleanup.",
+      zh: "git-agent 从一开始就创建干净的原子提交，减少了压缩的需求。当你将完成的工作交给 `git-agent --intent \"...\"` 时，每个逻辑变更已经单独提交并附有有意义的信息，因此历史记录无需清理即可用于审查和合并。"
     },
     relatedLinks: [
       {
@@ -1084,8 +1084,8 @@ Common operations include git stash push (save changes), git stash pop (apply an
           zh: "git-agent 在拆分前会 stash 变更吗？",
         },
         answer: {
-          en: "No. git-agent works directly with the staged diff. It does not stash anything. The commit splitting process operates on whatever changes are currently staged, leaving unstaged work untouched.",
-          zh: "不会。git-agent 直接处理暂存的 diff。它不会 stash 任何内容。提交拆分过程对当前暂存的任何变更进行操作，不触及未暂存的工作。",
+          en: "No. git-agent works directly with the repository's working-tree diff. It does not stash anything. The autonomous handoff discovers the current changes, stages its planned groups, and commits them without requiring a separate staging step.",
+          zh: "不会。git-agent 直接处理仓库的工作区 diff。它不会 stash 任何内容。自主交接会发现当前改动、暂存规划出的分组并提交，无需单独的暂存步骤。"
         },
       },
     ],
@@ -1315,8 +1315,8 @@ Worktree 使用 git worktree add <path> <branch> 管理。每个 worktree 记录
           zh: "我可以在 worktree 中运行 git-agent 吗？",
         },
         answer: {
-          en: "Yes. Each worktree is a full working directory with its own staged state. git-agent works identically in any worktree — it reads the staged diff, plans commits, and executes them within the worktree's branch context.",
-          zh: "可以。每个 worktree 是一个完整的工作目录，有自己的暂存状态。git-agent 在任何 worktree 中都同样工作——它读取暂存的 diff，规划提交，并在 worktree 的分支上下文中执行它们。",
+          en: "Yes. Each worktree is a full working directory with its own Git state. git-agent works identically in any worktree — it reads the working-tree diff, plans commits, owns staging, and executes them within the worktree's branch context.",
+          zh: "可以。每个 worktree 是一个完整的工作目录，有自己的 Git 状态。git-agent 在任何 worktree 中都同样工作——它读取工作区 diff，规划提交，负责暂存，并在 worktree 的分支上下文中执行它们。"
         },
       },
     ],

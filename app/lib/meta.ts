@@ -26,7 +26,7 @@ export function buildMeta({ title, description, canonicalUrl, image }: BuildMeta
 		{ property: "og:image", content: ogImage },
 		{ property: "og:image:width", content: "1200" },
 		{ property: "og:image:height", content: "630" },
-		{ property: "og:image:alt", content: "git-agent — AI-first Git CLI for conventional commits" },
+		{ property: "og:image:alt", content: "git-agent — AI-first Git execution layer" },
 		{ name: "twitter:card", content: "summary_large_image" },
 		{ name: "twitter:title", content: title },
 		{ name: "twitter:description", content: description },
@@ -50,7 +50,7 @@ export function softwareAppJsonLd(): string {
 		operatingSystem: "macOS, Linux, Windows",
 		url: SITE_URL,
 		description:
-			"AI-first Git CLI for conventional commits and atomic commit splits.",
+			"AI-first Git execution layer: hand completed work to git-agent for autonomous staging, atomic splitting, validation, and Conventional Commits.",
 		offers: {
 			"@type": "Offer",
 			price: "0",

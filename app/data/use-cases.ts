@@ -32,8 +32,8 @@ export const useCaseEntries: UseCaseEntry[] = [
       zh: "在 monorepo 中跨包工作时，一个 `git commit` 会将不同包的变更混入同一个提交。这会破坏每个包的变更日志，混淆 semantic-release 等版本升级工具，并使得跨发布分支 cherry-pick 修复变得困难。每次提交都手动使用 `git add -p` 拆分既繁琐又容易出错。",
     },
     solution: {
-      en: "git-agent analyses your staged diff and automatically groups changes by package scope — using your workspace tooling (pnpm workspaces, Nx, Turborepo, Cargo workspace, go.work) to determine boundaries. Each group becomes an independent atomic commit with a conventional message scoped to its package, keeping your monorepo history clean and tooling-friendly.",
-      zh: "git-agent 分析暂存的 diff 并自动按包范围分组变更——利用你的工作区工具（pnpm workspaces、Nx、Turborepo、Cargo workspace、go.work）确定边界。每个组成为一个独立的原子提交，并附有以该包为范围的约定式信息，保持你的 monorepo 历史整洁且对工具友好。",
+      en: "git-agent analyses the full working-tree diff and automatically groups changes by package scope — using your workspace tooling (pnpm workspaces, Nx, Turborepo, Cargo workspace, go.work) to determine boundaries. Give it the work intent; it discovers, stages, and commits each group independently with a conventional message scoped to its package, keeping your monorepo history clean and tooling-friendly.",
+      zh: "git-agent 分析完整的工作区 diff，并自动按包范围分组变更——利用你的工作区工具（pnpm workspaces、Nx、Turborepo、Cargo workspace、go.work）确定边界。把工作的意图交给它；它会自己发现、暂存并独立提交每个组，并附上以该包为范围的约定式信息，保持 monorepo 历史整洁且对工具友好。"
     },
     steps: [
       {
@@ -41,12 +41,12 @@ export const useCaseEntries: UseCaseEntry[] = [
         zh: "在 monorepo 根目录运行 `git-agent init`。git-agent 扫描你的工作区配置并自动生成按包划分的范围。",
       },
       {
-        en: "Stage all your changes as you normally would with `git add`. Cross-package changes are okay — git-agent will handle the splitting.",
-        zh: "像往常一样使用 `git add` 暂存所有变更。跨包变更也没问题——git-agent 会处理拆分。",
+        en: "Finish the work across packages and pass its intent to `git-agent --intent`. Cross-package changes are okay — git-agent discovers the working tree and handles the splitting.",
+        zh: "完成跨包工作后，将意图传给 `git-agent --intent`。跨包变更没有问题——git-agent 会发现工作区并负责拆分。"
       },
       {
-        en: "Run `git-agent commit`. The tool analyses the full diff, plans atomic commit groups by package scope, then stages and commits each group independently.",
-        zh: "运行 `git-agent commit`。该工具分析完整的 diff，按包范围规划原子提交组，然后独立暂存并提交每个组。",
+        en: "Run `git-agent --intent \"...\"`. The tool analyses the full diff, plans atomic commit groups by package scope, then stages and commits each group independently.",
+        zh: "运行 `git-agent --intent \"...\"`。该工具分析完整的 diff，按包范围规划原子提交组，然后独立暂存并提交每个组。"
       },
       {
         en: "Review the result: each package has its own commit with a conventional message, ready for changelog generation, version bumping, and cherry-picking.",
@@ -128,8 +128,8 @@ export const useCaseEntries: UseCaseEntry[] = [
         zh: "像往常一样配置你的 CI/CD 流水线（如 semantic-release、release-please），读取默认分支的提交。",
       },
       {
-        en: "Have your team use `git-agent commit` instead of `git commit` for all changes. The agent generates conventional messages automatically.",
-        zh: "让团队对所有变更使用 `git-agent commit` 替代 `git commit`。git-agent 自动生成约定式信息。",
+        en: "Have your team hand completed work to `git-agent --intent \"...\"` instead of running `git add` and `git commit`. The agent generates conventional messages and owns the Git workflow automatically.",
+        zh: "让团队将完成的工作交给 `git-agent --intent \"...\"`，而不是手动运行 `git add` 和 `git commit`。git-agent 会自动生成约定式信息并接管 Git 工作流。"
       },
       {
         en: "Run `git-agent init` per project to set up scopes and a validation hook, ensuring consistent message quality across the team.",
@@ -181,8 +181,8 @@ export const useCaseEntries: UseCaseEntry[] = [
           zh: "我能在 CI 环境（如 GitHub Actions）中使用 git-agent 吗？",
         },
         answer: {
-          en: "git-agent is designed for interactive use with staged diffs. For CI environments, focus on ensuring your developers use git-agent locally so that conventional commits reach the pipeline naturally.",
-          zh: "git-agent 设计用于交互式使用暂存 diff。对于 CI 环境，应确保开发者本地使用 git-agent，让约定式提交自然进入流水线。",
+          en: "git-agent is designed for interactive handoff from a completed working tree. For CI environments, use it where the job has a writable checkout and pass the change intent explicitly; otherwise let developers hand off their local work before it reaches the pipeline.",
+          zh: "git-agent 设计用于将完成的工作区交给它处理。对于 CI 环境，应在作业拥有可写检出目录时显式传入变更意图；否则让开发者在本地把工作交给 git-agent，再进入流水线。"
         },
       },
     ],
@@ -206,8 +206,8 @@ export const useCaseEntries: UseCaseEntry[] = [
       zh: "向新的开源项目贡献意味着需要学习其提交约定、范围命名和变更日志期望。被拒绝的提交信息通常意味着 CI 检查失败、维护者要求重写，或者 PR 被标记为 'needs-fix'。对于首次贡献者来说，这种摩擦可能令人沮丧，并拖慢审查流程。",
     },
     solution: {
-      en: "git-agent analyses your staged diff and generates a conventional commit message that matches the project's expected format. It handles type selection, scope inference, and body writing automatically. The built-in pre-commit hook validates the message before it reaches the remote, so your first PR submission is already formatted correctly.",
-      zh: "git-agent 分析暂存的 diff 并生成符合项目预期格式的约定式提交信息。它自动处理类型选择、范围推断和正文撰写。内置的 pre-commit 钩子在提交信息到达远程之前进行验证，确保你的首次 PR 提交格式正确。",
+      en: "git-agent analyses the working-tree diff and generates a conventional commit message that matches the project's expected format. It discovers and stages the work itself, handles type selection, scope inference, and body writing automatically, then validates the message before it reaches the remote.",
+      zh: "git-agent 分析工作区 diff，并生成符合项目预期格式的约定式提交信息。它会自己发现并暂存改动，自动处理类型选择、范围推断和正文撰写，然后在提交到远程之前验证信息。"
     },
     steps: [
       {
@@ -215,12 +215,12 @@ export const useCaseEntries: UseCaseEntry[] = [
         zh: "克隆仓库并运行 `git-agent init`。git-agent 扫描项目结构并建议与项目约定一致的范围。",
       },
       {
-        en: "Make your changes and stage them with `git add` as you normally would.",
-        zh: "像往常一样修改代码并使用 `git add` 暂存变更。",
+        en: "Make your changes, run the relevant checks, and keep the work in the working tree.",
+        zh: "修改代码并运行相关检查，将完成的工作保留在工作区即可。"
       },
       {
-        en: "Run `git-agent commit`. The tool generates a conventional commit message with the correct type, scope, and description for your contribution.",
-        zh: "运行 `git-agent commit`。该工具为你的贡献生成具有正确类型、范围和描述的约定式提交信息。",
+        en: "Run `git-agent --intent \"...\"`. It discovers the diff, stages the work, and generates a conventional commit with the correct type, scope, and description for your contribution.",
+        zh: "运行 `git-agent --intent \"...\"`。它会发现 diff、暂存改动，并为你的贡献生成具有正确类型、范围和描述的约定式提交信息。"
       },
       {
         en: "Push and open your PR. The commit history is clean, CI passes the message format check, and maintainers can review the changes without format-related back-and-forth.",
@@ -293,17 +293,17 @@ export const useCaseEntries: UseCaseEntry[] = [
       zh: "一个包含多个不相关变更的 PR 迫使审查者在脑海中理清哪些变更属于一起。这使得批准个别变更、拒绝特定部分以及理解每个变更背后的推理都变得更加困难。审查者最终需要多次重读同一个 diff，而由于认知负荷过高，漏洞可能被忽略。",
     },
     solution: {
-      en: "git-agent splits your staged changes into atomic commits before writing any commit. Each commit addresses one logical concern with a descriptive conventional message explaining what changed and why. Reviewers see a clean, focused commit history where each entry is independently reviewable, reversable, and cherry-pickable.",
-      zh: "git-agent 在写入任何提交之前将暂存的变更拆分为原子提交。每个提交处理一个逻辑关注点，并附有描述性的约定式信息，解释变更内容和原因。审查者看到的是一个干净、专注的提交历史，其中每个条目都可以独立审查、回滚和 cherry-pick。",
+      en: "git-agent splits the working-tree changes into atomic commits before writing any commit. Each commit addresses one logical concern with a descriptive conventional message explaining what changed and why. Reviewers see a clean, focused commit history where each entry is independently reviewable, reversible, and cherry-pickable.",
+      zh: "git-agent 在写入任何提交之前将工作区变更拆分为原子提交。每个提交处理一个逻辑关注点，并附有解释变更内容和原因的约定式信息。审查者看到的是一个干净、专注的提交历史，其中每个条目都可以独立审查、回滚和 cherry-pick。"
     },
     steps: [
       {
-        en: "Work on your branch normally and stage all changes with `git add` when you are ready to commit.",
-        zh: "正常在你的分支上工作，准备好提交时使用 `git add` 暂存所有变更。",
+        en: "Work on your branch normally, run the relevant checks, and keep the completed changes in the working tree.",
+        zh: "正常在你的分支上工作，运行相关检查，并将完成的改动保留在工作区。"
       },
       {
-        en: "Run `git-agent commit`. The tool analyses the diff and presents a plan of atomic commit groups before executing.",
-        zh: "运行 `git-agent commit`。该工具分析 diff 并在执行前展示原子提交组的规划方案。",
+        en: "Run `git-agent --intent \"...\"`. The tool analyses the diff and plans atomic commit groups before executing the Git operations itself.",
+        zh: "运行 `git-agent --intent \"...\"`。该工具分析 diff，在执行 Git 操作前规划原子提交组。"
       },
       {
         en: "Review the plan and confirm. git-agent stages each group, generates a conventional message, commits it, and moves to the next group.",
@@ -380,8 +380,8 @@ export const useCaseEntries: UseCaseEntry[] = [
       zh: "没有强制执行，团队中的提交信息质量参差不齐。有些成员写详细的信息，有些写一行，还有些完全跳过。这种不一致使变更日志不可靠，破坏 CI/CD 发布自动化，并让审查者感到沮丧，因为他们不得不要求重写信息。手动审查提交格式既浪费又不一致。",
     },
     solution: {
-      en: "git-agent standardises commit creation across the team. Every member runs `git-agent commit`, which produces the same high-quality conventional format regardless of who writes the code. The validation hook catches format issues before they reach the remote, and the retry loop automatically fixes minor deviations. The result is a uniformly structured git history that every team tool can rely on.",
-      zh: "git-agent 标准化了团队中的提交创建过程。每个成员运行 `git-agent commit`，无论谁编写代码，都能生成相同的高质量约定式格式。验证钩子在格式问题到达远程之前捕获它们，重试循环自动修复小的偏差。结果是每个团队工具都能依赖的统一结构化 git 历史。",
+      en: "git-agent standardises Git execution across the team. Every member hands completed work to `git-agent --intent \"...\"`, which discovers the changes and produces the same high-quality conventional format regardless of who writes the code. The validation hook catches format issues before they reach the remote, and the retry loop automatically fixes minor deviations.",
+      zh: "git-agent 标准化了团队中的 Git 执行过程。每个成员都将完成的工作交给 `git-agent --intent \"...\"`，它会发现改动，并无论谁编写代码都生成相同的高质量约定式格式。验证 hook 在格式问题到达远程之前捕获它们，重试循环自动修复小的偏差。"
     },
     steps: [
       {
@@ -393,8 +393,8 @@ export const useCaseEntries: UseCaseEntry[] = [
         zh: "在 `.git-agent/config.yml` 中配置项目的提交范围和验证规则，并将此文件提交到仓库。",
       },
       {
-        en: "Establish a team convention: use `git-agent commit` instead of `git commit` for all changes. The tool handles format, scope, and message quality automatically.",
-        zh: "建立团队约定：对所有变更使用 `git-agent commit` 替代 `git commit`。该工具自动处理格式、范围和信息质量。",
+        en: "Establish a team convention: hand completed work to `git-agent --intent \"...\"` instead of running `git add` and `git commit`. The tool handles discovery, staging, format, scope, and message quality automatically.",
+        zh: "建立团队约定：将完成的工作交给 `git-agent --intent \"...\"`，而不是运行 `git add` 和 `git commit`。该工具自动处理发现改动、暂存、格式、范围和信息质量。"
       },
       {
         en: "Review PRs as usual. The commit history is consistently formatted, changelogs are accurate, and CI/CD pipelines receive the right signals without manual intervention.",
@@ -467,8 +467,8 @@ export const useCaseEntries: UseCaseEntry[] = [
       zh: "当独自工作时，很容易使用 'fix stuff' 或 'update' 等一行提交信息。这在当时没问题，但后续会带来问题：你无法找到引入错误的原因，无法为副项目生成变更日志，也无法轻松地在分支间 cherry-pick 修复。事后修复历史既痛苦又很少真正去做。",
     },
     solution: {
-      en: "git-agent automates the entire commit workflow for solo developers. Stage your changes, run one command, and get well-structured conventional commits with detailed messages. No need to remember format rules, type choices, or scope naming — the tool handles it all. The result is a professional git history that makes your future self, and any collaborators, grateful.",
-      zh: "git-agent 为独立开发者自动化了整个提交工作流。暂存变更，运行一个命令，就能获得结构良好的约定式提交和详细的信息。无需记住格式规则、类型选择或范围命名——工具全部处理。结果是专业的 git 历史，让未来的你和任何协作者都感到感激。",
+      en: "git-agent automates the entire Git handoff for solo developers. Finish your work, run the relevant checks, and give git-agent the intent in one command. It discovers the changes, stages them, and creates well-structured conventional commits with detailed messages. No need to remember format rules, type choices, or scope naming.",
+      zh: "git-agent 为独立开发者自动化了整个 Git 交接过程。完成工作、运行相关检查，然后在一条命令中把意图交给 git-agent。它会发现并暂存改动，创建结构良好且带详细信息的约定式提交。无需记住格式规则、类型选择或范围命名。"
     },
     steps: [
       {
@@ -480,8 +480,8 @@ export const useCaseEntries: UseCaseEntry[] = [
         zh: "在项目中运行 `git-agent init`，根据项目结构设置提交范围和验证钩子。",
       },
       {
-        en: "Work as you normally do. When you are ready to commit, run `git add` to stage everything, then `git-agent commit`.",
-        zh: "像往常一样工作。准备好提交时，运行 `git add` 暂存所有内容，然后运行 `git-agent commit`。",
+        en: "Work as you normally do, run the relevant checks, then pass the work intent to `git-agent --intent \"...\"`.",
+        zh: "像往常一样工作，运行相关检查，然后将工作意图传给 `git-agent --intent \"...\"`。"
       },
       {
         en: "Review the generated commit messages. git-agent splits unrelated changes, selects the right types, and writes clear descriptions — so you can focus on coding instead of formatting.",
@@ -519,8 +519,8 @@ export const useCaseEntries: UseCaseEntry[] = [
           zh: "在个人项目上使用 git-agent 需要配置什么吗？",
         },
         answer: {
-          en: "Minimal setup. Just run `git-agent init` once per project. The tool detects your project structure and suggests reasonable defaults. You can start using `git-agent commit` immediately with no additional configuration.",
-          zh: "最小化配置。只需在每个项目上运行一次 `git-agent init`。该工具检测你的项目结构并建议合理的默认值。你可以立即开始使用 `git-agent commit`，无需额外配置。",
+          en: "Minimal setup. The bare `git-agent` command detects missing project metadata and suggests reasonable defaults as it works. Run `git-agent init` only when you want to configure or regenerate those settings explicitly.",
+          zh: "最小化配置。裸 `git-agent` 命令会在工作时发现缺失的项目元数据并生成合理默认值。只有在你想显式配置或重新生成这些设置时，才需要运行 `git-agent init`。"
         },
       },
       {
@@ -529,8 +529,8 @@ export const useCaseEntries: UseCaseEntry[] = [
           zh: "git-agent 会拖慢我的个人开发工作流吗？",
         },
         answer: {
-          en: "No. `git-agent commit` is a single command that replaces the `git commit` step. It adds a few seconds for the LLM to process the diff, but it eliminates time spent manually writing messages and cleaning up history afterward.",
-          zh: "不会。`git-agent commit` 是一个替代 `git commit` 步骤的单一命令。它增加了 LLM 处理 diff 的几秒钟时间，但消除了手动编写信息和事后清理历史的时间。",
+          en: "No. `git-agent --intent \"...\"` is a single handoff after the work is complete. It adds a few seconds for the LLM to understand the diff, but removes the need to stage files, choose commit groups, or write messages manually.",
+          zh: "不会。`git-agent --intent \"...\"` 是完成工作后的一次性交接。它会增加几秒钟的 LLM 分析时间，但不再需要手动暂存文件、选择提交分组或撰写提交信息。"
         },
       },
     ],

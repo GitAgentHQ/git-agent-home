@@ -8,6 +8,14 @@
 		"enabled": true
 	},
 	"upload_source_maps": true,
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "git-agent-webhook-db",
+			"database_id": "abaee573-ea2e-498c-bc0f-7f9f84fbe0e0",
+			"migrations_dir": "migrations"
+		}
+	],
 	"vars": {
 		"VALUE_FROM_CLOUDFLARE": "Hello from Cloudflare"
 	}

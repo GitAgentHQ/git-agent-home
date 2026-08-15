@@ -421,7 +421,7 @@ export function HomeView({ onSelect }: HomeViewProps) {
 					variants={reduced ? undefined : entryGridItem}
 				>
 					<EntryCard
-						cmd="git-agent commit"
+						cmd="git-agent"
 						title={t.commitTitle}
 						description={t.commitDescription}
 						features={t.commitFeatures}

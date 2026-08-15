@@ -1,6 +1,12 @@
 hook_type: conventional
 scopes:
-    - app
-    - build
-    - public
-    - workers
+    - name: app
+      description: React site UI, routes, i18n, SEO, and content in app/; does not cover worker deployment code.
+    - name: build
+    - name: public
+    - name: workers
+      description: Cloudflare Worker request handling in workers/; does not cover React application routes.
+    - name: migrations
+      description: Database schema evolution in migrations/; does not cover application runtime behavior.
+    - name: tests
+      description: Motion and homepage behavior tests in tests/; does not cover application implementation.

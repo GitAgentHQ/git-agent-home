@@ -22,8 +22,8 @@ export const personaEntries: PersonaEntry[] = [
       zh: "为 Python 项目自动生成规范化提交信息",
     },
     description: {
-      en: "git-agent understands Django, Flask, FastAPI, and standard Python project layouts, splitting your staged changes into meaningful atomic commits with properly scoped conventional messages.",
-      zh: "git-agent 理解 Django、Flask、FastAPI 及标准 Python 项目结构，将暂存的变更自动拆分为有意义的原子提交，并生成规范化的提交信息。",
+      en: "git-agent understands Django, Flask, FastAPI, and standard Python project layouts, discovering your working-tree changes and splitting them into meaningful atomic commits with properly scoped conventional messages.",
+      zh: "git-agent 理解 Django、Flask、FastAPI 及标准 Python 项目结构，会发现工作区改动，将其拆分为有意义的原子提交，并生成规范化的提交信息。"
     },
     diffExample: `diff --git a/app/api/users.py b/app/api/users.py
 index 3a1f2c4..8b9d1e7 100644
@@ -110,8 +110,8 @@ git-agent init   # detects pyproject.toml / setup.cfg and suggests scopes`,
           zh: "git-agent 能与虚拟环境或 conda 一起使用吗？",
         },
         answer: {
-          en: "git-agent is a standalone Go binary installed via Homebrew. It does not run inside your Python environment and requires no pip install.",
-          zh: "git-agent 是通过 Homebrew 安装的独立 Go 二进制文件，不在 Python 环境内运行，无需 pip 安装。",
+          en: "git-agent is a standalone Go binary installed via Homebrew. It does not run inside your Python environment, requires no pip install, and owns the Git handoff from the repository working tree.",
+          zh: "git-agent 是通过 Homebrew 安装的独立 Go 二进制文件，不在 Python 环境内运行，无需 pip 安装，并负责从仓库工作区接管 Git 交接。"
         },
       },
       {
@@ -339,8 +339,8 @@ git-agent init   # scans package.json workspaces for scope suggestions`,
           zh: "git-agent 如何处理压缩或生成的 JavaScript 文件？",
         },
         answer: {
-          en: "Add generated files to `.gitignore`. git-agent commits only what is staged, and `git-agent init` generates a `.gitignore` entry for common build output directories.",
-          zh: "将生成的文件添加到 `.gitignore`。git-agent 只提交已暂存的内容，`git-agent init` 会为常见的构建输出目录生成 `.gitignore` 条目。",
+          en: "Add generated files to `.gitignore` when they should never be versioned. Otherwise the autonomous `git-agent --intent \"...\"` flow discovers the working tree and commits the intended changes itself.",
+          zh: "如果生成文件永远不应纳入版本控制，请将它们加入 `.gitignore`。除此之外，自主的 `git-agent --intent \"...\"` 流程会自行发现工作区并提交预期改动。"
         },
       },
       {
@@ -480,8 +480,8 @@ git-agent init   # reads go.mod module path to suggest scopes`,
       zh: "为 Rust crate 和工作区生成精确的约定式提交",
     },
     description: {
-      en: "git-agent understands Cargo workspace layouts and Rust's ownership patterns, splitting your staged changes into clean atomic commits with conventional messages that match the Rust community's standards.",
-      zh: "git-agent 理解 Cargo 工作区结构和 Rust 的所有权模式，将暂存变更拆分为干净的原子提交，并生成符合 Rust 社区标准的约定式提交信息。",
+      en: "git-agent understands Cargo workspace layouts and Rust's ownership patterns, discovering your working-tree changes and splitting them into clean atomic commits with conventional messages that match the Rust community's standards.",
+      zh: "git-agent 理解 Cargo 工作区结构和 Rust 的所有权模式，会发现工作区改动，将其拆分为干净的原子提交，并生成符合 Rust 社区标准的约定式提交信息。"
     },
     diffExample: `diff --git a/src/error.rs b/src/error.rs
 index 8c1d3f2..5e9a7b4 100644
@@ -1307,8 +1307,8 @@ git-agent init   # detects Gradle module structure and suggests scopes`,
       zh: "为 Ruby 和 Rails 项目生成约定式提交",
     },
     description: {
-      en: "git-agent understands Rails MVC conventions, Active Record migrations, and Gemfile dependency changes, splitting your staged work into clean atomic commits with conventional messages.",
-      zh: "git-agent 理解 Rails MVC 约定、Active Record 迁移和 Gemfile 依赖变更，将暂存的工作拆分为干净的原子提交并附上约定式提交信息。",
+      en: "git-agent understands Rails MVC conventions, Active Record migrations, and Gemfile dependency changes, splitting your working-tree changes into clean atomic commits with conventional messages.",
+      zh: "git-agent 理解 Rails MVC 约定、Active Record 迁移和 Gemfile 依赖变更，将工作区改动拆分为干净的原子提交并附上约定式提交信息。"
     },
     diffExample: `diff --git a/app/services/invoice_generator.rb b/app/services/invoice_generator.rb
 index 9a2c4f1..3b7d8e5 100644

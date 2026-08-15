@@ -24,6 +24,22 @@ TailwindCSS v4 is configured via the `@tailwindcss/vite` plugin — no `tailwind
 
 Local secrets go in `.dev.vars` (Cloudflare's local env file). Never commit `.dev.vars`.
 
+## Webhook API (GitHub → D1 → desktop app)
+
+The Worker also serves GitHub webhook endpoints under `/api/webhook/*`, routed in `workers/app.ts` via `workers/webhook-handler.ts`:
+
+- `POST /api/webhook` — receives GitHub webhook events (verified with `X-Hub-Signature-256` against `WEBHOOK_SECRET`), stores them in D1 (`webhook_events` table)
+- `GET /api/webhook/events?since=<ISO>&limit=<n>` — returns the caller's events, newest first. **Requires `Authorization: Bearer <github-token>`**; events are scoped to repos the caller subscribed to (`webhook_subscriptions` table)
+- `POST /api/webhook/register` — subscribes the authenticated user to a repo. Body: `repository_full_name`, `webhook_url`. Creates/reuses the repo-level GitHub webhook; requires `admin:repo_hook` on the token
+- `POST /api/webhook/unregister` — removes the caller's subscription; deletes the repo webhook when the last subscriber leaves
+- `GET /api/webhook/health` — liveness probe (open)
+
+Multi-tenant model: a repo-level webhook lives in `webhook_registrations` (one row per repo, created by the first subscriber); every user who wants events for that repo gets a row in `webhook_subscriptions`. Events are only readable by subscribed users.
+
+Bindings: `env.DB` (D1 `git-agent-webhook-db`, migrations in `migrations/`), secret `WEBHOOK_SECRET` (in `.dev.vars` locally, `wrangler secret put WEBHOOK_SECRET` in prod). The Worker is reachable at `git-agent.dev` (custom domain) and `git-agent-home.frad.workers.dev`.
+
+The macOS desktop app (`GitAgentDesktop/GitAgentDesktop/GitHubWebhookService.swift`) polls `GET /api/webhook/events` every 30s with the user's GitHub token and refreshes only the data each event invalidates (PR list, detail, or checks). Its receiver URL defaults to `https://git-agent.dev` and can be overridden with the `GIT_AGENT_WEBHOOK_URL` environment variable for self-hosted instances.
+
 ## Conventions
 
 - All programmatic SEO routes (`for/`, `vs/`, `glossary/`, `templates/`) must use `pseo-layout.tsx` as their layout wrapper.

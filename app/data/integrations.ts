@@ -233,8 +233,8 @@ export const integrationEntries: IntegrationEntry[] = [
         zh: "在 .git-agent/config.yml 中将钩子类型设置为 conventional 或自定义脚本路径",
       },
       {
-        en: "Test the integration by running git-agent commit and verifying the hook fires correctly",
-        zh: "通过运行 git-agent commit 验证钩子正确触发来测试集成",
+        en: "Test the integration by handing a completed change to git-agent --intent and verifying the hook fires correctly",
+        zh: "将完成的变更交给 git-agent --intent，验证 hook 正确触发，以测试集成"
       },
     ],
     relatedLinks: [

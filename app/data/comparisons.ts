@@ -32,8 +32,8 @@ export const comparisonEntries: ComparisonEntry[] = [
       zh: "对比 git-agent 与 aicommit2 在原子提交拆分、免费共享网关、pre-commit 钩子集成和约定式提交质量方面的差异。",
     },
     competitorDescription: {
-      en: "aicommit2 is an AI commit message generator that supports multiple LLM providers and suggests messages for your currently staged diff.",
-      zh: "aicommit2 是一款支持多种 LLM 提供商的 AI 提交信息生成器，为当前暂存的 diff 提供提交信息建议。",
+      en: "aicommit2 is an AI commit message generator that supports multiple LLM providers and suggests messages for your currently staged diff; unlike git-agent, it does not own the full Git handoff.",
+      zh: "aicommit2 是一款支持多种 LLM 提供商的 AI 提交信息生成器，为当前暂存的 diff 提供提交信息建议；与 git-agent 不同，它不负责完整的 Git 交接。"
     },
     rows: [
       {
@@ -123,8 +123,8 @@ damage window to a single reuse attempt per token.`,
           zh: "使用 git-agent 需要 API 密钥吗？",
         },
         answer: {
-          en: "No. Official release binaries use a free shared gateway with zero config — just run git-agent commit. You can optionally bring your own key and point it at your own OpenAI, Gemini, or Claude endpoint via config.",
-          zh: "不需要。官方发布的二进制使用免费共享网关，零配置——直接运行 git-agent commit 即可。你也可以自带密钥，通过配置将其指向自己的 OpenAI、Gemini 或 Claude 端点。",
+          en: "No. Official release binaries use a free shared gateway with zero config — just hand your work to `git-agent --intent \"...\"`. You can optionally bring your own key and point it at your own OpenAI, Gemini, or Claude endpoint via config.",
+          zh: "不需要。官方发布的二进制使用免费共享网关，零配置——直接将工作交给 `git-agent --intent \"...\"` 即可。你也可以自带密钥，通过配置将其指向自己的 OpenAI、Gemini 或 Claude 端点。"
         },
       },
       {
@@ -133,8 +133,8 @@ damage window to a single reuse attempt per token.`,
           zh: "git-agent 能无缝替换 aicommit2 而不改变工作流吗？",
         },
         answer: {
-          en: "Yes. Run `git-agent commit` the same way you ran `aicommit2`. The main addition is atomic splitting, which triggers automatically when multiple logical changes are staged.",
-          zh: "可以。像运行 `aicommit2` 一样运行 `git-agent commit`。主要新增的是原子拆分功能，当暂存了多个逻辑变更时会自动触发。",
+          en: "Yes. Run `git-agent --intent \"...\"` after completing the work. The main addition is autonomous atomic splitting: git-agent discovers the working tree, stages logical groups, and commits them independently.",
+          zh: "可以。完成工作后运行 `git-agent --intent \"...\"`。主要新增的是自主原子拆分：git-agent 会发现工作区、暂存逻辑分组并独立提交。"
         },
       },
     ],
@@ -722,8 +722,8 @@ of 402.`,
           zh: "cz-git 的 AI 辅助功能会自动拆分提交吗？",
         },
         answer: {
-          en: "No. cz-git's AI mode generates a message for the current staged diff as a single commit. Only git-agent plans and executes atomic splits across multiple commits.",
-          zh: "不会。cz-git 的 AI 模式为当前暂存的 diff 生成单一提交的信息。只有 git-agent 能规划并执行跨多个提交的原子拆分。",
+          en: "No. cz-git's AI mode generates a message for the current staged diff as a single commit. Only git-agent discovers the working tree, plans, stages, and executes atomic splits across multiple commits.",
+          zh: "不会。cz-git 的 AI 模式为当前暂存的 diff 生成单一提交的信息。只有 git-agent 会发现工作区、规划、暂存并执行跨多个提交的原子拆分。"
         },
       },
       {
@@ -1069,8 +1069,8 @@ applies the new formatter rules uniformly.`,
           zh: "cocogitto 的提交生成与 git-agent 的 LLM 输出可以相比吗？",
         },
         answer: {
-          en: "No. cocogitto generates commit messages from user-provided parameters, not from your diff. git-agent reads the actual staged diff and generates detailed, context-aware messages. cocogitto's messages are shorter and templated.",
-          zh: "不能。cocogitto 根据用户提供的参数生成提交信息，而非读取你的 diff。git-agent 读取实际暂存的 diff 并生成详细、上下文感知的信息。cocogitto 的信息更短且基于模板。",
+          en: "No. cocogitto generates commit messages from user-provided parameters, not from your diff. git-agent reads the working-tree diff, owns staging, and generates detailed, context-aware messages. cocogitto's messages are shorter and templated.",
+          zh: "不能。cocogitto 根据用户提供的参数生成提交信息，而非读取你的 diff。git-agent 读取工作区 diff、负责暂存，并生成详细且有上下文的信息。cocogitto 的信息更短且基于模板。"
         },
       },
       {
