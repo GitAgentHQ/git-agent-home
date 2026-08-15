@@ -4,7 +4,7 @@
 
 **English** | [简体中文](README.zh-CN.md)
 
-Web dashboard for [git-agent](https://github.com/GitAgentHQ/git-agent-cli) — an AI-first Git CLI that generates conventional commit messages and splits changes into atomic commits. Built with React Router 7 and deployed to Cloudflare Workers.
+Web dashboard for [git-agent](https://github.com/GitAgentHQ/git-agent-cli) — an AI-first Git execution layer. Give it a work intent and it discovers, stages, splits, validates, and commits atomic Conventional Commits. Built with React Router 8 and deployed to Cloudflare Workers.
 
 ## Quick Start
 
@@ -31,11 +31,11 @@ pnpm deploy
   - `components/` — UI components (HomeView, CommandDetail, TicketView, Barcode, Pattern, CodeBlock, ComparisonTable, HubGrid, LangSwitch, PseoLayout, PseoFooter, HomeFooter, CrossLinksSection)
   - `routes/` — Route definitions: home, SEO playbooks (`/for/[language]`, `/vs/[competitor]`, `/glossary/[term]`, `/templates/[type]`), sitemap, robots.txt
 - `workers/` — Cloudflare Worker entry point
-- `public/skill.md` — Claude Code skill for git-agent CLI
+- `public/install.md` — installation and coding-agent handoff guide
 
-## Claude Code Skill
+## Coding-agent handoff
 
-The `public/skill.md` file is served as a static asset and registered as a skill in Claude Code. It documents all CLI commands, flags, configuration resolution, and commit format rules. Update it whenever the CLI interface changes.
+The `public/install.md` file is served as the installation and handoff guide. The recommended write path is the bare `git-agent --intent "..."`: coding agents pass the user's goal and verification context, then git-agent owns change discovery, staging, atomic planning, hook validation, and commits. Update it whenever the CLI interface or autonomous workflow changes.
 
 ## Related Projects
 

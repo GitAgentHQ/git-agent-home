@@ -4,7 +4,7 @@
 
 [English](README.md) | **简体中文**
 
-[git-agent](https://github.com/GitAgentHQ/git-agent-cli) 的 Web 控制台——一款 AI 驱动的 Git CLI，可生成 Conventional Commits 格式的提交信息并将修改拆分为原子提交。基于 React Router 7 构建，部署于 Cloudflare Workers。
+[git-agent](https://github.com/GitAgentHQ/git-agent-cli) 的 Web 控制台——一个 AI 驱动的 Git 执行层。把工作的意图交给它，它会发现、暂存、拆分、验证并提交原子化的 Conventional Commits。基于 React Router 8 构建，部署于 Cloudflare Workers。
 
 ## 快速开始
 
@@ -31,11 +31,11 @@ pnpm deploy
   - `components/` — UI 组件（HomeView、CommandDetail、TicketView、Barcode、Pattern、CodeBlock、ComparisonTable、HubGrid、LangSwitch、PseoLayout、PseoFooter、HomeFooter、CrossLinksSection）
   - `routes/` — 路由定义：首页、SEO 落地页（`/for/[language]`、`/vs/[competitor]`、`/glossary/[term]`、`/templates/[type]`）、sitemap、robots.txt
 - `workers/` — Cloudflare Worker 入口
-- `public/skill.md` — git-agent CLI 的 Claude Code 技能
+- `public/install.md` — 安装与编程助手交接指南
 
-## Claude Code 技能
+## 编程助手交接
 
-`public/skill.md` 作为静态资源提供，并已在 Claude Code 中注册为技能。该文件记录了所有 CLI 命令、参数、配置解析规则和提交格式要求。当 CLI 接口变更时，请同步更新此文件。
+`public/install.md` 作为静态资源提供，用于安装和说明编程助手如何交接 Git 操作。推荐的写入入口是裸 `git-agent --intent "..."`：编程助手传入用户目标和验证上下文，之后由 git-agent 负责发现改动、暂存、原子规划、hook 验证和提交。CLI 接口或自主工作流发生变化时，请同步更新此文档。
 
 ## 相关项目
 
