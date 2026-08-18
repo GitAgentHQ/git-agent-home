@@ -30,6 +30,12 @@ Feature: Homepage entrance choreography
     And the completed graph stays still with all relationship data visible
     And reduced-motion visitors see the same static graph without a loop
 
+  Scenario: Narrow command cards keep title glyphs fully visible
+    Given a visitor views a command card on a narrow screen
+    When the card title renders the second line with descending letters
+    Then the title line-height leaves room for the complete glyphs
+    And the description below the title remains visible
+
   Scenario: Each command card expresses its own operation
     Given a visitor hovers or keyboard-focuses a command card with motion enabled
     When the card graphic acknowledges the interaction

@@ -30,6 +30,10 @@ const commandShapes = {
 	config: "chamfer",
 };
 
+test("narrow entry card titles leave room for descending glyphs", () => {
+	assert.match(styles, /\.entry-card-title\s*\{[\s\S]*?line-height:\s*1\.15;/);
+});
+
 test("each command card owns a distinct finite dot-only silhouette and motion", () => {
 	assert.equal(new Set(Object.values(commandMotions)).size, 6);
 	assert.equal(new Set(Object.values(commandShapes)).size, 6);
