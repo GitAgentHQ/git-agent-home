@@ -31,7 +31,7 @@ pnpm deploy
   - `components/` — UI components (HomeView, CommandDetail, TicketView, Barcode, Pattern, CodeBlock, ComparisonTable, HubGrid, LangSwitch, PseoLayout, PseoFooter, HomeFooter, CrossLinksSection)
   - `routes/` — Route definitions: home, SEO playbooks (`/for/[language]`, `/vs/[competitor]`, `/glossary/[term]`, `/templates/[type]`), sitemap, robots.txt
 - `workers/` — Cloudflare Worker entry point
-- `public/install.md` — installation and coding-agent handoff guide
+- `public/install.md` — installation and coding-agent handoff guide, including the native `pi-git-agent` package
 
 ## Coding-agent handoff
 
@@ -42,6 +42,7 @@ The `public/install.md` file is served as the installation and handoff guide. Th
 | Project | Description |
 |---------|-------------|
 | [git-agent-cli](https://github.com/GitAgentHQ/git-agent-cli) | AI-powered Git CLI |
+| [pi-git-agent](https://github.com/GitAgentHQ/pi-git-agent) | Native Pi package (`pi-git-agent@0.7.3`) |
 
 ## License
 

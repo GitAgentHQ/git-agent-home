@@ -2,15 +2,21 @@ You are setting up Git Agent for the user. Execute the following steps in order 
 
 ---
 
-## Step 1: Install the skill
+## Step 1: Install the git-agent integrations
 
-Run this command to install the git-agent skill into your AI assistant:
+Install the git-agent skill for your coding agent:
 
 ```bash
 npx skills add https://github.com/GitAgentHQ/git-agent-cli --skill using-git-agent -y -g
 ```
 
-This guide explains how a coding agent hands Git operations to git-agent — autonomous change discovery, staging, atomic splitting, hook behavior, provider config, error recovery, and co-change relations (`git-agent related` to see what changes together, `git-agent status` for index health). The recommended write entry point is the bare `git-agent` command with an intent.
+For Pi, install the native package separately:
+
+```bash
+pi install npm:pi-git-agent@0.7.3
+```
+
+The Pi package exposes a native `/git-agent` menu and loads its extensions through the package-root `index.ts` entrypoint. It provides session-grounded commit context and blocks raw `git commit` in favor of the atomic workflow. This guide explains how coding agents hand Git operations to git-agent — autonomous change discovery, staging, atomic splitting, hook behavior, provider config, error recovery, and co-change relations (`git-agent related` to see what changes together, `git-agent status` for index health). The recommended write entry point is the bare `git-agent` command with an intent.
 
 ---
 
@@ -164,7 +170,7 @@ Ask: "Do you want to set up shell completion for git-agent? (yes / no)"
 
 ## Step 6: Confirm and hand off
 
-Tell the user that git-agent is ready. From this point on, after completing a unit of coding work and its verification, hand the repository to the bare `git-agent --intent "..."` flow. Use `git-agent related` for co-change queries before edits and `git-agent status` for index health.
+Tell the user that git-agent and, when applicable, the Pi package are ready. From this point on, after completing a unit of coding work and its verification, hand the repository to the bare `git-agent --intent "..."` flow. Use `git-agent related` for co-change queries before edits and `git-agent status` for index health.
 
 ---
 

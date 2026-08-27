@@ -7,6 +7,13 @@ Feature: Homepage entrance choreography
     And the copy says git-agent discovers, stages, splits, validates, and commits changes
     And the copy does not require a manual `git add` step for the default workflow
 
+  Scenario: The installation guide documents the current Pi package
+    Given a visitor follows the coding-agent installation guide
+    When the guide explains Pi integration
+    Then it names the `pi-git-agent` package at version 0.7.3
+    And it uses the package's native `/git-agent` menu
+    And it points Pi at the package root `index.ts` entrypoint
+
   Scenario: The browser canvas starts in the site color scheme
     Given a visitor opens the homepage from a cold navigation
     When the document head is parsed before external stylesheets

@@ -31,7 +31,7 @@ pnpm deploy
   - `components/` — UI 组件（HomeView、CommandDetail、TicketView、Barcode、Pattern、CodeBlock、ComparisonTable、HubGrid、LangSwitch、PseoLayout、PseoFooter、HomeFooter、CrossLinksSection）
   - `routes/` — 路由定义：首页、SEO 落地页（`/for/[language]`、`/vs/[competitor]`、`/glossary/[term]`、`/templates/[type]`）、sitemap、robots.txt
 - `workers/` — Cloudflare Worker 入口
-- `public/install.md` — 安装与编程助手交接指南
+- `public/install.md` — 安装与编程助手交接指南，包含 Pi 原生 `pi-git-agent` 包
 
 ## 编程助手交接
 
@@ -42,6 +42,7 @@ pnpm deploy
 | 项目 | 描述 |
 |------|------|
 | [git-agent-cli](https://github.com/GitAgentHQ/git-agent-cli) | AI 驱动的 Git CLI |
+| [pi-git-agent](https://github.com/GitAgentHQ/pi-git-agent) | Pi 原生包（`pi-git-agent@0.7.3`） |
 
 ## 许可证
 
