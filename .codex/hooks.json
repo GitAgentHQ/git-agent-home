@@ -1,0 +1,17 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.file_path // .tool_response.filePath' | { read -r f; echo \"$f\" | grep -qE '\\.(ts|tsx)$' && cd /Users/FradSer/Developer/FradSer/git-agent/git-agent-home && pnpm typecheck 2>&1 || true; }",
+            "timeout": 90,
+            "statusMessage": "Type checking..."
+          }
+        ]
+      }
+    ]
+  }
+}

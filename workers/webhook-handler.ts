@@ -325,6 +325,17 @@ function parseEventPayload(
 		}
 	}
 
+	// issue_comment payloads carry the number under `issue`; the nested
+	// `issue.pull_request` marker is present when the issue is a pull request.
+	if (!pullRequestNumber && eventType === "issue_comment") {
+		const issue = payload.issue as
+			| { number?: number; pull_request?: unknown }
+			| undefined;
+		if (issue?.number && issue.pull_request) {
+			pullRequestNumber = issue.number;
+		}
+	}
+
 	return { action, pull_request_number: pullRequestNumber };
 }
 
